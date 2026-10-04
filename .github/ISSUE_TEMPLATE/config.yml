@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Questions and ideas
+    url: https://github.com/safiware/archdraw/discussions
+    about: Ask how to do something, or float an idea before writing it up.
+  - name: Security problem
+    url: https://github.com/safiware/archdraw/security/advisories/new
+    about: Report it privately; see SECURITY.md.

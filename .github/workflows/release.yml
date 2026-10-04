@@ -1,0 +1,102 @@
+# A version tag (v0.1.0) builds the release: signed and notarized macOS packages (Apple Silicon and Intel), Linux
+# AppImage and deb, the updater's latest*.yml files, SHA256SUMS and build-provenance attestations, all attached to a
+# DRAFT GitHub release. A maintainer reads it and presses Publish; nothing is public before that.
+name: release
+on:
+  push:
+    tags: ["v*"]
+permissions:
+  contents: read
+jobs:
+  build:
+    strategy:
+      fail-fast: true
+      matrix:
+        os: [macos-15, ubuntu-22.04]
+    runs-on: ${{ matrix.os }}
+    environment: release # the signing secrets live here, behind a required reviewer
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 24
+      - uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
+      - name: the tag matches the app's version
+        run: test "v$(node -p "require('./app/package.json').version")" = "$GITHUB_REF_NAME"
+      - name: engine
+        working-directory: engine
+        run: npm ci && npm run build
+      - name: app dependencies
+        working-directory: app
+        run: npm ci && cd ui && bun install --frozen-lockfile
+      - name: unit tests
+        working-directory: app
+        run: npx vitest run && cd ui && npx vitest run
+      - name: build
+        working-directory: app
+        run: npm run build:all
+      - name: package (macOS, signed and notarized)
+        if: runner.os == 'macOS'
+        working-directory: app
+        env:
+          CSC_LINK: ${{ secrets.MAC_CERT_P12_BASE64 }}
+          CSC_KEY_PASSWORD: ${{ secrets.MAC_CERT_PASSWORD }}
+          APPLE_API_KEY_P8: ${{ secrets.APPLE_API_KEY_P8 }}
+          APPLE_API_KEY_ID: ${{ secrets.APPLE_API_KEY_ID }}
+          APPLE_API_ISSUER: ${{ secrets.APPLE_API_ISSUER }}
+        run: |
+          test -n "$CSC_LINK" || { echo "::error::MAC_CERT_P12_BASE64 is not set in the release environment"; exit 1; }
+          test -n "$APPLE_API_KEY_P8" || { echo "::error::APPLE_API_KEY_P8 is not set in the release environment"; exit 1; }
+          printf '%s' "$APPLE_API_KEY_P8" | base64 --decode > "$RUNNER_TEMP/AuthKey.p8"
+          export APPLE_API_KEY="$RUNNER_TEMP/AuthKey.p8"
+          npx electron-builder --mac --arm64 --x64 --publish never -c.mac.notarize=true
+          rm -f "$RUNNER_TEMP/AuthKey.p8"
+      - name: launch check (macOS)
+        if: runner.os == 'macOS'
+        working-directory: app
+        run: ARCHDRAW_SMOKE=1 ARCHDRAW_NO_UPDATE=1 perl -e 'alarm 120; exec @ARGV' release/mac-arm64/archdraw.app/Contents/MacOS/archdraw
+      - name: package (Linux)
+        if: runner.os == 'Linux'
+        working-directory: app
+        run: npx electron-builder --linux --publish never
+      - name: launch check (Linux)
+        if: runner.os == 'Linux'
+        working-directory: app
+        run: ARCHDRAW_SMOKE=1 ARCHDRAW_NO_UPDATE=1 timeout 120 xvfb-run -a release/linux-unpacked/archdraw --no-sandbox --user-data-dir="$RUNNER_TEMP/archdraw-smoke"
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: release-${{ runner.os }}
+          path: |
+            app/release/*.dmg
+            app/release/*.zip
+            app/release/*.AppImage
+            app/release/*.deb
+            app/release/*.blockmap
+            app/release/latest*.yml
+          if-no-files-found: error
+  release:
+    needs: build
+    runs-on: ubuntu-22.04
+    permissions:
+      contents: write
+      id-token: write
+      attestations: write
+    steps:
+      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          path: dist
+          merge-multiple: true
+      - name: checksums
+        working-directory: dist
+        run: sha256sum * > SHA256SUMS && cat SHA256SUMS
+      - uses: actions/attest-build-provenance@4d101475d8b20a2381f78447822ac1eab6504dd8 # v4.2.2
+        with:
+          subject-path: |
+            dist/*.dmg
+            dist/*.zip
+            dist/*.AppImage
+            dist/*.deb
+      - name: draft release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release create "$GITHUB_REF_NAME" dist/* -R "$GITHUB_REPOSITORY" --draft --verify-tag --title "archdraw ${GITHUB_REF_NAME#v}" --generate-notes
