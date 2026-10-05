@@ -11,4 +11,3 @@ engine/examples/out/
 scratch/
 .env
 .env.*
-.ci-local/

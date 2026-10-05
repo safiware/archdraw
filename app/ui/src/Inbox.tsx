@@ -98,6 +98,7 @@ function Item({ item, dark, open, onToggle, onAsk, onOpen, onDone }: { item: Inb
   const [confirm, setConfirm] = useState<null | "approve" | "discard">(null)
   // one diagram opens by itself; with several, each opens on a click, so Approve stays in reach
   const [shown, setShown] = useState<Set<string>>(() => new Set(p.files.length === 1 ? [p.files[0].name] : []))
+  const [retries, setRetries] = useState(0)
   useEffect(() => {
     if (!open) return
     for (const f of p.files) {
@@ -105,10 +106,20 @@ function Item({ item, dark, open, onToggle, onAsk, onOpen, onDone }: { item: Inb
       asked.current.add(f.name)
       api.diff(item.project, f.name).then(
         d => setDiffs(m => ({ ...m, [f.name]: d })),
-        () => setDiffs(m => ({ ...m, [f.name]: "error" })),
+        () => {
+          asked.current.delete(f.name) // a failed diff may be asked for again (Try again)
+          setDiffs(m => ({ ...m, [f.name]: "error" }))
+        },
       )
     }
-  }, [open, p.files, item.project])
+  }, [open, p.files, item.project, retries])
+  const retry = (name: string) => {
+    setDiffs(m => {
+      const { [name]: _, ...rest } = m
+      return rest
+    })
+    setRetries(n => n + 1)
+  }
   const count = p.files.length
   const toggle = (name: string) =>
     setShown(s => {
@@ -189,7 +200,18 @@ function Item({ item, dark, open, onToggle, onAsk, onOpen, onDone }: { item: Inb
                       {d ? (
                         <DiffView d={d} dark={dark} project={item.project} onAsk={onAsk} onOpen={onOpen} />
                       ) : (
-                        <p className="ad-diff-block text-sm text-[var(--muted)]">{got === "error" ? "This diff could not load. Close the update and open it again, or open the pull request." : "Loading the diff…"}</p>
+                        <p className="ad-diff-block text-sm text-[var(--muted)]">
+                          {got === "error" ? (
+                            <>
+                              This diff could not load.{" "}
+                              <button type="button" className="text-[var(--accent)] underline-offset-4 hover:underline" onClick={() => retry(f.name)}>
+                                Try again
+                              </button>
+                            </>
+                          ) : (
+                            "Loading the diff…"
+                          )}
+                        </p>
                       )}
                     </div>
                   )}
