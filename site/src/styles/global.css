@@ -41,7 +41,7 @@
     --text: #EEF3FB; --text-2: #A8B9D6; --signal: #7CC8FF; --signal-soft: #7CC8FF24; --on-signal: #0B1A36;
     --lamp: #FFD66E; --lamp-edge: #FFE7A6; --lamp-shadow: #B7861C; --on-lamp: #0B1A36;
     --add: #5EE0A0; --add-soft: #5EE0A026; --chg: #FFA24C; --chg-soft: #FFA24C26; --del: #FF6E6E; --del-soft: #FF6E6E26;
-    --on-diff: #0B1A36; --add-text: #5EE0A0; --chg-text: #FFA24C; --del-text: #FF6E6E; --you: #7CC8FF; --mate: #C3A6FF; --agent: #F59BE6;
+    --on-diff: #0B1A36; --add-text: #5EE0A0; --chg-text: #FFA24C; --del-text: #FF7878; --you: #7CC8FF; --mate: #C3A6FF; --agent: #F59BE6;
     --contour: #7CC8FF12; --glow-a: 1;
     --dg-bg: #112650; --dg-box: #17346A; --dg-line: #5E95E0; --dg-store: #152A52; --dg-store-line: #6B80A8;
     --dg-ext: #1C2B5C; --dg-ext-line: #A48CF0; --dg-text: #EEF3FB; --dg-sub: #A8B9D6; --dg-edge: #6A8CC4;
@@ -55,7 +55,7 @@
   --text: #EEF3FB; --text-2: #A8B9D6; --signal: #7CC8FF; --signal-soft: #7CC8FF24; --on-signal: #0B1A36;
   --lamp: #FFD66E; --lamp-edge: #FFE7A6; --lamp-shadow: #B7861C; --on-lamp: #0B1A36;
   --add: #5EE0A0; --add-soft: #5EE0A026; --chg: #FFA24C; --chg-soft: #FFA24C26; --del: #FF6E6E; --del-soft: #FF6E6E26;
-  --on-diff: #0B1A36; --add-text: #5EE0A0; --chg-text: #FFA24C; --del-text: #FF6E6E; --you: #7CC8FF; --mate: #C3A6FF; --agent: #F59BE6;
+  --on-diff: #0B1A36; --add-text: #5EE0A0; --chg-text: #FFA24C; --del-text: #FF7878; --you: #7CC8FF; --mate: #C3A6FF; --agent: #F59BE6;
   --contour: #7CC8FF12; --glow-a: 1;
   --dg-bg: #112650; --dg-box: #17346A; --dg-line: #5E95E0; --dg-store: #152A52; --dg-store-line: #6B80A8;
   --dg-ext: #1C2B5C; --dg-ext-line: #A48CF0; --dg-text: #EEF3FB; --dg-sub: #A8B9D6; --dg-edge: #6A8CC4;

@@ -25,10 +25,10 @@ import { VB_AFTER } from '../lib/bean';
       <div class="win-bar"><span class="mono">bean-there (example) / overview.archdraw</span><span class="pill warn" id="story-pill"><i></i><span id="story-pill-t">update drafted · 10:00</span></span></div>
       <figure class="before-fig">
         <figcaption>Before · what the drawing said</figcaption>
-        <div class="stage-scroll" role="region" aria-label="Diagram, scrolls sideways" tabindex="0"><div class="stage"><Diagram mode="before" diff uid="sb" label={BEFORE_LABEL} /></div></div>
+        <div class="stage-scroll" role="region" aria-label="Diagram before the update, scrolls sideways" tabindex="0" data-name="Diagram before the update"><div class="stage"><Diagram mode="before" diff uid="sb" label={BEFORE_LABEL} /></div></div>
       </figure>
       <p class="after-cap">The update · marked in color</p>
-      <div class="stage-scroll" role="region" aria-label="Diagram, scrolls sideways" tabindex="0"><div class="stage story-stage">
+      <div class="stage-scroll" role="region" aria-label="Diagram with the update marked, scrolls sideways" tabindex="0" data-name="Diagram with the update marked"><div class="stage story-stage">
         <svg class="pts" viewBox={VB_AFTER} aria-hidden="true"></svg>
         <Diagram mode="story" diff uid="ss" label={DIFF_LABEL} />
       </div></div>

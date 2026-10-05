@@ -4,14 +4,19 @@ export function initFrames(): void {
   const frames = [...document.querySelectorAll<HTMLElement>('.stage-scroll')];
   const fit = () => frames.forEach(el => {
     const scrolls = el.scrollWidth > el.clientWidth + 1;
+    const name = el.dataset.name ?? 'Diagram';
     if (scrolls) {
+      // a region with its own name, reachable by keyboard so it can be scrolled
+      el.setAttribute('role', 'region');
       el.setAttribute('tabindex', '0');
-      el.setAttribute('aria-label', 'Diagram, scrolls sideways');
+      el.setAttribute('aria-label', `${name}, scrolls sideways`);
       const focus = Number(el.dataset.focus ?? 0.5); // where the busiest part sits, as a share of the drawing's width
       el.scrollLeft = Math.max(0, Math.min(el.scrollWidth - el.clientWidth, focus * el.scrollWidth - el.clientWidth / 2));
     } else {
+      // nothing to scroll: not a landmark or a tab stop (the drawing inside carries its own label)
       el.removeAttribute('tabindex');
-      el.setAttribute('aria-label', 'Diagram');
+      el.removeAttribute('role');
+      el.removeAttribute('aria-label');
     }
   });
   fit();
