@@ -2,7 +2,8 @@
 # AppImage and deb, the updater's latest*.yml files, SHA256SUMS and build-provenance attestations, all attached to a
 # DRAFT GitHub release. A maintainer reads it and presses Publish; nothing is public before that.
 # Run by hand (Actions > release > Run workflow), it is a rehearsal: the same builds and launch checks, the macOS app
-# unsigned, every package uploaded as a run artifact for testers, and no release and no signing secrets.
+# with an ad hoc signature instead of the Developer ID one (a tester opens it with right-click > Open), every package
+# uploaded as a run artifact for testers, and no release and no signing secrets.
 name: release
 on:
   push:
@@ -40,12 +41,13 @@ jobs:
       - name: build
         working-directory: app
         run: npm run build:all
-      - name: package (macOS, unsigned rehearsal)
+      - name: package (macOS, ad hoc signature, rehearsal)
         if: runner.os == 'macOS' && github.event_name != 'push'
         working-directory: app
         env:
           CSC_IDENTITY_AUTO_DISCOVERY: "false"
-        run: npx electron-builder --mac --arm64 --x64 --publish never -c.mac.identity=null
+        # ad hoc, as ci.yml does: a fully unsigned arm64 app is refused as "damaged" with no way to open it
+        run: npx electron-builder --mac --arm64 --x64 --publish never -c.mac.identity=-
       - name: package (macOS, signed and notarized)
         if: runner.os == 'macOS' && github.event_name == 'push'
         working-directory: app
