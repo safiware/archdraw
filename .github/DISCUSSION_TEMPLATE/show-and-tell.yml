@@ -1,0 +1,20 @@
+title: "[Show] "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Show a diagram you keep with archdraw: what it maps, and how it has changed with the code. Only share what you are free to share.
+  - type: textarea
+    id: what
+    attributes:
+      label: What it shows
+      description: The project (a link if it is public), and what the diagram helps you or your team with.
+    validations:
+      required: true
+  - type: textarea
+    id: diagram
+    attributes:
+      label: The diagram
+      description: A screenshot, the `.archdraw` text, or both.
+    validations:
+      required: true
