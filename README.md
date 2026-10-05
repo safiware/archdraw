@@ -4,7 +4,7 @@
 
 # archdraw
 
-**Your architecture diagram, as a reviewed file in your repo, that notices when the code drifts.**
+**Your architecture diagram, as a reviewed file in your repo, that notices when the code changes.**
 
 archdraw is a free, open-source desktop app for macOS and Linux. It keeps a project's architecture diagrams as plain text files in the repo's `.archdraw/` folder. On the schedule you choose it checks the code, drafts one update when the architecture changed, and shows you a colored diff to approve. Approved updates land in the repo as a pull request or a commit, versioned with the code they describe.
 
@@ -33,7 +33,7 @@ Take the two-minute tour from the first screen (it uses a sample project and nee
 - archdraw runs on your machine and has no server of its own. When a project is checked, archdraw sends the new commit messages, the names of the files they touch and the diagram outlines to **your** AI provider, to ask whether the architecture changed. When it did, the agent reads the code it needs and drafts the update.
 - The agent can only read. It never reads `.env` files, keys, credential folders, Terraform state or anything your `.gitignore` excludes, and it cannot run commands.
 - Nothing reaches your repo's `main` until you approve it. Checks run only on the schedule you picked; the default is off.
-- Your AI key is kept in the OS keychain (on a Linux desktop without a keyring, in an owner-only file; the app tells you). archdraw has no telemetry and no account.
+- Your AI key is encrypted with the OS keychain and stored in an owner-only file. On a Linux desktop without a keyring, the app tells you the key has only basic protection. archdraw has no telemetry and no account.
 
 ## The diagram language
 
@@ -61,11 +61,9 @@ The same app runs as a server you open in a browser, for example on a home serve
 
 archdraw is built in the open and contributions are welcome: bug reports, diagram-language improvements, new providers, Windows support. Start with [CONTRIBUTING.md](CONTRIBUTING.md) and the [good first issues](https://github.com/safiware/archdraw/labels/good%20first%20issue). Questions and ideas go in [Discussions](https://github.com/safiware/archdraw/discussions).
 
-If archdraw saves you time, you can [sponsor its development](https://github.com/sponsors/safiware).
-
 ## Thanks
 
-archdraw is built on [reladraw](https://github.com/reladraw/reladraw), the diagram language and engine by Joe Walsh. Its central idea is the one archdraw depends on most: you say where things go (`right of app`, `below api`) and the layout follows. That is why an archdraw diagram reads as plainly as text, in a code review, in a diff, or in the context you hand a coding agent, and still draws as a clean picture. The engine in `engine/` is his work, included with its source unmodified. Thank you, Joe, for making it and for sharing it under Apache-2.0.
+archdraw is built on [reladraw](https://github.com/reladraw/reladraw), the diagram language and engine by Joe Walsh. Its central idea is the one archdraw depends on most: you say where things go (`right of app`, `below api`) and the layout follows. That is why an archdraw diagram reads as plainly as text, in a code review, in a diff, or in the context you hand a coding agent, and still draws as a clean picture. The engine in `engine/` is his work. Its source is included unmodified; only its package metadata was renamed. Thank you, Joe, for making it and for sharing it under Apache-2.0.
 
 ## License
 
