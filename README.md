@@ -6,7 +6,7 @@
 
 **Your architecture diagram, as a reviewed file in your repo, that notices when the code changes.**
 
-archdraw is a free, open-source desktop app for macOS and Linux. It keeps a project's architecture diagrams as plain text files in the repo's `.archdraw/` folder. On the schedule you choose it checks the code, drafts one update when the architecture changed, and shows you a colored diff to approve. Approved updates land in the repo as a pull request or a commit, versioned with the code they describe.
+archdraw is a free desktop app for macOS and Linux, with its source on GitHub. It keeps a project's architecture diagrams as plain text files in the repo's `.archdraw/` folder. On the schedule you choose it checks the code, drafts one update when the architecture changed, and shows you a colored diff to approve. Approved updates land in the repo as a pull request or a commit, versioned with the code they describe.
 
 [Download](https://github.com/safiware/archdraw/releases/latest) · [archdraw.dev](https://archdraw.dev) · [User guide](docs/user-guide.md) · [Diagram language](engine/SYNTAX.md)
 
@@ -67,4 +67,4 @@ archdraw is built on [reladraw](https://github.com/reladraw/reladraw), the diagr
 
 ## License
 
-archdraw is licensed under the [Apache License 2.0](LICENSE). Its diagram engine in `engine/` is [reladraw](https://github.com/reladraw/reladraw) by Joe Walsh, also Apache-2.0; see [NOTICE](NOTICE). "archdraw" is a name of Safiware; see [TRADEMARKS.md](TRADEMARKS.md).
+archdraw is [fair source](https://fair.io): it is licensed under the [Functional Source License, FSL-1.1-ALv2](LICENSE). You may use it, change it and run it yourself for any purpose, at work too, except to offer a competing commercial product or service. Each release becomes Apache-2.0 two years after it ships. Its diagram engine in `engine/` is [reladraw](https://github.com/reladraw/reladraw) by Joe Walsh, under the [Apache License 2.0](engine/LICENSE); see [NOTICE](NOTICE). "archdraw" is a name of Safiware; see [TRADEMARKS.md](TRADEMARKS.md).

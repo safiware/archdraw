@@ -59,7 +59,7 @@ A change that a user can see comes with a test that fails without it.
 - One change per pull request, with a short description of what changes for the user and how you checked it. For UI changes, add a screenshot.
 - Keep the code like the code around it: names, comment density, and plain words in anything a user reads.
 - **Sign off every commit** (`git commit -s`). This adds a `Signed-off-by:` line and certifies the [Developer Certificate of Origin](https://developercertificate.org): that you wrote the change or have the right to submit it under the project's license. The `dco` check fails without it; `git commit --amend -s` or `git rebase --signoff main` fixes it.
-- Contributions are accepted under the [Apache License 2.0](LICENSE), the project's license (section 5).
+- **What you grant.** archdraw is released under the [Functional Source License (FSL-1.1-ALv2)](LICENSE), and Safiware also offers it in hosted and commercial forms. So that every release can include your work, you license your contribution to Safiware and to everyone else under the [Apache License 2.0](https://www.apache.org/licenses/LICENSE-2.0) (section 5 of that license describes a contribution). Your sign-off confirms it. Changes inside `engine/`, which is reladraw, stay Apache-2.0 like the rest of reladraw.
 
 A maintainer reviews every pull request. We aim to answer within a week.
 

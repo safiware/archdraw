@@ -1,6 +1,6 @@
 # The archdraw name and logo
 
-The code is open source under the Apache License 2.0, which grants no rights to the project's names or logos (section 6). This page says what you may do with them.
+The code is available under the Functional Source License (FSL-1.1-ALv2), which grants no rights to the project's names or logos (its Trademarks clause). This page says what you may do with them.
 
 **You may**, without asking:
 - say that your product works with, extends, or is built on archdraw;

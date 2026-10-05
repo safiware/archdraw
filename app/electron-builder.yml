@@ -19,6 +19,7 @@ extraResources:
   - { from: core/assets, to: assets }
   - { from: desktop/icon.png, to: icon.png }
   - { from: ../LICENSE, to: licenses/LICENSE }
+  - { from: ../engine/LICENSE, to: licenses/reladraw-LICENSE } # the engine stays Apache-2.0
   - { from: ../NOTICE, to: licenses/NOTICE }
   - { from: desktop/app/THIRD_PARTY_NOTICES.txt, to: licenses/THIRD_PARTY_NOTICES.txt }
 publish:

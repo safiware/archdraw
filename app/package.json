@@ -39,7 +39,7 @@
     "typescript": "^5.9.3",
     "vitest": "^3.2.7"
   },
-  "license": "Apache-2.0",
+  "license": "FSL-1.1-ALv2",
   "author": "Safiware <hello@archdraw.dev>",
   "homepage": "https://archdraw.dev",
   "repository": {
