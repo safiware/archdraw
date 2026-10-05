@@ -1,0 +1,25 @@
+title: "[Q&A] "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Ask anything about using archdraw: connecting a repo, the schedule, the Inbox, the diagram language, exporting for your coding agent.
+        Found a bug? Please [open an issue](https://github.com/safiware/archdraw/issues/new/choose) instead. A security problem goes through [private reporting](https://github.com/safiware/archdraw/security/advisories/new), never here.
+  - type: textarea
+    id: question
+    attributes:
+      label: Your question
+      description: What you are trying to do, and what happened when you tried.
+    validations:
+      required: true
+  - type: textarea
+    id: diagram
+    attributes:
+      label: The diagram text, if it is about a diagram
+      description: Paste the lines of the `.archdraw` file that matter. Leave out anything private.
+      render: text
+  - type: input
+    id: version
+    attributes:
+      label: Version and system
+      description: For example "archdraw 0.1.0 · macOS 15 on Apple Silicon".

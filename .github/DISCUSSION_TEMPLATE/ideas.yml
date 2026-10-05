@@ -1,0 +1,28 @@
+title: "[Idea] "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Ideas for archdraw or its diagram language. Start from the problem: what you were doing, and where archdraw got in the way or could have helped.
+        An idea that gathers interest here becomes an issue on the roadmap.
+  - type: textarea
+    id: problem
+    attributes:
+      label: The problem
+      description: What you were doing when you wished archdraw worked differently.
+    validations:
+      required: true
+  - type: textarea
+    id: idea
+    attributes:
+      label: Your idea
+      description: What would help. A sketch, or a few lines of diagram text, is welcome.
+    validations:
+      required: true
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      options: ["The app", "The diagram language", "Keeping diagrams current", "Export and coding agents", "Something else"]
+    validations:
+      required: true
