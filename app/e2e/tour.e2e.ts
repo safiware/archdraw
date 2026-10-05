@@ -21,7 +21,7 @@ async function step(name: string, fn: () => Promise<void>) {
     await fn()
     steps.push(`ok   ${name}`)
   } catch (e) {
-    const file = join(tmpdir(), `archdraw-tour-fail-${Date.now()}.png`)
+    const file = join(process.env.E2E_OUT ?? tmpdir(), `archdraw-tour-fail-${Date.now()}.png`)
     await failShot?.(file).catch(() => undefined)
     steps.push(`FAIL ${name}: ${String((e as Error).message).split("\n")[0]} (screenshot ${file})`)
     throw e
