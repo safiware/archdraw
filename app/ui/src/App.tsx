@@ -536,7 +536,15 @@ export default function App() {
               setNotice(`Checking ${p.title}…`)
               try {
                 const r = await api.sync(p.slug)
-                setNotice(r.outcome === "drafted" ? `${p.title}: an update is waiting in the Inbox` : r.outcome === "skipped" ? `${p.title}: ${r.reason}` : `${p.title}: up to date${r.note ? ` (${r.note})` : ""}`)
+                setNotice(
+                  r.outcome === "drafted"
+                    ? `${p.title}: an update is waiting in the Inbox${r.note ? ` (${r.note})` : ""}`
+                    : r.outcome === "skipped"
+                      ? `${p.title}: ${r.reason}`
+                      : r.outcome === "failed"
+                        ? `${p.title}: the update could not be saved: ${r.reason}`
+                        : `${p.title}: up to date${r.note ? ` (${r.note})` : ""}`,
+                )
                 await reload()
               } catch (e) {
                 setNotice(e instanceof ApiError ? e.message : String(e))

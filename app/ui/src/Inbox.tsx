@@ -59,7 +59,7 @@ export function Inbox({ dark, focusProject, onAsk, onOpen, onChanged }: { dark: 
             <div key={i.project} className="ad-row" data-testid={`inbox-calm-${i.project}`}>
               <span className="font-medium">{i.title}</span>
               <span className="text-xs text-[var(--muted)]">
-                {i.last ? (i.last.outcome === "no-architecture-change" ? `checked ${ago((i.last.at ?? 0) / 1000)}: ${i.last.commits} commit(s), no architecture change${i.last.note ? ` (${i.last.note})` : ""}` : i.last.outcome === "skipped" ? `last check ${ago((i.last.at ?? 0) / 1000)}: ${i.last.reason}` : `checked ${ago((i.last.at ?? 0) / 1000)}`) : i.checkedThrough ? `checked through ${i.checkedThrough.slice(0, 7)}` : "not checked yet"}
+                {i.last ? (i.last.outcome === "no-architecture-change" ? `checked ${ago((i.last.at ?? 0) / 1000)}: ${i.last.commits} commit(s), no architecture change${i.last.note ? ` (${i.last.note})` : ""}` : i.last.outcome === "skipped" ? `last check ${ago((i.last.at ?? 0) / 1000)}: ${i.last.reason}` : i.last.outcome === "failed" ? `last check ${ago((i.last.at ?? 0) / 1000)}: the update could not be saved: ${i.last.reason}` : `checked ${ago((i.last.at ?? 0) / 1000)}`) : i.checkedThrough ? `checked through ${i.checkedThrough.slice(0, 7)}` : "not checked yet"}
               </span>
               <button
                 type="button"
