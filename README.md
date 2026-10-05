@@ -14,7 +14,7 @@ archdraw is a free, open-source desktop app for macOS and Linux. It keeps a proj
 
 | | |
 |---|---|
-| **macOS 13 or later** (Apple Silicon or Intel) | Download the `.dmg` from [Releases](https://github.com/safiware/archdraw/releases/latest), or `brew install --cask safiware/tap/archdraw` |
+| **macOS 13 or later** (Apple Silicon or Intel) | Download the `.dmg` from [Releases](https://github.com/safiware/archdraw/releases/latest) |
 | **Linux** (x64) | The `.deb` (Debian, Ubuntu) or the `.AppImage` from [Releases](https://github.com/safiware/archdraw/releases/latest) |
 
 archdraw uses the machine's own `git`, and the [GitHub CLI](https://cli.github.com) (`gh auth login`) to open and merge pull requests. The app tells you on first run if either is missing. Windows is not supported yet; [say so in an issue](https://github.com/safiware/archdraw/issues) if you want it.
@@ -30,16 +30,20 @@ Take the two-minute tour from the first screen (it uses a sample project and nee
 
 ## What goes where
 
-- Your code stays on your machine. When a project is checked, archdraw sends the new commit messages, the names of the files they touch and the diagram outlines to **your** AI provider, to ask whether the architecture changed. When it did, the agent reads the code it needs and drafts the update.
+- archdraw runs on your machine and has no server of its own. When a project is checked, archdraw sends the new commit messages, the names of the files they touch and the diagram outlines to **your** AI provider, to ask whether the architecture changed. When it did, the agent reads the code it needs and drafts the update.
 - The agent can only read. It never reads `.env` files, keys, credential folders, Terraform state or anything your `.gitignore` excludes, and it cannot run commands.
 - Nothing reaches your repo's `main` until you approve it. Checks run only on the schedule you picked; the default is off.
-- Your AI key is kept in the OS keychain. archdraw has no telemetry and no account.
+- Your AI key is kept in the OS keychain (on a Linux desktop without a keyring, in an owner-only file; the app tells you). archdraw has no telemetry and no account.
 
 ## The diagram language
 
 Diagrams are written in the [reladraw](https://github.com/reladraw/reladraw) language: you say where things go, and the layout follows.
 
 ```
+style ours   fill: theme-primary-subtle  border: theme-primary
+style store  fill: theme-fill  border: theme-border  badge: database
+style dim    text: (color: theme-muted)
+
 node app "Customer app / [dim]iOS + Android[/dim]"  style: ours
 node api "Orders API / [dim]Node[/dim]"  right of app (gap: wide)  style: ours
 node db "Menu DB"  right of api  style: store

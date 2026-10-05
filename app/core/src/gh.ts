@@ -1,5 +1,5 @@
-// Pull requests through the `gh` CLI, for the internal build: this machine's GitHub login opens, merges and closes
-// the waiting update's pull request. (The product's GitHub App with device flow is a later Forge.)
+// Pull requests through the GitHub CLI (`gh`): this machine's GitHub login opens, merges and closes the waiting
+// update's pull request.
 
 import { spawn } from "node:child_process"
 import { AppError, type Project } from "./config.js"

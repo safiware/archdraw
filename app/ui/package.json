@@ -1,10 +1,10 @@
 {
-  "name": "archdraw-studio-ui",
+  "name": "archdraw-ui",
   "private": true,
   "version": "0.1.0",
   "type": "module",
   "scripts": {
-    "engine": "cd ../.. && npm ci --silent && npm run -s build",
+    "engine": "cd ../../engine && npm ci --silent && npm run -s build",
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "oxlint src",

@@ -46,7 +46,7 @@ land near where they were.
 ## 4. Renaming
 
 Change the **text**, not the id, whenever the user means "call it something else": the id is what links, edges,
-placements and the studio's change list track. When the id itself must change (it is misleading or collides), work the
+placements and archdraw's change list track. When the id itself must change (it is misleading or collides), work the
 checklist:
 
 1. the declaration line;

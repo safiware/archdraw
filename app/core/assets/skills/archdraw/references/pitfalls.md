@@ -230,9 +230,9 @@ A database is `style: store`; a person is `icon: laptop`; a server is a box with
 line 1: shape: document and icon: cube both say what this node is drawn as, and it has one body — `shape:` is the outline it is drawn with, `icon:` is the picture it is drawn as
 ```
 
-**An icon from a file** (`icon rack "./rack.svg"`), refused by the studio:
+**An icon from a file** (`icon rack "./rack.svg"`), refused by archdraw:
 `line 1: icon "rack" names a file, "./rack.svg", and files can be read only by the command-line tool — paste the SVG itself between """ marks instead`.
-Use a built-in. Paste SVG only when the user supplies it; the studio sanitizes it, and script in it is refused.
+Use a built-in. Paste SVG only when the user supplies it; archdraw sanitizes it, and script in it is refused.
 
 **A dashed node border.** There is none. `border: (pattern: dashed)`, then `line: (pattern: dashed)` on a node,
 then `style: async` on a node give:
@@ -263,7 +263,7 @@ line 1: node "a": a url is written in quotes — `url: "https://example.com"`. W
 node a  "Payments"  style: ours  url: "#/bean-there/payments"
 ```
 
-A url with capitals (`"#/Shop/System"`) renders, and the studio drops the link silently: slugs are lowercase.
+A url with capitals (`"#/Shop/System"`) renders, and archdraw drops the link silently: slugs are lowercase.
 
 ## Things declared twice or missing
 
@@ -276,4 +276,4 @@ line 2: the diagram is described twice
 ```
 
 The second and third mean the house block was pasted twice or left out: exactly one copy, at the top. Do not write a
-`diagram` statement at all; the studio sets the theme.
+`diagram` statement at all; archdraw sets the theme.

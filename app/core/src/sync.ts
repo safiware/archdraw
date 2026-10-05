@@ -95,15 +95,17 @@ export class Syncer {
     this.running.add(slug)
     try {
       const r = await this.run(slug, manual)
+      this.last[slug] = { ...r, at: Date.now() }
+      this.d.log?.(`sync ${slug}: ${r.outcome}`)
+      return r
+    } finally {
+      // a check that threw (no key yet, the network) still counts as run, so the schedule waits instead of retrying
+      // every minute
       const at = Date.now()
-      this.last[slug] = { ...r, at }
       this.d.store.update(c => {
         const p = c.projects.find(x => x.slug === slug)
         if (p) p.lastSyncAt = at
       })
-      this.d.log?.(`sync ${slug}: ${r.outcome}`)
-      return r
-    } finally {
       this.running.delete(slug)
     }
   }

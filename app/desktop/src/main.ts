@@ -25,7 +25,8 @@ let quitting = false
 const token = randomBytes(24).toString("hex")
 
 // a second launch hands over to the running app (it shows its window) and stops before starting a server of its own
-if (!app.requestSingleInstanceLock()) app.exit(0)
+const firstInstance = app.requestSingleInstanceLock()
+if (!firstInstance) app.exit(0)
 app.on("second-instance", () => show())
 
 function icon(): Electron.NativeImage {
@@ -148,12 +149,14 @@ async function checkForUpdates(byHand = false): Promise<void> {
   try {
     const r = await autoUpdater.checkForUpdates()
     const next = r?.updateInfo?.version
-    const newer = !!next && next !== app.getVersion()
+    const newer = !!r?.isUpdateAvailable && !!next // the updater compares versions itself: never a downgrade
     if (newer && !selfUpdating) {
       const pick = await dialog.showMessageBox({ type: "info", message: `archdraw ${next} is available`, detail: "Download the new .deb from the releases page and install it.", buttons: ["Open the releases page", "Later"] })
       if (pick.response === 0) void shell.openExternal(RELEASES)
-    } else if (newer) {
+    } else if (newer && updateReady !== next) {
       autoUpdater.once("update-downloaded", () => {
+        if (updateReady === next) return
+        updateReady = next
         void dialog.showMessageBox({ type: "info", message: `archdraw ${next} is ready`, detail: "It installs when you quit archdraw.", buttons: ["OK"] })
       })
     } else if (byHand) {
@@ -164,7 +167,10 @@ async function checkForUpdates(byHand = false): Promise<void> {
   }
 }
 
+let updateReady: string | null = null // the version downloaded and waiting for a quit, announced once
+
 app.whenReady().then(async () => {
+  if (!firstInstance) return
   // the app needs no camera, microphone, location or notifications from the page
   // except writing to the clipboard ("Copy link")
   const allowed = (perm: string) => perm === "clipboard-sanitized-write"

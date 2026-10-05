@@ -1,7 +1,7 @@
 // The diagram engine, in process. `compile` is given no icon-file reader, so a file icon in any spelling is refused
 // by the engine itself rather than read from disk: a diagram can never make the app read
 // a file. Diagrams are capped at 200 KB and the engine refuses ambiguity instead of searching, so a check is fast
-// (0.1–0.4 s for the largest house diagrams).
+// (0.1–0.4 s for large diagrams).
 
 import { compile, parse, resolve, THEMES } from "../../../engine/src/index.js"
 

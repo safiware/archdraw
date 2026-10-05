@@ -38,7 +38,7 @@ export interface KeyStore {
 }
 
 /**
- * Keys from the environment, else from an owner-only KEY=value file (the internal box's providers.env). The file is
+ * Keys from the environment, else from an owner-only KEY=value file (a self-hosted server's providers.env). The file is
  * refused when anyone but its owner can read it; keys are never logged or returned to the browser.
  */
 export class EnvKeys implements KeyStore {

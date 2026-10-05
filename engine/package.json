@@ -1,7 +1,7 @@
 {
   "name": "@archdraw/engine",
   "version": "0.16.0",
-  "description": "archdraw's diagram engine: reladraw 0.16.0 (https://github.com/reladraw/reladraw) by Joe Walsh, vendored unmodified under the Apache License 2.0.",
+  "description": "archdraw's diagram engine: reladraw 0.16.0 (https://github.com/reladraw/reladraw) by Joe Walsh, source unmodified, under the Apache License 2.0.",
   "type": "module",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",

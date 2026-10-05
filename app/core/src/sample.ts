@@ -14,7 +14,7 @@ import type { Library } from "./library.js"
 export const SAMPLE = "bean-there"
 
 function sh(cwd: string, ...args: string[]) {
-  execFileSync("git", ["-c", "core.hooksPath=/dev/null", ...args], {
+  execFileSync("git", ["-c", "core.hooksPath=/dev/null", "-c", "commit.gpgsign=false", "-c", "tag.gpgsign=false", ...args], {
     cwd,
     stdio: "pipe",
     env: { ...process.env, GIT_AUTHOR_NAME: "archdraw sample", GIT_AUTHOR_EMAIL: "sample@archdraw.dev", GIT_COMMITTER_NAME: "archdraw sample", GIT_COMMITTER_EMAIL: "sample@archdraw.dev" },

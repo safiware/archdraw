@@ -9,7 +9,7 @@ project and say so.
 - `.archdraw/<name>.archdraw` in the project's repo, and beside it `<name>.md`, its explanation.
 - `<name>` is lowercase letters, digits and dashes (`system`, `daily-edition`). It is the file name and the last part
   of every link to it.
-- `.archdraw/order.json` is a JSON array of names, the order the studio lists them in: `["system", "pipeline",
+- `.archdraw/order.json` is a JSON array of names, the order archdraw lists them in: `["system", "pipeline",
   "data-model"]`. Names it leaves out come after, alphabetically. Put `system` first. You cannot write it: when you
   propose a new diagram, tell the user where it belongs in `order.json`.
 - `.archdraw/README.md`, when there is one, is the project's own page: what it is, non-goals, invariants. Read it
@@ -17,7 +17,7 @@ project and say so.
 
 ## The file header
 
-The first lines of every file, before any statement. The studio shows them in the diagram list and above the
+The first lines of every file, before any statement. archdraw shows them in the diagram list and above the
 picture, and reads only the comment lines at the top, so nothing may come before them:
 
 ```archdraw
@@ -71,7 +71,7 @@ a dump) is `shape: document`, with no style.
 
 ### Colors and theme
 
-The studio renders every diagram in its own light and dark theme and overrides any `diagram theme:` line, so a
+archdraw renders every diagram in its own light and dark theme and overrides any `diagram theme:` line, so a
 diagram never writes one. Use `theme-*` colors only, and only through the block above: a hex color reads on one theme
 and disappears on the other. A new meaning gets a new style built from theme colors, never a color on one node.
 
@@ -79,7 +79,7 @@ and disappears on the other. A new meaning gets a new style built from theme col
 
 - Lowercase, short, `snake_case`: `api`, `db`, `sync_worker`, `stripe`. Never `:` or `;`.
 - A dotted name is containment: `aws.db` is inside `aws`, which must be declared above it.
-- The id is what the studio's change list, every edge, every placement and other diagrams track; the text is what a
+- The id is what archdraw's change list, every edge, every placement and other diagrams track; the text is what a
   reader sees. To rename what a reader sees, change the text and keep the id.
 - Notes end in `_note` (`api_note`); zones are named for the place (`aws`, `browser`, `office`).
 
@@ -115,14 +115,14 @@ and disappears on the other. A new meaning gets a new style built from theme col
 ## Notes
 
 `node <id>_note "<one sentence>" (wrap: 36)  shape: none  style: note  <placement>`. Write `shape: none` on the
-node, not in a style: the studio's outline lists a node as a note only when the node itself says it. Wrap 34 to 44.
+node, not in a style: archdraw's outline lists a node as a note only when the node itself says it. Wrap 34 to 44.
 Anchor it to the node it explains (`below api (gap: tight)  left level with api`). At most two per diagram; a third
 belongs in the explanation.
 
 ## Drill-downs
 
 `url: "#/<project>/<file>"` on a node opens that diagram when the node is clicked. Project and file are lowercase
-letters, digits and dashes only: the studio drops any other link silently. Copy the project slug from an existing
+letters, digits and dashes only: archdraw drops any other link silently. Copy the project slug from an existing
 link in the project's diagrams; if there is none, ask. Put the link on the node the detail diagram expands, in the
 system diagram; a detail diagram does not link back. A container's link covers its children.
 
@@ -133,7 +133,7 @@ system diagram; a detail diagram does not link back. A container's link covers i
   diagram for one subsystem or one flow.
 - A flow over time (steps in order across places) is its own diagram: steps numbered in their text (`"3 Charge
   card"`), time running down the page.
-- A file stays well under the studio's 200 KB cap; a diagram that approaches it is several diagrams.
+- A file stays well under archdraw's 200 KB cap; a diagram that approaches it is several diagrams.
 
 ## The explanation (`<name>.md`)
 

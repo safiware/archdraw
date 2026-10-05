@@ -47,7 +47,7 @@ export function starter(title: string): string {
   return `// title: ${title}\n// summary: One sentence on what this diagram shows.\n\nnode app "App"\nnode store "Store"  right of app\nedge app -> store  "reads"  from: right  to: left\n`
 }
 
-/** Pull requests, merges and the like on the repo's host. The internal build uses the `gh` CLI (gh.ts). */
+/** Pull requests, merges and the like on the repo's host. archdraw uses the GitHub CLI (gh.ts). */
 export interface Forge {
   ensurePullRequest(p: Project, cwd: string, title: string, body: string): Promise<{ number: number; url: string; state: string }>
   pullRequest(p: Project, cwd: string): Promise<{ number: number; url: string; state: string } | null>
@@ -173,6 +173,7 @@ export class Library {
     }
     path = real // stored resolved, so a symlink retargeted later cannot move the project
     const slug = opts.slug && !RESERVED.includes(opts.slug) ? checkSlug(opts.slug, "project") : this.freeSlug(opts.slug || path)
+    if (this.store.project(slug)) throw new AppError(409, `a project called ${slug} already exists`)
     const project: Project = { slug, title: opts.title || path.split("/").filter(Boolean).pop()!, source: { kind: "folder", path }, addedAt: Date.now() }
     mkdirSync(join(path, DIAGRAM_DIR), { recursive: true })
     this.store.update(c => {
@@ -324,6 +325,7 @@ export class Library {
     // commits carry this machine's own git identity: a made-up address is not a member of the user's GitHub or Vercel
     // team, and Vercel refuses to build such a commit, so a branch that requires its checks never merges
     const id = p.sample ? { name: "archdraw sample", email: "sample@archdraw.dev" } : await this.identity(work)
+    if (p.sample) await git(work, ["config", "commit.gpgsign", "false"]) // the sample's commits are local and unsigned
     await git(work, ["config", "user.name", id.name])
     await git(work, ["config", "user.email", id.email])
     return work
@@ -341,7 +343,7 @@ export class Library {
     if (s.commitEmail) return { name: s.commitName || this.by, email: s.commitEmail }
     const get = async (key: string) => {
       for (const scope of ["--global", "--system"]) {
-        const v = (await git(cwd, ["config", scope, "--get", key], { ok: [1, 128] })).stdout.trim()
+        const v = (await git(cwd, ["config", scope, "--includes", "--get", key], { ok: [1, 128] })).stdout.trim()
         if (v) return v
       }
       return ""
@@ -593,7 +595,7 @@ export class Library {
   /**
    * Publish the waiting update — exactly the head the user reviewed (`expectedHead`; an update that changed since is
    * refused): merge its pull request at that commit, or push it onto the branch when the project
-   * publishes directly. When the branch moved meanwhile, it is merged into the update first (F11).
+   * publishes directly. When the branch moved meanwhile, it is merged into the update first.
    */
   async approve(slug: string, expectedHead?: string): Promise<{ published: string }> {
     const p = this.get(slug)

@@ -4,6 +4,8 @@ The desktop app runs archdraw's server inside the app. You can also run the same
 
 ## Build and start
 
+You need Node 22.19 or later, [Bun](https://bun.sh) (for the UI's lockfile) and git; the GitHub CLI signed in (`gh auth login`) to open pull requests.
+
 ```sh
 git clone https://github.com/safiware/archdraw && cd archdraw
 cd engine && npm ci && npm run build && cd ../app
@@ -20,8 +22,8 @@ The server listens on `127.0.0.1` only. To reach it from other devices, put it b
 | `ARCHDRAW_GATE` | Who gets in |
 |---|---|
 | `token` | Anyone with the sign-in link, from this machine (the Host must be the loopback address). |
-| `tailnet` | One Tailscale user, through Tailscale Serve, from their own devices. Set `ARCHDRAW_PRINCIPAL` to their Tailscale login (the server refuses to start without it). `ARCHDRAW_DENY_NODES` lists machines to refuse even when signed in as that user, such as a build box that runs agents. Linux only (it checks the socket owner in `/proc`). |
-| `local` | This machine's own user, for development and tests. |
+| `tailnet` | One Tailscale user, through Tailscale Serve, from their own devices. Set `ARCHDRAW_PRINCIPAL` to their Tailscale login (the server refuses to start without it). `ARCHDRAW_DENY_NODES` lists machines (their short Tailscale names, comma-separated, matched exactly) to refuse even when signed in as that user, such as a build box that runs agents. `ARCHDRAW_ALLOW_LOCAL=1` also admits this machine's own user on loopback. Linux only (it checks the socket owner in `/proc`). |
+| `local` | This machine's own user, for development and tests. Linux only. |
 
 ## Settings
 
@@ -52,4 +54,4 @@ Restart=always
 WantedBy=default.target
 ```
 
-Then `systemctl --user enable --now archdraw` and `tailscale serve --bg --https=443 http://127.0.0.1:8088`.
+Then `systemctl --user enable --now archdraw`, `loginctl enable-linger $USER` so it keeps running after you log out, and `tailscale serve --bg --https=443 http://127.0.0.1:8088`.

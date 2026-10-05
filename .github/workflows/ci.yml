@@ -54,7 +54,8 @@ jobs:
         working-directory: app
         env:
           CSC_IDENTITY_AUTO_DISCOVERY: "false"
-        run: npx electron-builder --mac --arm64 --publish never -c.mac.identity=-
+          CSC_FOR_PULL_REQUEST: "true" # this job holds no secrets; without it a pull request build is not signed at all
+        run: npx electron-builder --mac --publish never -c.mac.identity=-
       - name: launch check (Linux)
         if: runner.os == 'Linux'
         working-directory: app

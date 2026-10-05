@@ -6,7 +6,6 @@
 // followed, and refused outside the root; `.git/` internals, `.env*`, keys and other secret-looking files are never
 // read, nor anything the project's settings ignore. Output is capped so one call cannot flood the context.
 
-import { spawnSync } from "node:child_process"
 import { existsSync, lstatSync, readdirSync, readFileSync, realpathSync, statSync } from "node:fs"
 import { join, relative, resolve, sep } from "node:path"
 import type { AgentTool, AgentToolResult } from "@earendil-works/pi-agent-core"
@@ -80,15 +79,23 @@ export class Jail {
     if (existsSync(abs)) real = realpathSync(abs)
     if (real !== this.root && !real.startsWith(this.root + sep)) throw new Error(`${p} is outside the project`)
     const rel = relative(this.root, real)
-    if (this.refused(rel) || (rel && this.gitIgnored([rel]).size)) throw new Error(`${p} is not readable here (secrets, git internals and ignored paths are never read)`)
+    if (this.refused(rel)) throw new Error(`${p} is not readable here (secrets, git internals and ignored paths are never read)`)
+    return real
+  }
+  /** `path`, and also refused when the project's .gitignore excludes it. */
+  async open(p: string): Promise<string> {
+    const real = this.path(p)
+    const rel = relative(this.root, real)
+    if (rel && (await this.gitIgnored([rel])).size) throw new Error(`${p} is not readable here (secrets, git internals and ignored paths are never read)`)
     return real
   }
   /** Which of these paths (relative to the root) the project's .gitignore excludes; none when it is not a git repo. */
-  gitIgnored(rels: string[]): Set<string> {
+  async gitIgnored(rels: string[]): Promise<Set<string>> {
     if (!rels.length) return new Set()
-    const r = spawnSync("git", ["-c", "core.fsmonitor=false", "-C", this.root, "check-ignore", "--stdin", "-z"], { input: rels.join("\0") + "\0", encoding: "utf8", timeout: 10_000 })
-    if (r.status !== 0 || !r.stdout) return new Set() // 1: nothing ignored; 128: not a repo
-    return new Set(r.stdout.split("\0").filter(Boolean))
+    // "./" first: a file named like pathspec magic (":(x)") is then just a name, not a pathspec that fails the batch
+    const r = await git(this.root, ["check-ignore", "--stdin", "-z"], { input: rels.map(x => "./" + x).join("\0") + "\0", ok: [1, 128] })
+    if (r.code !== 0 || !r.stdout) return new Set() // 1: nothing ignored; 128: not a repo
+    return new Set(r.stdout.split("\0").filter(Boolean).map(x => x.replace(/^\.\//, "")))
   }
   refused(rel: string): boolean {
     const low = rel.toLowerCase()
@@ -121,10 +128,10 @@ export function makeTools(ctx: ToolContext): AgentTool[] {
     description: "List a folder of the project (relative to its root; '' for the root). Folders end with '/'.",
     parameters: Type.Object({ path: Type.String({ description: "folder path relative to the project root" }) }),
     execute: async (_id, p) => {
-      const dir = jail.path(p.path || ".")
+      const dir = await jail.open(p.path || ".")
       if (!statSync(dir).isDirectory()) throw new Error(`${p.path} is not a folder`)
       const names = readdirSync(dir).filter(n => !jail.refused(relative(jail.root, join(dir, n))))
-      const ignored = jail.gitIgnored(names.map(n => relative(jail.root, join(dir, n))))
+      const ignored = await jail.gitIgnored(names.map(n => relative(jail.root, join(dir, n))))
       const rows = names
         .filter(n => !ignored.has(relative(jail.root, join(dir, n))))
         .slice(0, 400)
@@ -139,7 +146,7 @@ export function makeTools(ctx: ToolContext): AgentTool[] {
     description: "Read a text file of the project, optionally from a line (1-based) for a number of lines.",
     parameters: Type.Object({ path: Type.String(), from: Type.Optional(Type.Number()), lines: Type.Optional(Type.Number()) }),
     execute: async (_id, p) => {
-      const file = jail.path(p.path)
+      const file = await jail.open(p.path)
       const st = statSync(file)
       if (!st.isFile()) throw new Error(`${p.path} is not a file`) // a pipe or device would block the read
       if (st.size > 2_000_000) throw new Error(`${p.path} is too large to read`)

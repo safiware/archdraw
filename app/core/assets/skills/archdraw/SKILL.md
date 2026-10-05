@@ -53,9 +53,9 @@ you could not express.
   `#` comments, `a -> b: text`. `-->` is fine (the same as `->`).
 - **Exactly one unplaced node.** Every other node says where it goes, against a sibling.
 - **Every file starts** with `// title:` and `// summary:` lines, then the house style block verbatim.
-- **Theme colors only, through the house styles.** The studio sets the theme itself and overrides `diagram theme:`;
+- **Theme colors only, through the house styles.** archdraw sets the theme itself and overrides `diagram theme:`;
   never write a `diagram` statement or a hex color.
-- **No file icons** (the studio refuses them); built-in icons only. Pasted SVG only when the user supplies it.
+- **No file icons** (archdraw refuses them); built-in icons only. Pasted SVG only when the user supplies it.
 - **Links** are `url: "#/<project>/<file>"`, lowercase letters, digits and dashes; any other form is dropped.
 - **One purpose per diagram, 8 to 25 boxes.** Split and link rather than cram.
 - **Zones are where things run; edge text is the mechanism; the arrow is who initiates.**

@@ -35,7 +35,8 @@ Run it:
 
 ```sh
 npm run build:all                      # the UI, the server bundle and the desktop bundle
-ARCHDRAW_GATE=local node dist/server.mjs   # the app in a browser at http://127.0.0.1:8088
+ARCHDRAW_GATE=token node dist/server.mjs  # prints a sign-in link for the app in a browser
+                                          # (ARCHDRAW_GATE=local also works on Linux)
 npx electron desktop/app/main.mjs      # or the desktop window
 ```
 
@@ -65,3 +66,5 @@ A maintainer reviews every pull request. We aim to answer within a week.
 ## Conduct
 
 Everyone taking part follows the [Code of Conduct](CODE_OF_CONDUCT.md).
+
+Maintainers: releasing is described in [docs/releasing.md](docs/releasing.md).

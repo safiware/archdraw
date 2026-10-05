@@ -79,7 +79,7 @@ node unit   icon: cube  right of dump
 node drive  "External HD"  badge: disk  right of unit
 ```
 
-A picture with no text shows none. In the studio, file icons are refused; use the built-ins.
+A picture with no text shows none. In archdraw, file icons are refused; use the built-ins.
 
 ### Colors name the part they color
 

@@ -2,7 +2,7 @@
 
 ## Install
 
-**macOS 13 or later.** Download the `.dmg` for your Mac (Apple Silicon or Intel) from [Releases](https://github.com/safiware/archdraw/releases/latest), open it and drag archdraw to Applications. Or use Homebrew: `brew install --cask safiware/tap/archdraw`.
+**macOS 13 or later.** Download the `.dmg` for your Mac (Apple Silicon or Intel) from [Releases](https://github.com/safiware/archdraw/releases/latest), open it and drag archdraw to Applications.
 
 **Linux (x64).** On Debian and Ubuntu, install the `.deb` (`sudo apt install ./archdraw-*.deb`). Elsewhere, use the `.AppImage`: make it executable and run it. On Ubuntu 24.04 and later the AppImage can fail to start because of the system's sandbox rules; use the `.deb` there.
 
@@ -31,7 +31,7 @@ Each diagram is a card on the canvas. Double-click a card to fly in; a box with 
 
 Diagrams are files in the repo's `.archdraw/` folder: `<name>.archdraw` for the diagram, `<name>.md` for its explanation, and `order.json` for the reading order. The language is described in [engine/SYNTAX.md](../engine/SYNTAX.md).
 
-The "…" beside a diagram renames, duplicates, archives or deletes it. Deleted diagrams stay in Archive and trash for 30 days.
+The "…" beside a diagram renames, duplicates, archives or deletes it. Archived diagrams stay in Archive and trash until you bring them back; deleted ones can be restored from there for 30 days.
 
 ## The agent
 

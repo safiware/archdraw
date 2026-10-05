@@ -92,6 +92,7 @@ describe("the agent", () => {
     writeFileSync(join(root, ".gitignore"), "build/\n")
     mkdirSync(join(root, "build"))
     writeFileSync(join(root, "build", "bundle.js"), "// generated\n")
+    writeFileSync(join(root, ":(x)"), "a file named like pathspec magic\n")
     writeFileSync(join(root, "config", "secrets", "prod.yml"), "password: hunter2\n")
     writeFileSync(join(root, "app.ts"), "export const ok = 2 // hunter2 is not a secret here\n")
     sh("add", "-A")
@@ -112,7 +113,9 @@ describe("the agent", () => {
     expect(await run("read", { path: ".envrc" })).toMatch(/^refused/)
     expect(await run("read", { path: "infra.tfstate" })).toMatch(/^refused/)
     expect(await run("read", { path: "build/bundle.js" })).toMatch(/^refused/) // .gitignore'd
-    expect(await run("list", { path: "" })).not.toContain("build/")
+    const listed = await run("list", { path: "" })
+    expect(listed).not.toContain("build/")
+    expect(listed).toContain(":(x)") // an odd name neither breaks the batch nor hides the rest
     const found = await run("grep", { pattern: "hunter2" })
     expect(found).toContain("app.ts")
     expect(found).not.toContain("providers.env")
