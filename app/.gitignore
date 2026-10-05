@@ -1,0 +1,13 @@
+.venv/
+ui/node_modules/
+ui/dist/
+*.tsbuildinfo
+__pycache__/
+.pytest_cache/
+.ruff_cache/
+node_modules/
+dist/
+build/
+release/
+desktop/app/
+release/

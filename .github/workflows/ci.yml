@@ -1,0 +1,93 @@
+# Every pull request and every push to main: type-check, unit tests, the browser and desktop end-to-end tests, the
+# Linux packages and a launch check of the packaged app (it starts, serves its page, quits). Run by hand, it also builds
+# and launch-checks the macOS app. scripts/ci-local.sh runs the same Linux steps on a developer's machine first.
+name: ci
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  test:
+    strategy:
+      fail-fast: false
+      matrix:
+        # macOS minutes cost ten times Linux minutes on a private repo: pull requests and pushes run Linux; the macOS
+        # job runs when started by hand (Actions › ci › Run workflow) and on every release (release.yml)
+        os: ${{ github.event_name == 'workflow_dispatch' && fromJSON('["ubuntu-22.04","macos-15"]') || fromJSON('["ubuntu-22.04"]') }}
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 24
+      - uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
+      - name: engine
+        working-directory: engine
+        run: npm ci && npm run build
+      - name: app dependencies
+        working-directory: app
+        run: npm ci && cd ui && bun install --frozen-lockfile
+      - name: type-check
+        working-directory: app
+        run: npx tsc -p tsconfig.json --noEmit && cd ui && npx tsc -b
+      - name: unit tests
+        working-directory: app
+        run: npx vitest run && cd ui && npx vitest run
+      - name: build
+        working-directory: app
+        run: npm run build:all
+      - name: browser end-to-end (Linux)
+        if: runner.os == 'Linux'
+        working-directory: app
+        env:
+          E2E_OUT: ${{ runner.temp }}/e2e # a failing step leaves its screenshot here
+        run: |
+          mkdir -p "$E2E_OUT"
+          git --version
+          npx playwright-core install --with-deps chromium
+          npx tsx e2e/app.e2e.ts
+          npx tsx e2e/tour.e2e.ts
+      - name: keep the end-to-end screenshots of a failure
+        if: failure() && runner.os == 'Linux'
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: e2e-failure
+          path: ${{ runner.temp }}/e2e
+          retention-days: 7
+      - name: package (Linux)
+        if: runner.os == 'Linux'
+        working-directory: app
+        run: npx electron-builder --linux --publish never
+      - name: package (macOS, ad hoc signature)
+        if: runner.os == 'macOS'
+        working-directory: app
+        env:
+          CSC_IDENTITY_AUTO_DISCOVERY: "false"
+          CSC_FOR_PULL_REQUEST: "true" # this job holds no secrets; without it a pull request build is not signed at all
+        run: npx electron-builder --mac --publish never -c.mac.identity=-
+      - name: launch check (Linux)
+        if: runner.os == 'Linux'
+        working-directory: app
+        run: ARCHDRAW_SMOKE=1 ARCHDRAW_NO_UPDATE=1 timeout 120 xvfb-run -a release/linux-unpacked/archdraw --no-sandbox --user-data-dir="$RUNNER_TEMP/archdraw-smoke"
+      - name: desktop end-to-end (Linux)
+        if: runner.os == 'Linux'
+        working-directory: app
+        run: node node_modules/electron/install.js && xvfb-run -a npx tsx e2e/desktop.e2e.ts
+      - name: launch check (macOS)
+        if: runner.os == 'macOS'
+        working-directory: app
+        run: ARCHDRAW_SMOKE=1 ARCHDRAW_NO_UPDATE=1 perl -e 'alarm 120; exec @ARGV' release/mac-arm64/archdraw.app/Contents/MacOS/archdraw
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: archdraw-${{ runner.os }}
+          path: |
+            app/release/*.AppImage
+            app/release/*.deb
+            app/release/*.dmg
+          retention-days: 7

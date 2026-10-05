@@ -1,0 +1,50 @@
+# archdraw's desktop packages: macOS (dmg for people, zip for the updater; Apple Silicon and Intel) and Linux
+# (AppImage, which updates itself, and deb). Releases are signed and notarized by the release workflow, which supplies
+# the Developer ID certificate and turns notarization on; CI builds for pull requests are signed ad hoc (-c.mac.identity=-).
+appId: com.safiware.archdraw
+productName: archdraw
+copyright: Copyright © 2026 Safiware
+directories:
+  app: desktop/app
+  output: release
+  buildResources: desktop
+electronVersion: 44.5.1
+asar: true
+files:
+  - "**/*"
+  - "!**/*.map"
+  - "!node_modules/**" # main.mjs is bundled; nothing else is needed at run time
+extraResources:
+  - { from: ui/dist, to: ui }
+  - { from: core/assets, to: assets }
+  - { from: desktop/icon.png, to: icon.png }
+  - { from: ../LICENSE, to: licenses/LICENSE }
+  - { from: ../NOTICE, to: licenses/NOTICE }
+  - { from: desktop/app/THIRD_PARTY_NOTICES.txt, to: licenses/THIRD_PARTY_NOTICES.txt }
+publish:
+  - provider: github
+    owner: safiware
+    repo: archdraw
+    releaseType: draft
+linux:
+  syncDesktopName: true
+  target: [AppImage, deb]
+  category: Development
+  icon: desktop/icon.png
+  maintainer: Safiware <hello@archdraw.dev>
+  synopsis: Architecture diagrams for code repos, kept current from git
+mac:
+  target:
+    - { target: dmg, arch: [arm64, x64] }
+    - { target: zip, arch: [arm64, x64] } # the updater reads the zip
+  category: public.app-category.developer-tools
+  icon: desktop/icon.png
+  hardenedRuntime: true
+  minimumSystemVersion: "13.0" # Electron 44's floor
+  notarize: false # the release workflow passes -c.mac.notarize=true with Apple's API key
+dmg:
+  title: archdraw ${version}
+deb:
+  # electron-builder's own list (replaced, not extended, by this setting) plus git
+  depends: [libgtk-3-0, libnotify4, libnss3, libxss1, libxtst6, xdg-utils, libatspi2.0-0, libuuid1, libsecret-1-0, git]
+artifactName: "${productName}-${version}-${arch}.${ext}"

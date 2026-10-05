@@ -1,0 +1,46 @@
+{
+  "name": "@archdraw/engine",
+  "version": "0.16.0",
+  "description": "archdraw's diagram engine: reladraw 0.16.0 (https://github.com/reladraw/reladraw) by Joe Walsh, source unmodified, under the Apache License 2.0.",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "keywords": [
+    "diagram",
+    "diagrams",
+    "diagramming",
+    "svg",
+    "layout",
+    "dsl",
+    "text-to-diagram",
+    "cli"
+  ],
+  "homepage": "https://archdraw.dev",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/safiware/archdraw.git",
+    "directory": "engine"
+  },
+  "bugs": {
+    "url": "https://github.com/safiware/archdraw/issues"
+  },
+  "scripts": {
+    "build": "tsc && tsc -p tsconfig.element.json",
+    "dev": "tsc --watch",
+    "example": "npm run build && node dist/cli.js examples/arch.reladraw -o examples/out/arch.svg"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "license": "Apache-2.0",
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "typescript": "^5.6.0"
+  },
+  "author": "Joe Walsh <jpwalsh234@gmail.com>",
+  "private": true,
+  "files": [
+    "dist",
+    "NOTICE"
+  ]
+}

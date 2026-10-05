@@ -1,0 +1,29 @@
+name: Bug report
+description: Something in archdraw does not work as it should.
+labels: [bug]
+body:
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened
+      description: The steps you took and what you saw. A screenshot helps.
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: What you expected
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Version and system
+      description: For example "archdraw 0.1.0 · macOS 15 on Apple Silicon". Help › Report a problem fills this in.
+    validations:
+      required: true
+  - type: dropdown
+    id: provider
+    attributes:
+      label: AI provider, if the agent is involved
+      options: ["Not involved", OpenAI, Anthropic, Google, OpenRouter]

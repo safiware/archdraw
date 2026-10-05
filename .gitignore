@@ -1,0 +1,13 @@
+node_modules/
+dist/
+build/
+release/
+*.log
+*.tsbuildinfo
+.DS_Store
+app/desktop/app/
+app/ui/dist/
+engine/examples/out/
+scratch/
+.env
+.env.*
