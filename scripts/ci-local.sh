@@ -51,6 +51,16 @@ step "desktop end-to-end"
 node node_modules/electron/install.js
 xvfb-run -a npx tsx e2e/desktop.e2e.ts
 step "Node 22.19.0, the lowest supported: type-check, unit tests, the server starts (CI's node-22 job)"
-npx -y -p node@22.19.0 -c 'set -e; node -v; npx tsc -p tsconfig.json --noEmit; (cd ui && npx tsc -b); npx vitest run; (cd ui && npx vitest run); ../scripts/server-smoke.sh'
+# the Node 22.19.0 binary from npm, first on PATH for each command (an npx inside `npx -c` inherits its -c and fails)
+node22="$(npx -y -p node@22.19.0 -c 'dirname "$(command -v node)"')"
+(
+  export PATH="$node22:$PATH"
+  node -v
+  npx tsc -p tsconfig.json --noEmit
+  (cd ui && npx tsc -b)
+  npx vitest run
+  (cd ui && npx vitest run)
+  ../scripts/server-smoke.sh
+)
 echo; echo "ci-local: all steps passed"
 [ "${1:-}" = "--keep" ] || rm -rf "$work"
