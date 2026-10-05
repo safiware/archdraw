@@ -22,8 +22,8 @@ import { makeTools, type Proposal } from "./tools.js"
 
 export type SyncResult =
   | { project: string; outcome: "unchanged"; checkedThrough: string }
-  | { project: string; outcome: "no-architecture-change"; checkedThrough: string; commits: number; why: string }
-  | { project: string; outcome: "drafted"; checkedThrough: string; commits: number; why: string; files: string[]; headline: string }
+  | { project: string; outcome: "no-architecture-change"; checkedThrough: string; commits: number; why: string; note?: string }
+  | { project: string; outcome: "drafted"; checkedThrough: string; commits: number; why: string; files: string[]; headline: string; note?: string }
   | { project: string; outcome: "skipped"; reason: string }
   | { project: string; outcome: "failed"; reason: string; checkedThrough: string }
 
@@ -98,6 +98,12 @@ export class Syncer {
       this.last[slug] = { ...r, at: Date.now() }
       this.d.log?.(`sync ${slug}: ${r.outcome}`)
       return r
+    } catch (e) {
+      // a check that threw is shown where a scheduled result is read (the Inbox), not only to a "Sync now" click
+      const reason = String((e as Error).message ?? e).slice(0, 300)
+      this.last[slug] = { project: slug, outcome: "skipped", reason, at: Date.now() }
+      this.d.log?.(`sync ${slug}: skipped: ${reason}`)
+      throw e
     } finally {
       // a check that threw (no key yet, the network) still counts as run, so the schedule waits instead of retrying
       // every minute
@@ -147,10 +153,10 @@ export class Syncer {
         outlines.push(`## ${f.name}\n(unreadable)`)
       }
     }
-    const verdict = files.length === 0 ? { changed: false, why: "the project has no diagrams yet; draft the first ones from the project page", touches: [] as string[] } : await this.triage(slug, commits, outlines)
+    const verdict = files.length === 0 ? { changed: false, why: "the project has no diagrams yet; draft the first ones from the project page", touches: [] as string[], note: "" } : await this.triage(slug, commits, outlines)
     if (!verdict.changed) {
       this.mark(slug, base)
-      return { project: slug, outcome: "no-architecture-change", checkedThrough: base, commits: commits.length, why: verdict.why }
+      return { project: slug, outcome: "no-architecture-change", checkedThrough: base, commits: commits.length, why: verdict.why, ...(verdict.note ? { note: verdict.note } : {}) }
     }
     const range = through ? `${through.slice(0, 12)}..${base.slice(0, 12)}` : base.slice(0, 12)
     const written: string[] = []
@@ -179,8 +185,9 @@ export class Syncer {
     }
     this.mark(slug, base)
     const note = kept.length ? ` (kept your edits to ${kept.join(", ")})` : ""
-    if (written.length === 0) return { project: slug, outcome: "no-architecture-change", checkedThrough: base, commits: commits.length, why: `${verdict.why} (the draft changed no diagram)${note}` }
-    return { project: slug, outcome: "drafted", checkedThrough: base, commits: commits.length, why: verdict.why + note, files: written, headline: verdict.why }
+    const cut = verdict.note ? { note: verdict.note } : {}
+    if (written.length === 0) return { project: slug, outcome: "no-architecture-change", checkedThrough: base, commits: commits.length, why: `${verdict.why} (the draft changed no diagram)${note}`, ...cut }
+    return { project: slug, outcome: "drafted", checkedThrough: base, commits: commits.length, why: verdict.why + note, files: written, headline: verdict.why, ...cut }
   }
 
   private mark(slug: string, sha: string) {
@@ -191,7 +198,7 @@ export class Syncer {
     })
   }
 
-  private async triage(slug: string, commits: Commit[], outlines: string[]): Promise<{ changed: boolean; why: string; touches: string[] }> {
+  private async triage(slug: string, commits: Commit[], outlines: string[]): Promise<{ changed: boolean; why: string; touches: string[]; note: string }> {
     const { store, keys, models, spend } = this.d
     const s = store.settingsFor(slug)
     const key = keys.get(s.provider)
@@ -220,8 +227,9 @@ export class Syncer {
       // (never recorded as "no architecture change", which would let the drawing drift in silence)
       throw new AppError(502, `the change check's answer could not be read, so these commits stay unchecked and are checked again next time: ${text.slice(0, 120)}`)
     }
-    const why = (String(j.why ?? "").slice(0, 300) || (j.changed ? "the architecture changed" : "no architecture change")) + (cut.length ? ` (checked ${cut.join(" and ")})` : "")
-    return { changed: j.changed, why, touches: Array.isArray(j.touches) ? j.touches.map(String) : [] }
+    // the cut is reported beside the verdict, never inside it: `why` becomes the update's commit message and headline
+    const why = String(j.why ?? "").slice(0, 300) || (j.changed ? "the architecture changed" : "no architecture change")
+    return { changed: j.changed, why, touches: Array.isArray(j.touches) ? j.touches.map(String) : [], note: cut.length ? `checked ${cut.join(" and ")}` : "" }
   }
 
   private async draft(slug: string, commits: Commit[], range: string, verdict: { why: string; touches: string[] }): Promise<Proposal[]> {

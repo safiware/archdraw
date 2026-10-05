@@ -88,9 +88,20 @@ describe("the sync", () => {
     w.faux.setResponses([fauxAssistantMessage([fauxText("Sorry, I could not decide.")])])
     await expect(w.syncer.sync("shop")).rejects.toMatchObject({ status: 502 })
     expect(w.store.project("shop")!.checkedThrough).toBe(before) // not marked as checked
+    // and said where a scheduled check's result is read (the Inbox), not only to a "Sync now" click
+    expect(w.syncer.last.shop).toMatchObject({ outcome: "skipped", reason: expect.stringMatching(/could not be read/) })
     // the next check looks at the same commit again
     w.faux.setResponses([fauxAssistantMessage([fauxText('{"changed": false, "why": "a rename", "touches": []}')])])
     expect(await w.syncer.sync("shop")).toMatchObject({ outcome: "no-architecture-change", commits: 1, why: "a rename" })
+  })
+
+  it("a check that saw only part of the commits says so beside the verdict, not inside it", async () => {
+    const w = world()
+    await w.lib.addRepo(w.origin, { slug: "shop" })
+    await w.syncer.sync("shop")
+    for (let n = 0; n < 61; n++) w.push(`src/f${n}.ts`, `export const f = ${n}\n`, `chore: f${n}`)
+    w.faux.setResponses([fauxAssistantMessage([fauxText('{"changed": false, "why": "small files", "touches": []}')])])
+    expect(await w.syncer.sync("shop")).toMatchObject({ outcome: "no-architecture-change", commits: 61, why: "small files", note: "checked the first 60 of 61 commits" })
   })
 
   it("a second device sees the update already covers main and does not draft again", async () => {
