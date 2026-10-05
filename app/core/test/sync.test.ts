@@ -79,6 +79,20 @@ describe("the sync", () => {
     expect(await w.syncer.sync("shop")).toMatchObject({ outcome: "unchanged" })
   })
 
+  it("an unreadable change check leaves the commits unchecked instead of calling them no change", async () => {
+    const w = world()
+    await w.lib.addRepo(w.origin, { slug: "shop" })
+    await w.syncer.sync("shop")
+    const before = w.store.project("shop")!.checkedThrough
+    w.push("src/queue.ts", "export const queue = new Queue('jobs')\n", "feat: jobs queue")
+    w.faux.setResponses([fauxAssistantMessage([fauxText("Sorry, I could not decide.")])])
+    await expect(w.syncer.sync("shop")).rejects.toMatchObject({ status: 502 })
+    expect(w.store.project("shop")!.checkedThrough).toBe(before) // not marked as checked
+    // the next check looks at the same commit again
+    w.faux.setResponses([fauxAssistantMessage([fauxText('{"changed": false, "why": "a rename", "touches": []}')])])
+    expect(await w.syncer.sync("shop")).toMatchObject({ outcome: "no-architecture-change", commits: 1, why: "a rename" })
+  })
+
   it("a second device sees the update already covers main and does not draft again", async () => {
     const w = world()
     await w.lib.addRepo(w.origin, { slug: "shop" })

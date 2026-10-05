@@ -197,22 +197,31 @@ export class Syncer {
     const key = keys.get(s.provider)
     if (!key) throw new AppError(412, `no ${s.provider} key: add it in Settings`)
     const model = pickModel(models, s.provider, s.triageModel, "triage")
+    // what the model cannot see is said, not dropped silently: the verdict names the cut
+    const shown = Math.min(commits.length, 60)
+    const joined = outlines.join("\n\n")
+    const cut = [shown < commits.length ? `the first ${shown} of ${commits.length} commits` : "", joined.length > 12_000 ? "part of the diagram outlines" : ""].filter(Boolean)
     const listing = commits
       .slice(0, 60)
       .map(c => `- ${c.sha.slice(0, 8)} ${c.subject}\n  ${c.files.slice(0, 15).join(", ")}${c.files.length > 15 ? ` (+${c.files.length - 15})` : ""}`)
       .join("\n")
     const msg = await models.completeSimple(model, {
       systemPrompt: TRIAGE,
-      messages: [{ role: "user", content: `# The diagrams now\n\n${outlines.join("\n\n").slice(0, 12_000)}\n\n# New commits (${commits.length})\n\n${listing}`, timestamp: Date.now() }],
+      messages: [{ role: "user", content: `# The diagrams now\n\n${joined.slice(0, 12_000)}\n\n# New commits (${commits.length}${shown < commits.length ? `, the first ${shown} shown` : ""})\n\n${listing}`, timestamp: Date.now() }],
     } as any, { apiKey: key } as any)
     spend.add(slug, Number((msg as any).usage?.cost?.total) || 0)
     const text = ((msg as any).content ?? []).filter((c: any) => c.type === "text").map((c: any) => c.text).join("")
+    let j: { changed?: unknown; why?: unknown; touches?: unknown }
     try {
-      const j = JSON.parse(text.slice(text.indexOf("{"), text.lastIndexOf("}") + 1))
-      return { changed: !!j.changed, why: String(j.why ?? "").slice(0, 300) || "the architecture changed", touches: Array.isArray(j.touches) ? j.touches.map(String) : [] }
+      j = JSON.parse(text.slice(text.indexOf("{"), text.lastIndexOf("}") + 1))
+      if (typeof j !== "object" || j === null || typeof j.changed !== "boolean") throw new Error("no changed field")
     } catch {
-      return { changed: false, why: `the triage answer was not readable: ${text.slice(0, 120)}`, touches: [] }
+      // an answer that cannot be read is no verdict: the commits stay unchecked and the next check looks again
+      // (never recorded as "no architecture change", which would let the drawing drift in silence)
+      throw new AppError(502, `the change check's answer could not be read, so these commits stay unchecked and are checked again next time: ${text.slice(0, 120)}`)
     }
+    const why = (String(j.why ?? "").slice(0, 300) || (j.changed ? "the architecture changed" : "no architecture change")) + (cut.length ? ` (checked ${cut.join(" and ")})` : "")
+    return { changed: j.changed, why, touches: Array.isArray(j.touches) ? j.touches.map(String) : [] }
   }
 
   private async draft(slug: string, commits: Commit[], range: string, verdict: { why: string; touches: string[] }): Promise<Proposal[]> {
