@@ -1148,16 +1148,15 @@ kbd {
 }
 
 /* ---- first run: what the machine is missing, and the keep-current choices ------------------------------------ */
+/* what this machine is missing: a note above the sidebar's footer, never over the canvas or its toolbar */
 .ad-doctor {
-  position: relative;
-  z-index: 25;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 8px 12px;
-  border-bottom: 1px solid var(--line);
-  background: color-mix(in srgb, var(--chg) 12%, var(--panel));
-  font-size: 13px;
+  margin: 8px;
+  padding: 10px 12px;
+  border: 1px solid color-mix(in srgb, var(--chg) 45%, var(--line));
+  border-radius: 10px;
+  background: color-mix(in srgb, var(--chg) 10%, var(--panel));
+  font-size: 12px;
+  line-height: 1.45;
 }
 .ad-doctor code,
 .ad-dialog code {

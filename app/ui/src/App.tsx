@@ -637,6 +637,34 @@ export default function App() {
             </details>
           )}
         </nav>
+        {doctor && !doctorHidden && (!doctor.git || !doctor.gh.signedIn) && (
+          <div className="ad-doctor" role="status" data-testid="doctor">
+            <div className="flex items-start gap-2">
+              <span className="min-w-0 flex-1">
+                {!doctor.git ? (
+                  <>
+                    archdraw needs git. On a Mac run <code>xcode-select --install</code>; on Linux install the <code>git</code> package, then restart archdraw.
+                  </>
+                ) : !doctor.gh.installed ? (
+                  <>
+                    To open pull requests, install the{" "}
+                    <a href="https://cli.github.com" target="_blank" rel="noopener noreferrer">
+                      GitHub CLI
+                    </a>{" "}
+                    and run <code>gh auth login</code>. Or set Settings › Approving an update to push straight to the branch.
+                  </>
+                ) : (
+                  <>
+                    Run <code>gh auth login</code> in a terminal so archdraw can open pull requests and reach private repos.
+                  </>
+                )}
+              </span>
+              <button type="button" className="text-[var(--muted)] hover:text-[var(--text)]" onClick={() => setDoctorHidden(true)} aria-label="Dismiss">
+                ✕
+              </button>
+            </div>
+          </div>
+        )}
         <div className="ad-foot flex items-center gap-1 border-t border-[var(--line)] px-2 py-2">
           {project && (
             <button type="button" className="ad-icon-btn" onClick={() => setDialog({ kind: "trash" })} aria-label="Archive and trash" data-tip="Archive and trash" data-testid="open-trash">
@@ -655,32 +683,6 @@ export default function App() {
       {menu && <div className="fixed inset-0 z-10 bg-black/30 md:hidden" onClick={() => setMenu(false)} />}
 
       <main className="relative min-w-0 flex-1">
-        {doctor && !doctorHidden && (!doctor.git || !doctor.gh.signedIn) && (
-          <div className="ad-doctor" role="status" data-testid="doctor">
-            <span className="min-w-0 flex-1">
-              {!doctor.git ? (
-                <>
-                  archdraw needs git. On a Mac run <code>xcode-select --install</code>; on Linux install the <code>git</code> package. Then restart archdraw.
-                </>
-              ) : !doctor.gh.installed ? (
-                <>
-                  To open and merge pull requests, install the GitHub CLI from{" "}
-                  <a href="https://cli.github.com" target="_blank" rel="noopener noreferrer">
-                    cli.github.com
-                  </a>{" "}
-                  and run <code>gh auth login</code>. Without it, set Settings › Approving an update to push straight to the branch.
-                </>
-              ) : (
-                <>
-                  Sign the GitHub CLI in: run <code>gh auth login</code> in a terminal, so archdraw can open pull requests and reach private repos.
-                </>
-              )}
-            </span>
-            <button type="button" className="ad-btn ad-btn-quiet" onClick={() => setDoctorHidden(true)} aria-label="Dismiss">
-              ✕
-            </button>
-          </div>
-        )}
         {route.inbox ? (
           <div className="h-full overflow-y-auto">
             <div className="flex items-center gap-2 px-3 py-2 md:hidden">
