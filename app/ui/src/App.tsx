@@ -5,7 +5,7 @@ import { ChatPanel } from "./Chat"
 import { ConnectDialog, Confirm, ExportDialog, IdentityDialog, KeepCurrentDialog, NameDialog, SettingsDialog, TrashDialog } from "./Dialogs"
 import { Inbox } from "./Inbox"
 import { Menu } from "./Menu"
-import { ApiError, api, type Doctor, hashFor, type SettingsView, inboxHash, meta, parseHash, type FileMeta, type Project } from "./model"
+import { ApiError, api, type Doctor, hashFor, syncNotice, type SettingsView, inboxHash, meta, parseHash, type FileMeta, type Project } from "./model"
 import { Palette } from "./Palette"
 import { renderSource } from "./render"
 import { StartScreen, Tour, tourEvent, type TourState } from "./Tour"
@@ -536,15 +536,7 @@ export default function App() {
               setNotice(`Checking ${p.title}…`)
               try {
                 const r = await api.sync(p.slug)
-                setNotice(
-                  r.outcome === "drafted"
-                    ? `${p.title}: an update is waiting in the Inbox${r.note ? ` (${r.note})` : ""}`
-                    : r.outcome === "skipped"
-                      ? `${p.title}: ${r.reason}`
-                      : r.outcome === "failed"
-                        ? `${p.title}: the update could not be saved: ${r.reason}`
-                        : `${p.title}: up to date${r.note ? ` (${r.note})` : ""}`,
-                )
+                setNotice(syncNotice(p.title, r))
                 await reload()
               } catch (e) {
                 setNotice(e instanceof ApiError ? e.message : String(e))
