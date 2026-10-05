@@ -93,8 +93,10 @@ jobs:
           retention-days: 7
   node-22:
     # The lowest Node archdraw supports (app/package.json engines). The desktop app ships its own Node inside Electron;
-    # this proves a self-hosted server and a contributor's build still work on the oldest Node we promise.
+    # this proves a self-hosted server and a contributor's build still work on the oldest Node we promise. The type-check
+    # uses @types/node 24, so a Node 24-only function is caught here by the unit tests and the server start, at run time.
     runs-on: ubuntu-22.04
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
