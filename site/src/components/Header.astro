@@ -1,0 +1,25 @@
+---
+import Logo from './Logo.astro';
+interface Props { home?: boolean }
+const { home = true } = Astro.props;
+// On other pages the section links point back to the landing page.
+const base = home ? '' : '/';
+---
+<a class="skip" href="#main">Skip to content</a>
+<header class="top wrap">
+  <a class="brand" href="/" aria-label="archdraw home"><Logo /><span>archdraw</span></a>
+  <nav aria-label="Main">
+    <a href={`${base}#how`}>How it works</a><a href={`${base}#review`}>Review</a><a href={`${base}#private`}>Privacy</a><a href={`${base}#agents`}>For agents</a><a href="https://github.com/safiware/archdraw">GitHub</a>
+  </nav>
+  <div class="top-act">
+    <button class="theme-t" type="button" aria-label="Switch theme">
+      <svg class="i-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="4.5"/><path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M4.9 19.1l1.8-1.8M17.3 6.7l1.8-1.8"/></svg>
+      <svg class="i-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5Z"/></svg>
+    </button>
+    <a class="btn btn-lamp btn-sm" href={`${base}#get`}>Download</a>
+  </div>
+</header>
+<script>
+  import { initTheme } from '../scripts/theme';
+  initTheme();
+</script>

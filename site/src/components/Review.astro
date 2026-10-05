@@ -1,0 +1,102 @@
+---
+import Diagram from './Diagram.astro';
+import { BEFORE_LABEL, DIFF_LABEL } from '../lib/diagram';
+import { VB_AFTER } from '../lib/bean';
+---
+<section class="story" id="review" aria-labelledby="r-h">
+  <div class="wrap story-in">
+    <div class="story-copy">
+      <p class="eyebrow"><b>03</b> The moment of review</p>
+      <h2 class="sec-h" id="r-h">Review it in color.</h2>
+      <ol class="steps">
+        <li data-step="0"><h3>The code changes.</h3><p>Three changes land in one week.</p>
+          <ul class="commits">
+            <li class="commit who-you"><span class="av" aria-hidden="true">Y</span><span>Payments: accept Apple Pay <em>· you</em></span></li>
+            <li class="commit who-mate"><span class="av" aria-hidden="true">M</span><span>Orders: add Delivery partner API <em>· Maya</em></span></li>
+            <li class="commit who-agent"><span class="av" aria-hidden="true">AI</span><span>Remove the legacy fax intake <em>· coding agent</em></span></li>
+          </ul>
+        </li>
+        <li data-step="1"><h3>The drawing falls out of step.</h3><p>It still shows the fax line and a card-only checkout. On its next check, archdraw sees the difference.</p></li>
+        <li data-step="2"><h3>archdraw draws the update.</h3><p>One draft, marked on the real boxes. Green added, amber changed, red removed.</p></li>
+        <li data-step="3"><h3>You approve.</h3><p>See exactly what moved: Delivery partner added, Payments now takes Apple Pay, the fax line is gone. Approve, and the drawing is true again.</p></li>
+      </ol>
+    </div>
+    <div class="win">
+      <div class="win-bar"><span class="mono">bean-there / overview.archdraw</span><span class="pill warn" id="story-pill"><i></i><span id="story-pill-t">update drafted · 10:00</span></span></div>
+      <figure class="before-fig">
+        <figcaption>Before · what the drawing said</figcaption>
+        <div class="stage-scroll"><div class="stage"><Diagram mode="before" diff uid="sb" label={BEFORE_LABEL} /></div></div>
+      </figure>
+      <p class="after-cap">The update · marked in color</p>
+      <div class="stage-scroll"><div class="stage story-stage">
+        <svg class="pts" viewBox={VB_AFTER} aria-hidden="true"></svg>
+        <Diagram mode="story" diff uid="ss" label={DIFF_LABEL} />
+      </div></div>
+      <p class="swipe">Swipe to see the whole drawing.</p>
+      <ul class="legend" aria-label="What changed">
+        <li class="lg-add"><b aria-hidden="true">+</b>Delivery partner <span>API, added</span></li>
+        <li class="lg-add"><b aria-hidden="true">+</b>delivery orders <span>into Barista queue</span></li>
+        <li class="lg-chg"><b aria-hidden="true">~</b>Payments <span>card → card + Apple Pay</span></li>
+        <li class="lg-del"><b aria-hidden="true">−</b>Fax orders <span>legacy, removed</span></li>
+      </ul>
+      <div class="approve-row">
+        <button class="btn btn-approve ready" type="button" id="approve"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" aria-hidden="true"><path d="M4 12.5l5 5L20 6.5"/></svg><span>Approve update</span></button>
+        <span class="approve-status" id="approve-status" role="status">Waiting for your OK.</span>
+        <button class="reset" type="button" id="reset" hidden>Show it again</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style is:global>
+  .story { padding-block: clamp(64px, 10vh, 112px); background: var(--bg-2); }
+  .story-in { display: grid; grid-template-columns: minmax(0, 3.7fr) minmax(0, 7.3fr); gap: clamp(24px, 4vw, 56px); align-items: start; }
+  .steps { list-style: none; padding: 0; margin: 24px 0 0; display: grid; gap: 18px; }
+  .steps > li { padding-left: 18px; border-left: 3px solid var(--rule); transition: opacity .35s, border-color .35s; }
+  .steps h3 { font-size: 1.18rem; font-weight: 720; }
+  .steps p { color: var(--text-2); font-size: .98rem; margin-top: 4px; }
+  .commits { list-style: none; padding: 0; margin: 10px 0 0; display: grid; gap: 6px; }
+  .commit { display: grid; grid-template-columns: 22px minmax(0, 1fr); gap: 8px; align-items: center; font: .74rem/1.35 var(--f-mono); color: var(--text); }
+  .commit .av { width: 22px; height: 22px; border-radius: 6px; font-size: .6rem; }
+  .commit em { font-style: normal; color: var(--text-2); }
+  .is-pinned .story { padding: 0; }
+  .is-pinned .story-in { min-height: 100vh; align-items: center; padding-block: 28px; }
+  .is-pinned .steps > li { opacity: .5; }
+  .is-pinned .steps > li.on { opacity: 1; border-left-color: var(--signal); }
+  .is-pinned #review[data-step="0"] .legend, .is-pinned #review[data-step="1"] .legend { opacity: .3; }
+  .legend { transition: opacity .4s; }
+  .story .win { position: relative; }
+  .before-fig { margin: 0; padding: 12px 16px 4px; border-bottom: 1px dashed var(--rule); }
+  .before-fig figcaption, .after-cap { font: .68rem var(--f-mono); color: var(--text-2); text-transform: uppercase; letter-spacing: .05em; }
+  .before-fig .dg { max-width: 520px; margin: 6px auto 0; }
+  .is-pinned .before-fig { display: none; }
+  .after-cap { padding: 12px 16px 0; }
+  .is-pinned .after-cap { display: none; }
+  .story-stage { padding: 4px 14px 0; }
+  .dg.is-stale .nd-pay, .dg.is-stale .nd-fax { animation: flicker 1.9s steps(1) infinite; }
+  .dg.is-stale .stale-tags { opacity: 1; }
+  @keyframes flicker { 0% { opacity: 1; } 8% { opacity: .35; } 12% { opacity: .85; } 18% { opacity: .3; } 30% { opacity: .55; } 55% { opacity: .4; } 70% { opacity: .75; } 85% { opacity: .38; } }
+  .dg-story .r-fax { opacity: 0; }
+  .legend { list-style: none; margin: 0; padding: 10px 16px 4px; display: flex; flex-wrap: wrap; gap: 8px 16px; font: .74rem/1.4 var(--f-mono); }
+  .legend li { display: flex; gap: 8px; align-items: baseline; }
+  .legend b { width: 20px; height: 20px; border-radius: 50%; display: inline-grid; place-items: center; color: var(--on-diff); font: 700 .8rem var(--f-body); flex: none; align-self: center; }
+  .legend span { color: var(--text-2); }
+  .lg-add b { background: var(--add); } .lg-chg b { background: var(--chg); } .lg-del b { background: var(--del); }
+  .approve-row { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 18px; padding: 14px 16px 18px; border-top: 1px solid var(--rule); margin-top: 8px; }
+  .approve-status { font: .76rem var(--f-mono); color: var(--text-2); }
+  .btn-approve.ready { animation: ask 1.6s ease-in-out infinite; }
+  @keyframes ask { 50% { box-shadow: 0 4px 0 var(--shadow), 0 0 0 7px var(--add-soft); } }
+  .settled .rings { opacity: 0; transition: opacity .9s; }
+  .settled .dg .eg-add .edge { stroke: var(--dg-edge); stroke-width: 1.6; transition: stroke .9s, stroke-width .9s; }
+  .settled .dg .eg-add .lbl { fill: var(--dg-sub); font-weight: 400; }
+  .settled .dg .arr-add { fill: var(--dg-edge); }
+  .settled .legend li { opacity: .55; }
+  .settled .approve-status { color: var(--add); }
+  .reset { background: none; border: 0; color: var(--signal); font: 600 .9rem var(--f-body); text-decoration: underline; text-underline-offset: 3px; cursor: pointer; padding: 6px 2px; }
+  @media (max-width: 1023px) { .story-in { grid-template-columns: minmax(0, 1fr); } }
+</style>
+
+<script>
+  import { initReview } from '../scripts/review';
+  initReview();
+</script>

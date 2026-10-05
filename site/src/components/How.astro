@@ -1,0 +1,140 @@
+---
+// Section 2, from the Living blueprint direction, restyled into the Live system palette and type:
+// four connected step cards, each with a small working picture of the step.
+const elbow = '<svg class="elbow" viewBox="0 0 28 30" aria-hidden="true"><path class="el-l" d="M0 8H18V22"/><path class="el-h" d="M12.5 20.5L18 28L23.5 20.5Z"/></svg>';
+---
+<section class="band" id="how" aria-labelledby="h-h">
+  <div class="wrap">
+    <div class="how-head">
+      <div>
+        <p class="eyebrow"><b>02</b> How it works</p>
+        <h2 class="sec-h" id="h-h">Four steps. You stay in charge of every one.</h2>
+      </div>
+      <p class="how-lede">archdraw sits next to your code, reads it on a schedule you pick, and only changes the drawing when you say yes.</p>
+    </div>
+    <ol class="how-steps">
+      <li class="step">
+        <div class="step-n"><b>01</b><span>Open</span></div>
+        <div class="step-body">
+          <h3>Open your repo.</h3>
+          <p>Your diagrams live as small text files in it, next to the code.</p>
+          <div class="viz">
+            <div class="tree" role="img" aria-label="Example repo: bean-there with src, package.json and an .archdraw folder holding overview.archdraw">
+              <span class="tl">bean-there/</span>
+              <span class="tl"><i>├─</i>src/</span>
+              <span class="tl"><i>├─</i>package.json</span>
+              <span class="tl"><i>└─</i>.archdraw/</span>
+              <span class="tl"><i></i><i>├─</i><mark>overview.archdraw</mark></span>
+              <span class="tl"><i></i><i>└─</i>payments.archdraw</span>
+            </div>
+          </div>
+        </div>
+        <Fragment set:html={elbow} />
+      </li>
+      <li class="step">
+        <div class="step-n"><b>02</b><span>Ask</span></div>
+        <div class="step-body">
+          <h3>Ask for a drawing.</h3>
+          <p>archdraw reads the code and sketches the architecture. Nothing changes until you accept.</p>
+          <div class="viz sketch">
+            <svg viewBox="0 -8 220 66" aria-hidden="true"><path class="s-ln" d="M58 37H84"/><path class="s-ln" d="M136 37H162"/><path class="s-ln" d="M110 22V8"/><rect class="s-bx" x="6" y="22" width="52" height="30" rx="6"/><rect class="s-bx" x="84" y="22" width="52" height="30" rx="6"/><rect class="s-bx" x="162" y="22" width="52" height="30" rx="6"/><rect class="s-bx" x="92" y="-4" width="36" height="12" rx="4"/></svg>
+            <div class="mini-act" aria-hidden="true"><span class="mini go">Accept</span><span class="mini">Not now</span></div>
+          </div>
+        </div>
+        <Fragment set:html={elbow} />
+      </li>
+      <li class="step">
+        <div class="step-n"><b>03</b><span class="watching"><span class="live-dot" aria-hidden="true"></span>Watch</span></div>
+        <div class="step-body">
+          <h3>It keeps watch.</h3>
+          <p>Every hour or once a day, as you choose. When the code's shape changes, it drafts one update.</p>
+          <div class="viz">
+            <div class="seg" role="group" aria-label="How often archdraw checks">
+              <button type="button" aria-pressed="true" data-every="hour">Every hour</button><button type="button" aria-pressed="false" data-every="day">Once a day</button><button type="button" aria-pressed="false" data-every="ask">When I ask</button>
+            </div>
+            <div class="clock"><svg viewBox="0 0 46 46" aria-hidden="true"><circle class="c-face" cx="23" cy="23" r="20"/><path class="c-tick" d="M23 5v4M23 37v4M5 23h4M37 23h4"/><path class="c-hand" d="M23 23V10"/><circle class="c-pin" cx="23" cy="23" r="2.5"/></svg><span id="every-note" aria-live="polite">Next check in 40 minutes.</span></div>
+          </div>
+        </div>
+        <Fragment set:html={elbow} />
+      </li>
+      <li class="step">
+        <div class="step-n"><b>04</b><span>Approve</span></div>
+        <div class="step-body">
+          <h3>You review and approve.</h3>
+          <p>You see the change in color and approve it. It lands in your repo like any other change.</p>
+          <div class="viz">
+            <div class="chips"><span class="chip add">+2 added</span><span class="chip chg">~1 changed</span><span class="chip del">−1 removed</span></div>
+            <p class="lands">.archdraw/overview.archdraw<br />one pull request, merged when you approve</p>
+          </div>
+        </div>
+      </li>
+    </ol>
+  </div>
+</section>
+
+<style is:global>
+  .how-head { display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); gap: 20px 48px; align-items: end; }
+  .how-lede { font-size: clamp(1.02rem, 1.3vw, 1.15rem); color: var(--text-2); max-width: 34em; }
+  @media (max-width: 860px) { .how-head { grid-template-columns: minmax(0, 1fr); } }
+
+  .how-steps { list-style: none; padding: 0; margin: clamp(32px, 5vh, 56px) 0 0; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 34px; }
+  .step {
+    position: relative; display: flex; flex-direction: column; background: var(--panel);
+    border: 1.5px solid var(--rule); border-radius: 16px;
+    box-shadow: 0 6px 0 var(--rule), 0 0 0 1px rgba(124, 200, 255, calc(.05 * var(--glow-a))), 0 24px 60px -36px rgba(124, 200, 255, calc(.4 * var(--glow-a)));
+  }
+  .step-n { display: flex; justify-content: space-between; align-items: center; gap: 10px; padding: 10px 14px; border-bottom: 1.5px solid var(--rule); border-radius: 14.5px 14.5px 0 0; font: 600 .7rem/1 var(--f-mono); letter-spacing: .08em; text-transform: uppercase; }
+  .step-n b { font: 900 1.4rem/1 var(--f-display); font-stretch: 112.5%; letter-spacing: -0.02em; }
+  .step:nth-child(1) .step-n { background: var(--signal); color: var(--on-signal); border-bottom-color: var(--signal); }
+  .step:nth-child(2) .step-n { background: var(--lamp); color: var(--on-lamp); border-bottom-color: var(--lamp); }
+  .step:nth-child(3) .step-n { background: var(--well); color: var(--text); }
+  .step:nth-child(4) .step-n { background: var(--add); color: var(--on-diff); border-bottom-color: var(--add); }
+  .watching { display: inline-flex; align-items: center; gap: 8px; }
+  .step-body { padding: 16px 16px 18px; display: flex; flex-direction: column; gap: 10px; flex: 1; container-type: inline-size; }
+  .step h3 { font-size: 1.32rem; font-weight: 720; margin-top: 2px; }
+  .step p { color: var(--text-2); font-size: .98rem; }
+  .viz { margin-top: auto; padding-top: 10px; }
+
+  .tree { display: grid; font: .72rem/1.85 var(--f-mono); background: var(--well); border-radius: 10px; padding: 10px 12px; color: var(--text-2); white-space: nowrap; overflow: hidden; }
+  .tree .tl { display: block; }
+  .tree i { display: inline-block; width: 2.6ch; font-style: normal; color: var(--text-2); opacity: .55; font-family: ui-monospace, Menlo, Consolas, monospace; }
+  .tree mark { background: color-mix(in srgb, var(--lamp) 30%, transparent); color: var(--text); font-weight: 600; border-radius: 4px; padding: 1px 4px; margin-left: -4px; }
+
+  .sketch svg { display: block; width: 100%; height: auto; overflow: visible; }
+  .sketch .s-bx { fill: var(--dg-box); stroke: var(--dg-line); stroke-width: 2; }
+  .sketch .s-ln { fill: none; stroke: var(--dg-edge); stroke-width: 2; }
+  .mini-act { display: flex; gap: 8px; margin-top: 12px; }
+  .mini { font: 700 .74rem var(--f-body); padding: 5px 10px; border-radius: 7px; border: 1.5px solid var(--rule); background: var(--panel); color: var(--text); box-shadow: 0 2px 0 var(--rule); }
+  .mini.go { background: var(--add); border-color: var(--add); color: var(--on-diff); box-shadow: 0 2px 0 color-mix(in srgb, var(--add) 55%, #000); }
+
+  .seg { display: inline-grid; grid-auto-flow: column; border: 1.5px solid var(--rule); border-radius: 10px; overflow: hidden; background: var(--well); box-shadow: 0 3px 0 var(--rule); }
+  .seg button { border: 0; background: transparent; color: var(--text-2); font: 700 .8rem/1.1 var(--f-body); padding: 9px 11px; cursor: pointer; text-align: left; }
+  .seg button + button { border-left: 1.5px solid var(--rule); }
+  .seg button[aria-pressed="true"] { background: var(--lamp); color: var(--on-lamp); }
+  .seg button:focus-visible { outline: 2.5px solid var(--signal); outline-offset: -3px; }
+  @container (max-width: 300px) {
+    .seg { grid-auto-flow: row; width: 100%; }
+    .seg button + button { border-left: 0; border-top: 1.5px solid var(--rule); }
+  }
+  .clock { display: flex; align-items: center; gap: 12px; margin-top: 14px; font: .68rem/1.5 var(--f-mono); color: var(--text-2); }
+  .clock svg { width: 46px; height: 46px; flex: none; }
+  .clock .c-face { fill: var(--well); stroke: var(--rule); stroke-width: 2; }
+  .clock .c-hand { stroke: var(--signal); stroke-width: 3; stroke-linecap: round; transform-origin: 23px 23px; transform-box: view-box; transition: transform .5s cubic-bezier(.3, 1.4, .5, 1), opacity .3s; }
+  .clock .c-tick { stroke: var(--text-2); stroke-width: 1.5; }
+  .clock .c-pin { fill: var(--signal); }
+  .clock.idle .c-hand { opacity: .25; }
+
+  .step .lands { margin-top: 10px; font: .68rem/1.6 var(--f-mono); color: var(--text-2); overflow-wrap: anywhere; }
+
+  .elbow { position: absolute; right: -31px; top: 62px; width: 28px; height: 30px; z-index: 2; overflow: visible; color: var(--signal); filter: drop-shadow(0 0 calc(5px * var(--glow-a)) var(--signal)); }
+  .elbow .el-l { fill: none; stroke: currentColor; stroke-width: 3; }
+  .elbow .el-h { fill: currentColor; }
+  .elbow .pt .core, .elbow .pt .halo { fill: var(--lamp); }
+  @media (max-width: 1100px) { .how-steps { grid-template-columns: repeat(2, minmax(0, 1fr)); } .elbow { display: none; } }
+  @media (max-width: 640px) { .how-steps { grid-template-columns: minmax(0, 1fr); gap: 26px; } }
+</style>
+
+<script>
+  import { initHow } from '../scripts/how';
+  initHow();
+</script>

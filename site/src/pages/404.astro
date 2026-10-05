@@ -1,0 +1,16 @@
+---
+import Base from '../layouts/Base.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+---
+<Base title="Not found · archdraw" description="This page is not on archdraw.dev." noindex>
+  <Header home={false} />
+  <main id="main" class="page wrap">
+    <p class="eyebrow"><b>404</b> Not found</p>
+    <h1 class="sec-h">This page is not in the drawing.</h1>
+    <p class="big lead">It may have moved, or it never existed.</p>
+    <p class="page-acts"><a class="btn btn-lamp" href="/">Back to archdraw</a></p>
+  </main>
+  <Footer />
+</Base>
+

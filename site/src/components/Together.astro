@@ -1,0 +1,72 @@
+---
+import Diagram from './Diagram.astro';
+import { DIFF_LABEL } from '../lib/diagram';
+---
+<section class="band" id="together" aria-labelledby="t-h">
+  <div class="wrap">
+    <div class="two">
+      <div>
+        <p class="eyebrow"><b>04</b> Every collaborator, one drawing</p>
+        <h2 class="sec-h" id="t-h">Three hands. One true picture.</h2>
+      </div>
+      <div class="copy">
+        <p class="big">You, a teammate and an AI agent each change the code.</p>
+        <p>archdraw folds all of it into one reviewed drawing. Whoever typed the change, the drawing follows the code, and you sign off once.</p>
+      </div>
+    </div>
+    <div class="flow-fig">
+      <ul class="srcs">
+        <li class="src who-you"><span class="av" aria-hidden="true">Y</span><b>You</b><span>Payments: accept Apple Pay</span></li>
+        <li class="src who-mate"><span class="av" aria-hidden="true">M</span><b>Maya, teammate</b><span>Orders: add Delivery partner API</span></li>
+        <li class="src who-agent"><span class="av" aria-hidden="true">AI</span><b>Coding agent</b><span>Remove the legacy fax intake</span></li>
+      </ul>
+      <svg class="streams pts" viewBox="0 0 300 328" aria-hidden="true">
+        <path class="st you" d="M0 48 C150 48 130 164 268 164"/>
+        <path class="st mate" d="M0 164 L268 164"/>
+        <path class="st agent" d="M0 280 C150 280 130 164 268 164"/>
+        <path class="st out" d="M268 164H300"/>
+        <circle class="merge" cx="268" cy="164" r="9"/>
+      </svg>
+      <svg class="streams-v pts" viewBox="0 0 300 110" aria-hidden="true">
+        <path class="st you" d="M50 0 C50 60 150 40 150 96"/>
+        <path class="st mate" d="M150 0 L150 96"/>
+        <path class="st agent" d="M250 0 C250 60 150 40 150 96"/>
+        <circle class="merge" cx="150" cy="100" r="8"/>
+      </svg>
+      <div class="result">
+        <p class="eyebrow">One drafted update · overview.archdraw</p>
+        <h3>2 added, 1 changed, 1 removed</h3>
+        <Diagram mode="after" diff uid="rs" label={DIFF_LABEL} />
+        <div class="chips"><span class="chip add">+ Delivery partner</span><span class="chip chg">~ Payments</span><span class="chip del">− Fax orders</span></div>
+        <p>Reviewed by you. Approved once. In your repo at 10:05.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style is:global>
+  .flow-fig { margin: clamp(36px, 6vh, 64px) 0 0; display: grid; grid-template-columns: minmax(0, 1fr) 300px minmax(0, 1fr); align-items: center; }
+  .srcs { list-style: none; padding: 0; margin: 0; display: grid; grid-template-rows: repeat(3, 96px); gap: 20px; }
+  .src { background: var(--panel); border: 1px solid var(--rule); border-left: 4px solid var(--c); border-radius: 12px; padding: 12px 16px; display: grid; grid-template-columns: 34px minmax(0, 1fr); gap: 4px 12px; align-content: center; }
+  .src .av { width: 34px; height: 34px; border-radius: 10px; grid-row: span 2; font-size: .78rem; background: var(--c); }
+  .src b { font-size: 1rem; } .src span:not(.av) { font: .72rem/1.4 var(--f-mono); color: var(--text-2); }
+  .streams { width: 300px; height: 328px; display: block; overflow: visible; }
+  .streams .st, .streams-v .st { fill: none; stroke-width: 2; opacity: .55; }
+  .st.you { stroke: var(--you); } .st.mate { stroke: var(--mate); } .st.agent { stroke: var(--agent); } .st.out { stroke: var(--signal); }
+  .streams .merge, .streams-v .merge { fill: var(--panel); stroke: var(--signal); stroke-width: 2; }
+  .streams-v { display: none; width: 100%; max-width: 360px; height: auto; margin: 6px auto; overflow: visible; }
+  .result { background: var(--panel); border: 1px solid var(--rule); border-radius: 16px; padding: 16px; box-shadow: 0 0 0 1px rgba(124,200,255,calc(.1 * var(--glow-a))), 0 20px 60px -30px rgba(124,200,255,calc(.35 * var(--glow-a))); }
+  .result h3 { font-size: 1.1rem; font-weight: 720; margin-top: 6px; }
+  .result .dg { margin: 8px 0; }
+  .result p:not(.eyebrow) { font-size: .9rem; color: var(--text-2); margin-top: 8px; }
+  @media (max-width: 960px) {
+    .flow-fig { grid-template-columns: minmax(0, 1fr); }
+    .srcs { grid-template-rows: none; gap: 10px; }
+    .streams { display: none; } .streams-v { display: block; }
+  }
+</style>
+
+<script>
+  import { initTogether } from '../scripts/together';
+  initTogether();
+</script>

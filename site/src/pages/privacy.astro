@@ -1,0 +1,46 @@
+---
+import Base from '../layouts/Base.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+---
+<Base
+  title="Privacy · archdraw"
+  description="archdraw.dev sets no cookies and runs no analytics. The archdraw app has no telemetry, keeps your AI key in the OS keychain, and sends code only to the AI provider you pick."
+>
+  <Header home={false} />
+  <main id="main" class="page wrap prose">
+    <p class="eyebrow"><b>Privacy</b> Updated 5 October 2026</p>
+    <h1 class="sec-h">What goes where.</h1>
+    <p class="big lead">This site sets no cookies and runs no analytics. The app has no telemetry and no account.</p>
+
+    <h2>This website</h2>
+    <ul>
+      <li>archdraw.dev sets no cookies and runs no analytics, ads or tracking scripts.</li>
+      <li>Everything on the page, fonts included, is served from archdraw.dev. Your browser makes no requests to anyone else.</li>
+      <li>If you use the theme switch, your choice is kept in your browser's local storage on your device. It is never sent anywhere.</li>
+      <li>The site is hosted on Vercel. Like any web host, Vercel handles your request to deliver the page. We add no tracking on top of that.</li>
+    </ul>
+
+    <h2>The archdraw app</h2>
+    <ul>
+      <li>archdraw runs on your machine and has no server of its own. It has no telemetry and no account.</li>
+      <li>Your AI key stays on your machine, kept in the OS keychain: the Keychain on macOS, the Secret Service (GNOME Keyring or KWallet) on Linux. On a Linux desktop without a keyring, the app tells you that the key will have only basic protection.</li>
+      <li>Your code goes only to the AI provider you pick: OpenAI, Anthropic, Google or OpenRouter. When a project is checked, archdraw sends that provider the new commit messages, the names of the files they touch and the diagram outlines. When the architecture changed, the agent reads the code it needs to draft the update.</li>
+      <li>The agent can only read. It never reads <code>.env</code> files, keys, credential folders, Terraform state, or anything your <code>.gitignore</code> excludes, and it cannot run commands.</li>
+      <li>archdraw works on your repo through your own <code>git</code> and, for GitHub projects, the GitHub CLI you signed in with. It checks GitHub Releases for new versions of the app.</li>
+    </ul>
+
+    <h2>Contact</h2>
+    <p>Questions about privacy: <a href="mailto:hello@archdraw.dev">hello@archdraw.dev</a>.</p>
+  </main>
+  <Footer />
+</Base>
+
+<style is:global>
+  .prose { max-width: calc(46em + 2 * clamp(16px, 4vw, 48px)); }
+  .prose h2 { font-size: clamp(1.3rem, 2.2vw, 1.6rem); font-weight: 720; margin-top: 44px; }
+  .prose ul { margin: 14px 0 0; padding-left: 1.2em; display: grid; gap: 10px; }
+  .prose li::marker { color: var(--signal); }
+  .prose h2 + p { margin-top: 12px; }
+  .prose code { font-size: .86em; background: var(--well); padding: 1px 5px; border-radius: 5px; }
+</style>

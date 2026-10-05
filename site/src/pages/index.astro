@@ -1,0 +1,31 @@
+---
+import Base from '../layouts/Base.astro';
+import Header from '../components/Header.astro';
+import Hero from '../components/Hero.astro';
+import Problem from '../components/Problem.astro';
+import How from '../components/How.astro';
+import Review from '../components/Review.astro';
+import Together from '../components/Together.astro';
+import Private from '../components/Private.astro';
+import Agents from '../components/Agents.astro';
+import Get from '../components/Get.astro';
+import Footer from '../components/Footer.astro';
+import '../styles/diagram.css';
+---
+<Base
+  title="archdraw · Keep the drawing true to the code"
+  description="archdraw keeps your architecture diagram up to date as the code changes, whether the change came from you, a teammate, or an AI agent. Free and open source for Mac and Linux."
+>
+  <Header />
+  <main id="main">
+    <Hero />
+    <Problem />
+    <How />
+    <Review />
+    <Together />
+    <Private />
+    <Agents />
+    <Get />
+  </main>
+  <Footer />
+</Base>
