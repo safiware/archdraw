@@ -19,12 +19,12 @@
 .dg .ring-del rect { fill: var(--del-soft); stroke: var(--del); } .dg .ring-del circle { fill: var(--del); }
 .dg .eg-add .edge { stroke: var(--add); stroke-width: 2.4; }
 .dg .eg-add .arr, .dg .arr-add { fill: var(--add); }
-.dg .eg-add .lbl { fill: var(--add); font-weight: 600; }
+.dg .eg-add .lbl { fill: var(--add-text); font-weight: 600; }
 @media (prefers-color-scheme: light) { :root:not([data-theme="dark"]) .dg .rings { filter: none; } }
 :root[data-theme="light"] .dg .rings { filter: none; }
 .dg .stale-tags { opacity: 0; transition: opacity .4s; }
 .dg .tag rect { fill: var(--del-soft); stroke: var(--del); stroke-width: 1; stroke-dasharray: 3 3; }
-.dg .tag text { font-size: 12px; fill: var(--del); }
+.dg .tag text { font-size: 12px; fill: var(--del-text); }
 .dg-story .only-before { opacity: 0; }
 .dg .fl { fill: none; stroke-width: 2.5; }
 

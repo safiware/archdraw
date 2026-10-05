@@ -15,13 +15,16 @@ export function initReview(): void {
   let settled = false, pinned = false;
   let flow: Particles | null = null;
   const canMove = () => !reduceMotion.matches;
+  // aria-disabled, not disabled: the button stays focusable while the story plays, and says why it waits
+  const setOff = (off: boolean) => approve.setAttribute('aria-disabled', String(off));
+  const isOff = () => approve.getAttribute('aria-disabled') === 'true';
 
   function settle() {
     if (settled) return;
     settled = true;
     story.classList.add('settled');
     approve.classList.remove('ready');
-    approve.disabled = true;
+    setOff(true);
     label.textContent = 'Approved';
     aStatus.textContent = 'Approved. The drawing is true again.';
     pill.classList.remove('warn');
@@ -36,7 +39,7 @@ export function initReview(): void {
     if (!settled) return;
     settled = false;
     story.classList.remove('settled');
-    approve.disabled = false;
+    setOff(false);
     approve.classList.add('ready');
     label.textContent = 'Approve update';
     aStatus.textContent = 'Waiting for your OK.';
@@ -45,7 +48,16 @@ export function initReview(): void {
     reset.hidden = true;
     if (flow) { flow.kill(); flow = null; }
   }
-  approve.addEventListener('click', settle);
+  approve.addEventListener('click', () => {
+    if (settled) return;
+    if (isOff() && pinned) {
+      // pressed before the story got there: jump to its end state, then approve
+      const st = ScrollTrigger.getById('story');
+      if (st) { window.scrollTo({ top: st.end, behavior: 'auto' }); ScrollTrigger.update(); }
+    }
+    settle();
+    reset.focus();
+  });
   reset.addEventListener('click', () => {
     unsettle();
     approve.focus();
@@ -84,7 +96,7 @@ export function initReview(): void {
         aStatus.textContent = STATUS[s];
         pillT.textContent = PILL[s];
         pill.classList.toggle('warn', s >= 1);
-        approve.disabled = s < 2;
+        setOff(s < 2);
         approve.classList.toggle('ready', s === 3);
       }
     };
@@ -96,7 +108,7 @@ export function initReview(): void {
         onUpdate: self => { const t = self.progress * tl.duration(); setStep(t < 1.3 ? 0 : t < 2.1 ? 1 : t < 4.1 ? 2 : 3); },
       },
     });
-    tl.fromTo(commits, { opacity: 0.35, x: -14 }, { opacity: 1, x: 0, stagger: 0.3, duration: 0.4, ease: 'power2.out' }, 0.1)
+    tl.fromTo(commits, { opacity: 0.6, x: -14 }, { opacity: 1, x: 0, stagger: 0.3, duration: 0.4, ease: 'power2.out' }, 0.1)
       .fromTo($$('.nd-pay .box, .nd-fax .box', sSvg), { strokeWidth: 1.5 }, { strokeWidth: 3, duration: 0.3 }, 1.3)
       .to({}, { duration: 0.6 })
       .add(draftTimeline(sSvg), 2.1)
@@ -113,7 +125,7 @@ export function initReview(): void {
       sSvg.classList.remove('is-stale');
       steps.forEach(li => li.classList.remove('on'));
       delete story.dataset.step;
-      approve.disabled = false;
+      setOff(false);
       approve.classList.add('ready');
       aStatus.textContent = 'Waiting for your OK.';
       pillT.textContent = 'update drafted · 10:00';

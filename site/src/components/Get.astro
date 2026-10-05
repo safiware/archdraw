@@ -8,7 +8,7 @@ const dl = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-wi
     <h2 class="sec-h" id="g-h">Get archdraw.</h2>
     <div class="get-grid">
       <div class="card">
-        <h3>Mac</h3><p>Apple Silicon and Intel. macOS 13 or later.</p>
+        <h3>Mac</h3><p>Apple Silicon and Intel. macOS 13 or later. On the release page, pick the .dmg: arm64 for Apple Silicon, x64 for Intel.</p>
         <a class="btn btn-lamp" href={RELEASES}><Fragment set:html={dl} />Download for Mac</a>
       </div>
       <div class="card">
@@ -16,21 +16,18 @@ const dl = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-wi
         <a class="btn btn-lamp" href={RELEASES}><Fragment set:html={dl} />Download for Linux</a>
       </div>
       <div class="card">
-        <h3>Open source</h3><p>Apache-2.0, on GitHub. Sponsor its development if it saves you a redraw.</p>
-        <div class="card-acts">
-          <a class="btn btn-ghost" href="https://github.com/safiware/archdraw">See it on GitHub</a>
-          <a class="btn btn-ghost" href="https://github.com/sponsors/safiware"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round" aria-hidden="true"><path d="M12 20s-7.5-4.6-7.5-10A4.3 4.3 0 0 1 12 7.4 4.3 4.3 0 0 1 19.5 10c0 5.4-7.5 10-7.5 10Z"/></svg>Sponsor</a>
-        </div>
+        <h3>Open source</h3><p>Apache-2.0, on GitHub.</p>
+        <a class="btn btn-ghost" href="https://github.com/safiware/archdraw">See it on GitHub</a>
       </div>
+      <p class="get-note">Works with GitHub repos and local folders. Needs git, and the GitHub CLI for pull requests.</p>
       <div class="card cloud">
         <div>
           <p class="eyebrow">What’s next</p>
-          <h3>archdraw Cloud</h3>
-          <p>Watches while your laptop is closed. Share links. AI included.</p>
-          <p class="next"><span class="live-dot" aria-hidden="true"></span><span><strong>Coming next:</strong> a live change log for every diagram.</span></p>
+          <p class="next"><span class="live-dot" aria-hidden="true"></span><span><strong>Next in the app:</strong> a change log for every diagram, showing which commits changed it.</span></p>
+          <h3>archdraw Cloud, later</h3>
+          <p>Watches while your laptop is closed. Share links. AI included. Follow the releases to hear first.</p>
         </div>
         <div class="cloud-act">
-          <p>archdraw Cloud is coming later. Follow the releases to hear first.</p>
           <a class="btn btn-lamp" href="https://github.com/safiware/archdraw/releases"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12Z"/><circle cx="12" cy="12" r="3"/></svg>Watch releases on GitHub</a>
         </div>
       </div>
@@ -44,13 +41,13 @@ const dl = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-wi
   .card h3 { font-size: 1.3rem; font-weight: 720; }
   .card p:not(.eyebrow) { color: var(--text-2); font-size: .96rem; }
   .card > .btn { align-self: flex-start; margin-top: auto; }
-  .card-acts { display: flex; flex-wrap: wrap; gap: 12px; margin-top: auto; }
+  .get-note { grid-column: 1 / -1; margin: 0; color: var(--text-2); font-size: .95rem; }
   .card.cloud { grid-column: 1 / -1; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 16px 32px; align-items: center; background: linear-gradient(120deg, var(--panel), color-mix(in srgb, var(--panel) 80%, var(--signal) 20%)); }
-  .cloud h3 { margin-top: 8px; }
+  .cloud h3 { margin-top: 18px; }
   .cloud p:not(.eyebrow) { margin-top: 8px; }
-  .cloud .next { display: flex; align-items: center; gap: 10px; color: var(--text); }
-  .cloud .next .live-dot { flex: none; }
+  .card.cloud .next { display: flex; align-items: flex-start; gap: 10px; color: var(--text); }
+  .cloud .next .live-dot { flex: none; margin-top: .55em; }
   .cloud-act { display: grid; gap: 14px; justify-items: start; }
-  .cloud-act p { margin: 0; }
+  @media (min-width: 961px) { .cloud-act { justify-items: end; } }
   @media (max-width: 960px) { .get-grid { grid-template-columns: minmax(0, 1fr); } .card.cloud { grid-template-columns: minmax(0, 1fr); } }
 </style>

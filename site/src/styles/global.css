@@ -19,6 +19,7 @@
   --chg: #B05C08;  --chg-soft: #B05C081C;   /* Amber: changed */
   --del: #C8333B;  --del-soft: #C8333B1C;   /* Ember: removed */
   --on-diff: #FFFFFF;
+  --add-text: #116B40; --chg-text: #8F4906; --del-text: #A8262E;   /* the diff colors as small text: 4.5:1 or better */
   --you: #1D5FD0; --mate: #7246D9; --agent: #B83598;
   --contour: #1D5FD014;
   --glow-a: 0;            /* glow strength multiplier (0 in daylight) */
@@ -40,7 +41,7 @@
     --text: #EEF3FB; --text-2: #A8B9D6; --signal: #7CC8FF; --signal-soft: #7CC8FF24; --on-signal: #0B1A36;
     --lamp: #FFD66E; --lamp-edge: #FFE7A6; --lamp-shadow: #B7861C; --on-lamp: #0B1A36;
     --add: #5EE0A0; --add-soft: #5EE0A026; --chg: #FFA24C; --chg-soft: #FFA24C26; --del: #FF6E6E; --del-soft: #FF6E6E26;
-    --on-diff: #0B1A36; --you: #7CC8FF; --mate: #C3A6FF; --agent: #F59BE6;
+    --on-diff: #0B1A36; --add-text: #5EE0A0; --chg-text: #FFA24C; --del-text: #FF6E6E; --you: #7CC8FF; --mate: #C3A6FF; --agent: #F59BE6;
     --contour: #7CC8FF12; --glow-a: 1;
     --dg-bg: #112650; --dg-box: #17346A; --dg-line: #5E95E0; --dg-store: #152A52; --dg-store-line: #6B80A8;
     --dg-ext: #1C2B5C; --dg-ext-line: #A48CF0; --dg-text: #EEF3FB; --dg-sub: #A8B9D6; --dg-edge: #6A8CC4;
@@ -54,7 +55,7 @@
   --text: #EEF3FB; --text-2: #A8B9D6; --signal: #7CC8FF; --signal-soft: #7CC8FF24; --on-signal: #0B1A36;
   --lamp: #FFD66E; --lamp-edge: #FFE7A6; --lamp-shadow: #B7861C; --on-lamp: #0B1A36;
   --add: #5EE0A0; --add-soft: #5EE0A026; --chg: #FFA24C; --chg-soft: #FFA24C26; --del: #FF6E6E; --del-soft: #FF6E6E26;
-  --on-diff: #0B1A36; --you: #7CC8FF; --mate: #C3A6FF; --agent: #F59BE6;
+  --on-diff: #0B1A36; --add-text: #5EE0A0; --chg-text: #FFA24C; --del-text: #FF6E6E; --you: #7CC8FF; --mate: #C3A6FF; --agent: #F59BE6;
   --contour: #7CC8FF12; --glow-a: 1;
   --dg-bg: #112650; --dg-box: #17346A; --dg-line: #5E95E0; --dg-store: #152A52; --dg-store-line: #6B80A8;
   --dg-ext: #1C2B5C; --dg-ext-line: #A48CF0; --dg-text: #EEF3FB; --dg-sub: #A8B9D6; --dg-edge: #6A8CC4;
@@ -109,7 +110,7 @@ code, kbd, pre, .mono { font-family: var(--f-mono); }
 .btn-lamp { --b: var(--lamp); --c: var(--on-lamp); --edge: var(--lamp-edge); --shadow: var(--lamp-shadow); }
 .btn-ghost { --b: transparent; --edge: var(--text-2); --shadow: var(--rule); }
 .btn-approve { --b: var(--add); --c: var(--on-diff); --edge: var(--add); --shadow: color-mix(in srgb, var(--add) 55%, #000); }
-.btn[disabled] { cursor: not-allowed; opacity: .55; transform: none; }
+.btn[disabled], .btn[aria-disabled="true"] { cursor: not-allowed; opacity: .55; transform: none; }
 .btn-sm { min-height: 40px; padding: .5em .95em; font-size: .92rem; box-shadow: 0 3px 0 var(--shadow); }
 
 /* header */
@@ -148,6 +149,7 @@ section { scroll-margin-top: 16px; }
 .win-bar { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; padding: 10px 16px; border-bottom: 1px solid var(--rule); font-size: .72rem; }
 .win-bar .mono { color: var(--text-2); }
 .pill { display: inline-flex; align-items: center; gap: 8px; font: 500 .68rem/1 var(--f-mono); padding: 6px 10px; border-radius: 99px; border: 1px solid var(--rule); color: var(--text-2); white-space: nowrap; }
+@media (max-width: 420px) { .pill { white-space: normal; line-height: 1.35; max-width: 100%; } .pill i { flex: none; } }
 .pill i { width: 7px; height: 7px; border-radius: 50%; background: var(--signal); box-shadow: 0 0 8px var(--signal); }
 .pill.warn i { background: var(--chg); box-shadow: 0 0 8px var(--chg); }
 .live-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--signal); box-shadow: 0 0 0 4px var(--signal-soft); animation: beat 2.4s ease-in-out infinite; }
@@ -160,7 +162,7 @@ section { scroll-margin-top: 16px; }
 .who-arch .av { background: transparent; border: 1px solid var(--rule); } .who-arch .av .mark { width: 18px; height: 18px; }
 .chips { display: flex; flex-wrap: wrap; gap: 6px; }
 .chip { font: 600 .74rem var(--f-mono); padding: 4px 9px; border-radius: 6px; border: 1.5px solid currentColor; }
-.chip.add { color: var(--add); background: var(--add-soft); } .chip.chg { color: var(--chg); background: var(--chg-soft); } .chip.del { color: var(--del); background: var(--del-soft); }
+.chip.add { color: var(--add-text); background: var(--add-soft); } .chip.chg { color: var(--chg-text); background: var(--chg-soft); } .chip.del { color: var(--del-text); background: var(--del-soft); }
 
 /* plain pages: privacy, 404 */
 .page { padding-block: clamp(48px, 10vh, 120px); min-height: 60vh; }
@@ -172,6 +174,9 @@ footer { border-top: 1px solid var(--rule); padding-block: 28px 40px; }
 .foot nav { display: flex; flex-wrap: wrap; gap: 8px 18px; margin-left: auto; }
 .foot a { color: var(--text-2); }
 .foot .brand { font-size: 1.05rem; } .foot .brand .mark { width: 24px; height: 24px; }
+
+/* the hero's Pause motion control holds every CSS loop too */
+.motion-held *, .motion-held *::before, .motion-held *::after { animation-play-state: paused !important; }
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }

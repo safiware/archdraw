@@ -4,8 +4,8 @@ const days = [
   { d: 'Mon', n: 'drawn', t: '<strong>True today.</strong> Everyone agrees on the picture.' },
   { d: 'Tue', n: '+12 commits', t: 'Payments learns Apple Pay.' },
   { d: 'Wed', n: '+31 commits', t: 'A delivery partner starts sending orders.' },
-  { d: 'Thu', n: '+47 commits', t: 'An agent deletes the fax intake.' },
-  { d: 'Fri', n: '+64 commits', t: '<strong>Still shows the fax line.</strong> New hires learn the wrong system.' },
+  { d: 'Thu', n: '+47 commits', t: 'An agent removes fax orders.' },
+  { d: 'Fri', n: '+64 commits', t: '<strong>Still shows fax orders.</strong> New hires learn the wrong system.' },
 ];
 const t = thumb();
 ---
@@ -37,7 +37,7 @@ const t = thumb();
   .hands { list-style: none; padding: 0; margin: 22px 0 0; display: flex; flex-wrap: wrap; gap: 10px; }
   .hands li { display: inline-flex; align-items: center; gap: 8px; font: 600 .92rem var(--f-body); padding: 7px 12px 7px 9px; border: 1px solid var(--rule); border-radius: 99px; background: var(--panel); }
   .hands li::before { content: ""; width: 10px; height: 10px; border-radius: 3px; background: var(--c); box-shadow: 0 0 calc(10px * var(--glow-a)) var(--c); }
-  .week { list-style: none; padding: 0; margin: clamp(40px, 6vh, 64px) auto 0; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 14px; }
+  .week { list-style: none; padding-block: 0; margin: clamp(40px, 6vh, 64px) auto 0; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 14px; }
   .day { background: var(--panel); border: 1px solid var(--rule); border-radius: 14px; padding: 14px 14px 16px; position: relative; overflow: hidden; }
   .day-h { display: flex; justify-content: space-between; align-items: baseline; font: 600 .74rem var(--f-mono); color: var(--text-2); text-transform: uppercase; letter-spacing: .05em; }
   .day-h b { color: var(--text); font-weight: 600; }

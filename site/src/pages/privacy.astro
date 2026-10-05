@@ -5,7 +5,7 @@ import Footer from '../components/Footer.astro';
 ---
 <Base
   title="Privacy · archdraw"
-  description="archdraw.dev sets no cookies and runs no analytics. The archdraw app has no telemetry, keeps your AI key in the OS keychain, and sends code only to the AI provider you pick."
+  description="archdraw.dev sets no cookies and runs no analytics. The archdraw app has no telemetry, keeps your AI key on your machine, encrypted by the OS keychain, and sends code only to the AI provider you pick."
 >
   <Header home={false} />
   <main id="main" class="page wrap prose">
@@ -18,16 +18,18 @@ import Footer from '../components/Footer.astro';
       <li>archdraw.dev sets no cookies and runs no analytics, ads or tracking scripts.</li>
       <li>Everything on the page, fonts included, is served from archdraw.dev. Your browser makes no requests to anyone else.</li>
       <li>If you use the theme switch, your choice is kept in your browser's local storage on your device. It is never sent anywhere.</li>
-      <li>The site is hosted on Vercel. Like any web host, Vercel handles your request to deliver the page. We add no tracking on top of that.</li>
+      <li>The site is hosted on Vercel. Like any web host, Vercel keeps standard request logs (IP address, user agent) for operating the site. Safiware, which makes archdraw, adds no tracking on top of that.</li>
     </ul>
 
     <h2>The archdraw app</h2>
     <ul>
-      <li>archdraw runs on your machine and has no server of its own. It has no telemetry and no account.</li>
-      <li>Your AI key stays on your machine, kept in the OS keychain: the Keychain on macOS, the Secret Service (GNOME Keyring or KWallet) on Linux. On a Linux desktop without a keyring, the app tells you that the key will have only basic protection.</li>
-      <li>Your code goes only to the AI provider you pick: OpenAI, Anthropic, Google or OpenRouter. When a project is checked, archdraw sends that provider the new commit messages, the names of the files they touch and the diagram outlines. When the architecture changed, the agent reads the code it needs to draft the update.</li>
+      <li>archdraw runs on your machine. There is no archdraw server it reports to. It has no telemetry and no account.</li>
+      <li>Your AI key stays on your machine, encrypted with your system's keychain (the Keychain on macOS; the Secret Service, such as GNOME Keyring or KWallet, on Linux) and saved in a file only your user can read. On a Linux desktop without a keyring, the app tells you the key has only basic protection.</li>
+      <li>Your code goes only to the AI provider you pick: OpenAI, Anthropic, Google or OpenRouter. When a project is checked, archdraw sends that provider the new commit messages, the names of the files they touch and the diagram outlines. When the architecture changed, the agent reads the code it needs to draft the update. When you ask the agent for a drawing or a question, it reads the code it needs and sends it to that provider. That provider's own terms apply.</li>
       <li>The agent can only read. It never reads <code>.env</code> files, keys, credential folders, Terraform state, or anything your <code>.gitignore</code> excludes, and it cannot run commands.</li>
-      <li>archdraw works on your repo through your own <code>git</code> and, for GitHub projects, the GitHub CLI you signed in with. It checks GitHub Releases for new versions of the app.</li>
+      <li>A drafted update waits on an <code>archdraw/update</code> branch in your repo until you approve or discard it. Anyone who can read the repo can see that branch.</li>
+      <li>archdraw works on your repo through your own <code>git</code> and, for GitHub projects, the GitHub CLI you signed in with.</li>
+      <li>At launch and every six hours it checks GitHub Releases for a new version, so GitHub sees your IP address and the app's version. On macOS and with the AppImage, updates download on their own.</li>
     </ul>
 
     <h2>Contact</h2>

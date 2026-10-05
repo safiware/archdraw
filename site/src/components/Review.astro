@@ -13,22 +13,22 @@ import { VB_AFTER } from '../lib/bean';
           <ul class="commits">
             <li class="commit who-you"><span class="av" aria-hidden="true">Y</span><span>Payments: accept Apple Pay <em>· you</em></span></li>
             <li class="commit who-mate"><span class="av" aria-hidden="true">M</span><span>Orders: add Delivery partner API <em>· Maya</em></span></li>
-            <li class="commit who-agent"><span class="av" aria-hidden="true">AI</span><span>Remove the legacy fax intake <em>· coding agent</em></span></li>
+            <li class="commit who-agent"><span class="av" aria-hidden="true">AI</span><span>Remove legacy fax orders <em>· coding agent</em></span></li>
           </ul>
         </li>
-        <li data-step="1"><h3>The drawing falls out of step.</h3><p>It still shows the fax line and a card-only checkout. On its next check, archdraw sees the difference.</p></li>
+        <li data-step="1"><h3>The drawing falls out of step.</h3><p>It still shows fax orders and a card-only checkout. On its next check, archdraw sees the difference.</p></li>
         <li data-step="2"><h3>archdraw draws the update.</h3><p>One draft, marked on the real boxes. Green added, amber changed, red removed.</p></li>
-        <li data-step="3"><h3>You approve.</h3><p>See exactly what moved: Delivery partner added, Payments now takes Apple Pay, the fax line is gone. Approve, and the drawing is true again.</p></li>
+        <li data-step="3"><h3>You approve.</h3><p>See exactly what moved: Delivery partner added, Payments now takes Apple Pay, fax orders are gone. Approve, and the drawing is true again.</p></li>
       </ol>
     </div>
     <div class="win">
-      <div class="win-bar"><span class="mono">bean-there / overview.archdraw</span><span class="pill warn" id="story-pill"><i></i><span id="story-pill-t">update drafted · 10:00</span></span></div>
+      <div class="win-bar"><span class="mono">bean-there (example) / overview.archdraw</span><span class="pill warn" id="story-pill"><i></i><span id="story-pill-t">update drafted · 10:00</span></span></div>
       <figure class="before-fig">
         <figcaption>Before · what the drawing said</figcaption>
-        <div class="stage-scroll"><div class="stage"><Diagram mode="before" diff uid="sb" label={BEFORE_LABEL} /></div></div>
+        <div class="stage-scroll" role="region" aria-label="Diagram, scrolls sideways" tabindex="0"><div class="stage"><Diagram mode="before" diff uid="sb" label={BEFORE_LABEL} /></div></div>
       </figure>
       <p class="after-cap">The update · marked in color</p>
-      <div class="stage-scroll"><div class="stage story-stage">
+      <div class="stage-scroll" role="region" aria-label="Diagram, scrolls sideways" tabindex="0"><div class="stage story-stage">
         <svg class="pts" viewBox={VB_AFTER} aria-hidden="true"></svg>
         <Diagram mode="story" diff uid="ss" label={DIFF_LABEL} />
       </div></div>
@@ -40,7 +40,7 @@ import { VB_AFTER } from '../lib/bean';
         <li class="lg-del"><b aria-hidden="true">−</b>Fax orders <span>legacy, removed</span></li>
       </ul>
       <div class="approve-row">
-        <button class="btn btn-approve ready" type="button" id="approve"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" aria-hidden="true"><path d="M4 12.5l5 5L20 6.5"/></svg><span>Approve update</span></button>
+        <button class="btn btn-approve ready" type="button" id="approve" aria-disabled="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" aria-hidden="true"><path d="M4 12.5l5 5L20 6.5"/></svg><span>Approve update</span></button>
         <span class="approve-status" id="approve-status" role="status">Waiting for your OK.</span>
         <button class="reset" type="button" id="reset" hidden>Show it again</button>
       </div>
@@ -91,7 +91,7 @@ import { VB_AFTER } from '../lib/bean';
   .settled .dg .eg-add .lbl { fill: var(--dg-sub); font-weight: 400; }
   .settled .dg .arr-add { fill: var(--dg-edge); }
   .settled .legend li { opacity: .55; }
-  .settled .approve-status { color: var(--add); }
+  .settled .approve-status { color: var(--add-text); }
   .reset { background: none; border: 0; color: var(--signal); font: 600 .9rem var(--f-body); text-decoration: underline; text-underline-offset: 3px; cursor: pointer; padding: 6px 2px; }
   @media (max-width: 1023px) { .story-in { grid-template-columns: minmax(0, 1fr); } }
 </style>

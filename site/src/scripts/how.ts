@@ -5,7 +5,7 @@ import { particles, type Particles } from './live';
 
 const NOTES: Record<string, string> = {
   hour: 'Next check in 40 minutes.',
-  day: 'Next check tomorrow at 09:00.',
+  day: 'Next check in 24 hours.',
   ask: 'No timer. Press Sync now when you want a check.',
 };
 const TURN: Record<string, string> = { hour: 'rotate(0deg)', day: 'rotate(270deg)', ask: 'rotate(0deg)' };

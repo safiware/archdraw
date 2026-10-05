@@ -18,12 +18,12 @@ const RELEASES = 'https://github.com/safiware/archdraw/releases/latest';
           <a class="btn btn-lamp" href={RELEASES}><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><path d="M12 3v12m0 0l-5-5m5 5l5-5M4 20h16"/></svg>Download for Linux</a>
           <a class="btn btn-ghost" href="https://github.com/safiware/archdraw">See it on GitHub</a>
         </div>
-        <p class="fine">Free and open source. macOS and Linux. Your AI key, your machine.</p>
+        <p class="fine">Free and open source. macOS and Linux. Runs on your AI key; you set the spending cap.</p>
       </div>
       <div class="hero-live">
         <div class="win">
-          <div class="win-bar"><span class="mono">bean-there / overview.archdraw</span><span class="pill" id="hero-pill"><i></i><span>in step with the code · checked <time id="hero-time">10:00</time></span></span></div>
-          <div class="stage-scroll"><div class="stage hero-stage">
+          <div class="win-bar"><span class="mono">bean-there (example) / overview.archdraw</span><span class="pill" id="hero-pill"><i></i><span>in step with the code · checked <time id="hero-time">10:00</time></span></span></div>
+          <div class="stage-scroll" role="region" aria-label="Diagram, scrolls sideways" tabindex="0" data-focus="0.66"><div class="stage hero-stage">
             <div class="glow-wrap" aria-hidden="true"><Diagram mode="after" uid="hg" cls="glowcopy" /></div>
             <svg class="pts" viewBox={VB_AFTER} aria-hidden="true"></svg>
             <Diagram mode="after" uid="hd" flash cls="hero-dg" label={AFTER_LABEL} />
@@ -31,11 +31,11 @@ const RELEASES = 'https://github.com/safiware/archdraw/releases/latest';
           </div></div>
           <p class="swipe">Swipe to see the whole drawing.</p>
           <div class="ticker">
-            <p class="ticker-h mono"><span>Changes landing</span><span>you · Maya · coding agent</span></p>
+            <div class="ticker-h mono"><span>Changes landing</span><span class="ticker-r"><span>you · Maya · coding agent</span><button class="hold" type="button" aria-pressed="false"><svg class="i-pause" viewBox="0 0 16 16" aria-hidden="true"><path d="M4.5 3h2.4v10H4.5zM9.1 3h2.4v10H9.1z"/></svg><svg class="i-play" viewBox="0 0 16 16" aria-hidden="true"><path d="M4.5 2.8 13 8l-8.5 5.2z"/></svg><span class="hold-t">Pause motion</span></button></span></div>
             <ol class="tick-list" id="ticks" aria-label="Recent changes, newest first">
               <li class="tk who-you"><span class="av" aria-hidden="true">Y</span><span class="tk-t"><b>You</b>approved the update. The drawing is true again.</span><time>10:05</time></li>
               <li class="tk who-arch"><span class="av" aria-hidden="true"><Logo /></span><span class="tk-t"><b>archdraw</b>drew one update: 2 added, 1 changed, 1 removed.</span><time>10:00</time></li>
-              <li class="tk who-agent"><span class="av" aria-hidden="true">AI</span><span class="tk-t"><b>Coding agent</b>removed the old fax intake.</span><time>09:40</time></li>
+              <li class="tk who-agent"><span class="av" aria-hidden="true">AI</span><span class="tk-t"><b>Coding agent</b>removed fax orders.</span><time>09:40</time></li>
             </ol>
           </div>
         </div>
@@ -76,7 +76,14 @@ const RELEASES = 'https://github.com/safiware/archdraw/releases/latest';
   .dg .fl.who-you { stroke: var(--you); } .dg .fl.who-mate { stroke: var(--mate); } .dg .fl.who-agent { stroke: var(--agent); } .dg .fl.who-arch { stroke: var(--lamp); }
 
   .ticker { border-top: 1px solid var(--rule); padding: 10px 16px 12px; background: color-mix(in srgb, var(--well) 55%, transparent); }
-  .ticker-h { display: flex; justify-content: space-between; gap: 12px; color: var(--text-2); font-size: .66rem; letter-spacing: .06em; text-transform: uppercase; margin-bottom: 6px; }
+  .ticker-h { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 4px 12px; color: var(--text-2); font-size: .66rem; letter-spacing: .06em; text-transform: uppercase; margin-bottom: 6px; }
+  .ticker-r { display: inline-flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+  .hold { display: inline-flex; align-items: center; gap: 6px; min-height: 28px; padding: 4px 9px; border: 1.5px solid var(--rule); border-radius: 7px; background: var(--panel); color: var(--text); font: 600 .62rem/1 var(--f-mono); letter-spacing: .04em; text-transform: uppercase; cursor: pointer; }
+  .hold svg { width: 11px; height: 11px; fill: currentColor; }
+  .hold .i-play, .hold[aria-pressed="true"] .i-pause { display: none; }
+  .hold[aria-pressed="true"] .i-play { display: block; }
+  html:not(.js) .hold { display: none; }
+  @media (prefers-reduced-motion: reduce) { .hold { display: none; } }
   .tick-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 4px; }
   .tk { display: grid; grid-template-columns: 26px minmax(0, 1fr) auto; gap: 10px; align-items: center; font-size: .9rem; line-height: 1.35; padding: 3px 0; }
   .tk b { font-weight: 700; margin-right: .35em; }

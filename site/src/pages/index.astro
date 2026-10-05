@@ -14,7 +14,7 @@ import '../styles/diagram.css';
 ---
 <Base
   title="archdraw · Keep the drawing true to the code"
-  description="archdraw keeps your architecture diagram up to date as the code changes, whether the change came from you, a teammate, or an AI agent. Free and open source for Mac and Linux."
+  description="archdraw keeps your architecture diagram up to date as the code changes, and waits for your OK. Free and open source for Mac and Linux."
 >
   <Header />
   <main id="main">
@@ -29,3 +29,8 @@ import '../styles/diagram.css';
   </main>
   <Footer />
 </Base>
+
+<script>
+  import { initFrames } from '../scripts/frames';
+  initFrames();
+</script>

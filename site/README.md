@@ -51,8 +51,9 @@ After changing the markup, check `dist/*.html` has no `<style`, no `style="` and
 1. In Vercel, **Add New… › Project** and import `safiware/archdraw` from GitHub.
 2. Set **Root Directory** to `site`. The framework is detected as **Astro**; the build command (`npm run build`) and output directory (`dist`) come from `vercel.json`. No environment variables are needed.
 3. In the project settings, turn off the **Vercel Toolbar** for preview deployments. It injects a script from vercel.live, which the CSP blocks (and which the privacy page says never happens). Leave Web Analytics and Speed Insights off for the same reason.
-4. Deploy. Every pull request that touches the repo gets a preview URL; merges to `main` go to production.
-5. In the project's **Settings › Domains**, add `archdraw.dev` and `www.archdraw.dev`. Make one redirect to the other (Vercel offers this when you add the second).
+4. In **Settings › Git › Ignored Build Step**, choose *Custom* and enter `git diff --quiet HEAD^ HEAD -- .`. The command runs in `site/`, so a commit that changes only `app/` or `engine/` does not rebuild the site.
+5. Deploy. Every pull request that changes `site/` gets a preview URL; merges to `main` go to production.
+6. In the project's **Settings › Domains**, add both `archdraw.dev` and `www.archdraw.dev`, and set `www.archdraw.dev` to redirect to `archdraw.dev` (the apex is the canonical URL the site declares).
 
 ### DNS at Namecheap
 
@@ -63,7 +64,7 @@ In Namecheap, open **Domain List › archdraw.dev › Manage › Advanced DNS** 
 | `A` | `@` | `76.76.21.21` |
 | `CNAME` | `www` | `cname.vercel-dns.com` |
 
-These are Vercel's usual values. Use the exact values Vercel's Domains page shows for your project; they can differ per project. Remove any other `A`, `AAAA`, `CNAME` or URL-redirect records for `@` and `www` (Namecheap adds a parking record by default). Vercel issues the HTTPS certificate once the records resolve.
+These are Vercel's usual values. Use the exact values Vercel's Domains page shows for your project; they can differ per project. Remove any other `A`, `AAAA`, `CNAME` or URL-redirect records for `@` and `www` (Namecheap adds a parking record by default). Leave the `MX` and `TXT` records for Namecheap email forwarding alone; if hello@archdraw.dev is forwarded through Namecheap, it depends on them. Vercel issues the HTTPS certificate once the records resolve.
 
 `vercel.json` sends `Strict-Transport-Security` with `includeSubDomains`, so every subdomain of archdraw.dev must serve HTTPS.
 

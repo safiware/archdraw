@@ -24,7 +24,7 @@ export function initTogether(): void {
       trigger: sec, start: 'top bottom', end: 'bottom top',
       onToggle: s => flows.forEach(f => (s.isActive ? f.play() : f.pause())),
     });
-    gsap.from($$('.src', sec), { x: -16, opacity: 0.4, duration: 0.7, stagger: 0.12, ease: 'power3.out', scrollTrigger: { trigger: $('.flow-fig', sec), start: 'top 80%', once: true } });
+    gsap.from($$('.src', sec), { x: -16, opacity: 0.6, duration: 0.7, stagger: 0.12, ease: 'power3.out', scrollTrigger: { trigger: $('.flow-fig', sec), start: 'top 80%', once: true } });
     return () => { flows.forEach(f => f.kill()); st.kill(); };
   });
 }

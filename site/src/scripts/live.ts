@@ -14,6 +14,28 @@ function pathLen(d: string): number {
   try { return p.getTotalLength(); } catch { return 200; }
 }
 
+/* Looping animations register here, so one control can hold them all (WCAG 2.2.2, pause, stop, hide).
+   A loop plays only when its section wants it and the visitor has not held the motion. */
+interface Loop { wanted: boolean; run(on: boolean): void }
+const loops = new Set<Loop>();
+let held = false;
+export interface LoopHandle { play(): void; pause(): void; kill(): void }
+export function loop(run: (on: boolean) => void, onKill?: () => void): LoopHandle {
+  const l: Loop = { wanted: false, run };
+  loops.add(l);
+  return {
+    play() { l.wanted = true; if (!held && !reduceMotion.matches) run(true); },
+    pause() { l.wanted = false; run(false); },
+    kill() { loops.delete(l); run(false); onKill?.(); },
+  };
+}
+/** Hold (or release) every looping animation on the page, CSS ones included. */
+export function hold(on: boolean): void {
+  held = on;
+  document.documentElement.classList.toggle('motion-held', on);
+  loops.forEach(l => l.run(!on && l.wanted && !reduceMotion.matches));
+}
+
 /** A layer of particles running along the given paths inside an overlay svg. */
 export function particles(overlay: SVGSVGElement, routes: Route[], opts: { speed?: number; halo?: number; core?: number } = {}): Particles {
   const speed = opts.speed ?? 70; // svg units per second
@@ -42,12 +64,8 @@ export function particles(overlay: SVGSVGElement, routes: Route[], opts: { speed
       tls.push(tl);
     }
   }
-  return {
-    el: g,
-    play() { if (!reduceMotion.matches) tls.forEach(t => t.play()); },
-    pause() { tls.forEach(t => t.pause()); },
-    kill() { tls.forEach(t => t.kill()); g.remove(); },
-  };
+  const handle = loop(on => tls.forEach(t => (on ? t.play() : t.pause())), () => { tls.forEach(t => t.kill()); g.remove(); });
+  return { el: g, ...handle };
 }
 
 export const AFTER_ROUTES: Route[] = [{ d: P.taps }, { d: P.https }, { d: P.enq }, { d: P.sql }, { d: P.charge }, { d: P.deliv }];
@@ -74,7 +92,7 @@ export function setBefore(svg: SVGSVGElement): void {
   gsap.set(q('.ring'), { opacity: 0, transformOrigin: '50% 50%' });
 }
 
-/** The drafted update: the fax line goes red and leaves, the column slides, Payments grows,
+/** The drafted update: fax orders goes red and leaves, the column slides, Payments grows,
  *  Delivery partner is drawn in, and the marks glow on the real boxes. */
 export function draftTimeline(svg: SVGSVGElement): gsap.core.Timeline {
   const q = (s: string) => [...svg.querySelectorAll(s)], one = (s: string) => svg.querySelector(s)!;

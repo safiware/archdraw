@@ -2,7 +2,7 @@
 // the edges, and the live ticker shows changes landing from you, a teammate and a coding agent, with
 // archdraw's hourly check sweeping the drawing. Everything here is decoration over a complete page.
 import { $, Flip, MOTION, ScrollTrigger, SplitText, gsap } from './gsap';
-import { AFTER_ROUTES, particles } from './live';
+import { AFTER_ROUTES, hold, loop, particles } from './live';
 
 type Who = 'you' | 'mate' | 'agent' | 'arch';
 interface Ev { at: number; w: Who; n: string; a?: string; t: string; node?: string }
@@ -25,6 +25,15 @@ const hhmm = (m: number) => `${String(Math.floor(m / 60) % 24).padStart(2, '0')}
 export function initHero(): void {
   const hero = $('.hero');
   if (!hero) return;
+
+  /* one control holds every looping animation on the page */
+  const holdBtn = $<HTMLButtonElement>('.hold', hero);
+  holdBtn?.addEventListener('click', () => {
+    const on = holdBtn.getAttribute('aria-pressed') !== 'true';
+    holdBtn.setAttribute('aria-pressed', String(on));
+    $('.hold-t', holdBtn).textContent = on ? 'Play motion' : 'Pause motion';
+    hold(on);
+  });
   const mm = gsap.matchMedia();
   mm.add(MOTION, () => {
     /* logo: the arrow draws once from block to block */
@@ -95,17 +104,19 @@ export function initHero(): void {
         if (fl) { fl.setAttribute('class', 'fl fl-' + e.node + ' who-' + e.w); gsap.fromTo(fl, { opacity: 1 }, { opacity: 0, duration: 1.8, ease: 'power2.in' }); }
       }
     };
-    const ticker = gsap.timeline({ repeat: -1, delay: 2.4 }).call(tick).to({}, { duration: 3.2 });
+    const ticker = gsap.timeline({ repeat: -1, delay: 2.4, paused: true }).call(tick).to({}, { duration: 3.2 });
+    const tk = loop(on => (on ? ticker.resume() : ticker.pause()), () => ticker.kill());
 
     /* everything rests while the hero is off screen */
     const st = ScrollTrigger.create({
       trigger: hero, start: 'top bottom', end: 'bottom top',
       onToggle: s => {
         hero.classList.toggle('off', !s.isActive);
-        if (s.isActive) { flow.play(); ticker.resume(); } else { flow.pause(); ticker.pause(); }
+        if (s.isActive) { flow.play(); tk.play(); } else { flow.pause(); tk.pause(); }
       },
     });
     flow.play();
-    return () => { flow.kill(); ticker.kill(); st.kill(); split?.revert(); };
+    tk.play();
+    return () => { flow.kill(); tk.kill(); st.kill(); split?.revert(); };
   });
 }
