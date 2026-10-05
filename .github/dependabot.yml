@@ -11,6 +11,11 @@ updates:
         patterns: ["*"]
   - package-ecosystem: npm
     directory: /app
+    ignore:
+      # Node's type definitions follow the Node archdraw runs on (Electron's, 24), raised by hand with each Node LTS;
+      # a newer major describes functions the runtime does not have
+      - dependency-name: "@types/node"
+        update-types: ["version-update:semver-major"]
     schedule:
       interval: monthly
     open-pull-requests-limit: 5
@@ -31,6 +36,11 @@ updates:
         update-types: [major]
   - package-ecosystem: npm
     directory: /engine
+    ignore:
+      # Node's type definitions follow the Node archdraw runs on (Electron's, 24), raised by hand with each Node LTS;
+      # a newer major describes functions the runtime does not have
+      - dependency-name: "@types/node"
+        update-types: ["version-update:semver-major"]
     schedule:
       interval: monthly
     open-pull-requests-limit: 2

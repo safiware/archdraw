@@ -34,7 +34,7 @@
   },
   "license": "Apache-2.0",
   "devDependencies": {
-    "@types/node": "^22.0.0",
+    "@types/node": "^24.19.1",
     "typescript": "^7.0.2"
   },
   "author": "Joe Walsh <jpwalsh234@gmail.com>",
