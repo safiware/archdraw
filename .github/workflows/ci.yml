@@ -1,5 +1,6 @@
-# Every pull request and every push to main: type-check, unit tests on Linux and macOS, the browser end-to-end tests,
-# the desktop package for each OS, and a launch check of the packaged app (it starts, serves its page, quits).
+# Every pull request and every push to main: type-check, unit tests, the browser and desktop end-to-end tests, the
+# Linux packages and a launch check of the packaged app (it starts, serves its page, quits). Run by hand, it also builds
+# and launch-checks the macOS app. scripts/ci-local.sh runs the same Linux steps on a developer's machine first.
 name: ci
 on:
   pull_request:
@@ -16,7 +17,9 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-22.04, macos-15]
+        # macOS minutes cost ten times Linux minutes on a private repo: pull requests and pushes run Linux; the macOS
+        # job runs when started by hand (Actions › ci › Run workflow) and on every release (release.yml)
+        os: ${{ github.event_name == 'workflow_dispatch' && fromJSON('["ubuntu-22.04","macos-15"]') || fromJSON('["ubuntu-22.04"]') }}
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1

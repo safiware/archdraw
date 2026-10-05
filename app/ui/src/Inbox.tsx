@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from "react"
+import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { Confirm } from "./Dialogs"
 import { highlighted, marks } from "./diffview"
 import { ApiError, api, type Change, type DiagramDiff, type InboxItem } from "./model"
@@ -92,15 +92,23 @@ export function Inbox({ dark, focusProject, onAsk, onOpen, onChanged }: { dark: 
 
 function Item({ item, dark, open, onToggle, onAsk, onOpen, onDone }: { item: InboxItem; dark: boolean; open: boolean; onToggle: () => void; onAsk: (p: string, t: string) => void; onOpen: (p: string, f?: string) => void; onDone: () => void }) {
   const p = item.pending!
-  const [diffs, setDiffs] = useState<DiagramDiff[] | null>(null)
+  // each diagram's diff arrives on its own; the rows are there at once, named from the update itself
+  const [diffs, setDiffs] = useState<Record<string, DiagramDiff | "error">>({})
+  const asked = useRef(new Set<string>())
   const [confirm, setConfirm] = useState<null | "approve" | "discard">(null)
-  const [loadFailed, setLoadFailed] = useState(false)
   // one diagram opens by itself; with several, each opens on a click, so Approve stays in reach
   const [shown, setShown] = useState<Set<string>>(() => new Set(p.files.length === 1 ? [p.files[0].name] : []))
   useEffect(() => {
-    if (!open || diffs) return
-    Promise.all(p.files.map(f => api.diff(item.project, f.name))).then(setDiffs, () => (setDiffs([]), setLoadFailed(true)))
-  }, [open, diffs, p.files, item.project])
+    if (!open) return
+    for (const f of p.files) {
+      if (asked.current.has(f.name)) continue
+      asked.current.add(f.name)
+      api.diff(item.project, f.name).then(
+        d => setDiffs(m => ({ ...m, [f.name]: d })),
+        () => setDiffs(m => ({ ...m, [f.name]: "error" })),
+      )
+    }
+  }, [open, p.files, item.project])
   const count = p.files.length
   const toggle = (name: string) =>
     setShown(s => {
@@ -140,45 +148,55 @@ function Item({ item, dark, open, onToggle, onAsk, onOpen, onDone }: { item: Inb
               Approve{count > 1 ? ` all ${count}` : ""}
             </button>
           </div>
-          {diffs === null && <p className="mt-3 text-sm text-[var(--muted)]">Loading the diff…</p>}
-          {loadFailed && <p className="mt-3 text-sm text-[var(--danger)]">The diff could not load. Close this update and open it again, or open the pull request.</p>}
-          {diffs && (
-            <ul className="ad-diff-list">
-              {diffs.map(d => {
-                const on = shown.has(d.name)
-                const title = /^\s*\/\/\s*title\s*:\s*(.+)$/m.exec(d.after ?? d.before ?? "")?.[1] ?? d.name
-                const state = !d.before ? "new" : !d.after ? "deleted" : null
-                return (
-                  <li key={d.name} className={`ad-diff-item ${on ? "ad-diff-item-on" : ""}`} data-testid={`diff-row-${d.name}`}>
-                    <button
-                      type="button"
-                      className="ad-diff-row"
-                      onClick={() => toggle(d.name)}
-                      aria-expanded={on}
-                      aria-controls={`diff-${item.project}-${d.name}`}
-                      aria-label={`${title}${state ? ` (${state})` : ""}: ${d.diff.added} added, ${d.diff.changed} changed, ${d.diff.removed} removed. ${on ? "Hide" : "Show"} the diff`}
-                      data-testid={`diff-toggle-${d.name}`}
-                    >
-                      <span className="ad-diff-caret" aria-hidden>
-                        {on ? "▾" : "▸"}
-                      </span>
-                      <span className="min-w-0 flex-1 truncate text-left font-medium">{title}</span>
-                      {state && <span className={`ad-diff-badge ad-diff-badge-${state}`}>{state}</span>}
-                      <span className="ad-diff-counts">
-                        <span className="ad-add">+{d.diff.added}</span> <span className="ad-chg">~{d.diff.changed}</span> <span className="ad-del">−{d.diff.removed}</span>
-                      </span>
-                      <span className="ad-diff-hint">{on ? "Hide" : "View diff"}</span>
-                    </button>
-                    {on && (
-                      <div id={`diff-${item.project}-${d.name}`}>
+          <ul className="ad-diff-list">
+            {p.files.map(f => {
+              const got = diffs[f.name]
+              const d = got && got !== "error" ? got : null
+              const on = shown.has(f.name)
+              const title = (d && /^\s*\/\/\s*title\s*:\s*(.+)$/m.exec(d.after ?? d.before ?? "")?.[1]) || f.name
+              const state = f.status === "added" ? "new" : f.status === "removed" ? "deleted" : null
+              return (
+                <li key={f.name} className={`ad-diff-item ${on ? "ad-diff-item-on" : ""}`} data-testid={`diff-row-${f.name}`}>
+                  <button
+                    type="button"
+                    className="ad-diff-row"
+                    onClick={() => toggle(f.name)}
+                    aria-expanded={on}
+                    aria-controls={`diff-${item.project}-${f.name}`}
+                    aria-label={`${title}${state ? ` (${state})` : ""}${d ? `: ${d.diff.added} added, ${d.diff.changed} changed, ${d.diff.removed} removed` : ""}. ${on ? "Hide" : "Show"} the diff`}
+                    data-testid={`diff-toggle-${f.name}`}
+                  >
+                    <span className="ad-diff-caret" aria-hidden>
+                      {on ? "▾" : "▸"}
+                    </span>
+                    <span className="min-w-0 flex-1 truncate text-left font-medium">{title}</span>
+                    {state && <span className={`ad-diff-badge ad-diff-badge-${state}`}>{state}</span>}
+                    <span className="ad-diff-counts">
+                      {d ? (
+                        <>
+                          <span className="ad-add">+{d.diff.added}</span> <span className="ad-chg">~{d.diff.changed}</span> <span className="ad-del">−{d.diff.removed}</span>
+                        </>
+                      ) : got === "error" ? (
+                        <span className="text-[var(--danger)]">could not load</span>
+                      ) : (
+                        <span className="text-[var(--muted)]">…</span>
+                      )}
+                    </span>
+                    <span className="ad-diff-hint">{on ? "Hide" : "View diff"}</span>
+                  </button>
+                  {on && (
+                    <div id={`diff-${item.project}-${f.name}`}>
+                      {d ? (
                         <DiffView d={d} dark={dark} project={item.project} onAsk={onAsk} onOpen={onOpen} />
-                      </div>
-                    )}
-                  </li>
-                )
-              })}
-            </ul>
-          )}
+                      ) : (
+                        <p className="ad-diff-block text-sm text-[var(--muted)]">{got === "error" ? "This diff could not load. Close the update and open it again, or open the pull request." : "Loading the diff…"}</p>
+                      )}
+                    </div>
+                  )}
+                </li>
+              )
+            })}
+          </ul>
           {item.commits && item.commits.length > 0 && (
             <details className="mt-3 text-xs text-[var(--muted)]">
               <summary>What happened</summary>
