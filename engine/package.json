@@ -30,7 +30,7 @@
     "example": "npm run build && node dist/cli.js examples/arch.reladraw -o examples/out/arch.svg"
   },
   "engines": {
-    "node": ">=18"
+    "node": ">=22.19.0"
   },
   "license": "Apache-2.0",
   "devDependencies": {
