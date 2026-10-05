@@ -63,6 +63,10 @@ archdraw is built in the open and contributions are welcome: bug reports, diagra
 
 If archdraw saves you time, you can [sponsor its development](https://github.com/sponsors/safiware).
 
+## Thanks
+
+archdraw is built on [reladraw](https://github.com/reladraw/reladraw), the diagram language and engine by Joe Walsh. Its central idea is the one archdraw depends on most: you say where things go (`right of app`, `below api`) and the layout follows. That is why an archdraw diagram reads as plainly as text, in a code review, in a diff, or in the context you hand a coding agent, and still draws as a clean picture. The engine in `engine/` is his work, included with its source unmodified. Thank you, Joe, for making it and for sharing it under Apache-2.0.
+
 ## License
 
 archdraw is licensed under the [Apache License 2.0](LICENSE). Its diagram engine in `engine/` is [reladraw](https://github.com/reladraw/reladraw) by Joe Walsh, also Apache-2.0; see [NOTICE](NOTICE). "archdraw" is a name of Safiware; see [TRADEMARKS.md](TRADEMARKS.md).
