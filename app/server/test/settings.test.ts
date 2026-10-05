@@ -8,6 +8,11 @@ describe("server settings", () => {
     expect(serverSettings({})).toEqual({ mode: "tailnet", port: 8088 })
   })
 
+  it("treats an empty value as unset, and ignores spaces around one", () => {
+    expect(serverSettings({ ARCHDRAW_GATE: "", ARCHDRAW_PORT: "" })).toEqual({ mode: "tailnet", port: 8088 })
+    expect(serverSettings({ ARCHDRAW_GATE: " token ", ARCHDRAW_PORT: " 9000 " })).toEqual({ mode: "token", port: 9000 })
+  })
+
   it("takes each gate mode and a port", () => {
     expect(serverSettings({ ARCHDRAW_GATE: "token", ARCHDRAW_PORT: "9000" })).toEqual({ mode: "token", port: 9000 })
     expect(serverSettings({ ARCHDRAW_GATE: "local" })).toEqual({ mode: "local", port: 8088 })
@@ -18,6 +23,6 @@ describe("server settings", () => {
   })
 
   it("refuses a port that is not a number from 1 to 65535", () => {
-    for (const p of ["abc", "0", "70000", "80.5", "-1", ""]) expect(serverSettings({ ARCHDRAW_PORT: p })).toHaveProperty("error")
+    for (const p of ["abc", "0", "70000", "80.5", "-1", "1e3"]) expect(serverSettings({ ARCHDRAW_PORT: p })).toHaveProperty("error")
   })
 })

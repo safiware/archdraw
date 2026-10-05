@@ -72,9 +72,10 @@ export async function start(o: StartOptions): Promise<{ port: number; url: strin
 /** The gate mode and port a self-hosted server starts with. A value it cannot use stops it with a message, never a
  * guess: a mistyped gate used to fall through to the tailnet gate with no principal, which refused every request. */
 export function serverSettings(env: Record<string, string | undefined>): { mode: Gate["mode"]; port: number } | { error: string } {
-  const mode = env.ARCHDRAW_GATE ?? "tailnet"
+  // an empty or unset value means the default, as ARCHDRAW_TOKEN's does
+  const mode = env.ARCHDRAW_GATE?.trim() || "tailnet"
   if (mode !== "tailnet" && mode !== "token" && mode !== "local") return { error: `ARCHDRAW_GATE is "${mode}": use tailnet, token or local` }
-  const raw = (env.ARCHDRAW_PORT ?? "8088").trim()
+  const raw = env.ARCHDRAW_PORT?.trim() || "8088"
   const port = Number(raw)
   if (!/^\d+$/.test(raw) || port < 1 || port > 65535) return { error: `ARCHDRAW_PORT is "${raw}": use a port number from 1 to 65535` }
   return { mode, port }
