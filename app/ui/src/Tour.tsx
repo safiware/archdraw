@@ -35,7 +35,7 @@ export const STEPS: Step[] = [
   {
     n: 4,
     title: "Ask for a change.",
-    body: "This is archdraw's agent. We typed a request for you: press Send. Its proposal appears beside the original, and nothing changes until you press Accept.",
+    body: "This is Arch Agent, archdraw's assistant. We typed a request for you: press Send. Its proposal appears beside the original, and nothing changes until you press Accept.",
     target: () => ["[data-testid=ghost-accept]", "[data-testid=proposal] [data-testid=accept]:not([disabled])", "[data-testid=chat-send]:not([disabled])", "[data-testid=chat-input]"],
     done: ["proposal.accepted", "proposal.dismissed"],
   },

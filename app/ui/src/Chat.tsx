@@ -131,7 +131,7 @@ export function ChatPanel(props: ChatProps) {
       <div className="ad-chat-head">
         <span className="ad-dot" data-busy={t.busy || undefined} />
         <div className="min-w-0">
-          <div className="truncate text-sm font-semibold">archdraw agent</div>
+          <div className="truncate text-sm font-semibold">Arch Agent</div>
           <div className="truncate text-[11px] text-[var(--muted)]" data-testid="chat-meta">
             {props.project} · ${t.cost.toFixed(2)} of ${budget.conversation.toFixed(2)}
             {t.model ? ` · ${t.model.split("/").pop()}` : ""}

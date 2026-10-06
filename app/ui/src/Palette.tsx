@@ -4,7 +4,7 @@ import { looksLikeAsk, rank, type Target } from "./agent"
 type Item = { kind: "ask"; text: string } | { kind: "go"; t: Target }
 
 /**
- * ⌘K: one box that jumps to any project or diagram by name, or hands the words to the archdraw agent. A query that
+ * ⌘K: one box that jumps to any project or diagram by name, or hands the words to Arch Agent. A query that
  * reads like a request (three words or more, or a question) puts "Ask" first; a name puts the matches first.
  */
 export function Palette({ targets, project, onGo, onAsk, onClose }: { targets: Target[]; project?: string; onGo: (t: Target) => void; onAsk: (text: string) => void; onClose: () => void }) {
@@ -37,7 +37,7 @@ export function Palette({ targets, project, onGo, onAsk, onClose }: { targets: T
             autoFocus
             value={q}
             data-testid="palette-input"
-            placeholder={project ? `Jump to a diagram, or ask the agent about ${project}…` : "Jump to a project…"}
+            placeholder={project ? `Jump to a diagram, or ask Arch Agent about ${project}…` : "Jump to a project…"}
             className="h-12 min-w-0 flex-1 bg-transparent text-[15px] outline-none"
             onChange={e => setQ(e.target.value)}
             onKeyDown={e => {
@@ -68,7 +68,7 @@ export function Palette({ targets, project, onGo, onAsk, onClose }: { targets: T
                 <>
                   <span className="ad-palette-icon">✦</span>
                   <span className="min-w-0 flex-1 truncate">
-                    Ask the archdraw agent: <b>{it.text}</b>
+                    Ask Arch Agent: <b>{it.text}</b>
                   </span>
                   <kbd>↵</kbd>
                 </>
@@ -81,7 +81,7 @@ export function Palette({ targets, project, onGo, onAsk, onClose }: { targets: T
               )}
             </button>
           ))}
-          {!items.length && <p className="px-3 py-3 text-sm text-[var(--muted)]">Type a name, or a sentence for the agent.</p>}
+          {!items.length && <p className="px-3 py-3 text-sm text-[var(--muted)]">Type a name, or a sentence for Arch Agent.</p>}
         </div>
       </div>
     </div>
