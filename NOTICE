@@ -1,12 +1,17 @@
 archdraw
-Copyright 2026 Safiware
+Copyright 2026 Tawab Safi
 
-This product includes software developed at Safiware (https://archdraw.dev).
+This product includes software developed by Tawab Safi (https://archdraw.dev).
+archdraw is licensed under the Functional Source License, Version 1.1, ALv2 Future
+License (FSL-1.1-ALv2; see LICENSE): free to use, modify and self-host for any purpose
+except offering a competing commercial product or service, and each version becomes
+available under the Apache License, Version 2.0 two years after its release.
 
 The diagram engine in engine/ is reladraw 0.16.0 (https://github.com/reladraw/reladraw),
-Copyright 2026 Joe Walsh, licensed under the Apache License, Version 2.0. Its source is
-included unmodified; only its package metadata (name, repository, scripts, Node version,
-development dependencies) and its compiler settings (tsconfig.json) were changed.
+Copyright 2026 Joe Walsh, licensed under the Apache License, Version 2.0 (engine/LICENSE),
+which continues to apply to it. Its source is included unmodified; only its package
+metadata (name, repository, scripts, Node version, development dependencies) and its
+compiler settings (tsconfig.json) were changed.
 Its notice follows.
 
 The archdraw desktop app also bundles third-party software listed, with each license,

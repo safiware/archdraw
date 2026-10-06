@@ -1,6 +1,6 @@
 # The archdraw name and logo
 
-The code is open source under the Apache License 2.0, which grants no rights to the project's names or logos (section 6). This page says what you may do with them.
+The code is available under the Functional Source License (FSL-1.1-ALv2), which grants no rights to the project's names or logos (its Trademarks clause). This page says what you may do with them. The name "archdraw" and its logo are trademarks of Tawab Safi.
 
 **You may**, without asking:
 - say that your product works with, extends, or is built on archdraw;
@@ -9,7 +9,7 @@ The code is open source under the Apache License 2.0, which grants no rights to 
 
 **Please ask first** before using the logo, and **do not**:
 - distribute a modified version under the name "archdraw", or a confusingly similar one. Forks are welcome under a different name;
-- suggest that your product is made or endorsed by Safiware when it is not.
+- suggest that your product is made or endorsed by archdraw's makers when it is not.
 
 Questions: hello@archdraw.dev.
 
