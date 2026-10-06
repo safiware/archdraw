@@ -176,9 +176,18 @@ body {
 }
 .ad-gutter {
   color: var(--muted);
-  opacity: 0.6;
   user-select: none;
   min-width: 3em;
+}
+.ad-gutter > div {
+  opacity: 0.6;
+}
+/* the line the engine refused: the status line below says why */
+.ad-gutter > .ad-gutter-error {
+  opacity: 1;
+  color: var(--danger);
+  font-weight: 600;
+  box-shadow: inset -2px 0 0 var(--danger);
 }
 
 .ad-toast {

@@ -135,6 +135,19 @@ async function main() {
       await page.keyboard.press("Control+End")
       await page.keyboard.type('\nnode cache "Menu cache" below db  style: store\n')
       await page.waitForFunction(() => document.querySelector("[data-card=system]")?.textContent?.includes("Menu cache"))
+      // a mistake: the status line and the card name its line, the gutter marks that line, Save waits (#32)
+      await page.keyboard.type('node oops "Oops" rigth of db')
+      await page.waitForFunction(() => /^line \d+: node "oops": "rigth" is not a direction$/.test(document.querySelector("[data-testid=status]")?.textContent?.trim() ?? ""))
+      const said = (await page.locator("[data-testid=status]").textContent())!.trim().match(/^line (\d+):/)![1]
+      const typedOn = String((await ta.inputValue()).split("\n").length)
+      const marked = (await page.locator("[data-error-line]").count()) ? (await page.locator("[data-error-line]").textContent())?.trim() : "no line"
+      if (said !== typedOn || marked !== typedOn) throw new Error(`the mistake is on line ${typedOn}; the status says ${said}, the gutter marks ${marked}`)
+      if (!(await page.locator("[data-card=system]").textContent())?.includes(`line ${said}: node "oops"`)) throw new Error("the card does not name the line")
+      if (await page.isEnabled("[data-testid=save]")) throw new Error("Save is enabled on a source that does not render")
+      await page.keyboard.press("Shift+Home")
+      await page.keyboard.press("Backspace")
+      await page.waitForFunction(() => document.querySelector("[data-testid=status]")?.textContent?.startsWith("Renders"))
+      if (await page.locator("[data-error-line]").count()) throw new Error("the gutter still marks a line after the mistake is gone")
       await page.keyboard.press("Control+s")
       // no git identity: the app asks who commits, then the save goes through
       await page.waitForSelector("[data-testid=identity-dialog]")
