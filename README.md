@@ -111,12 +111,12 @@ The same app runs as a server you open in a browser, for example on a home serve
 
 Bug reports, diagram-language improvements, new providers and Windows support are all welcome. Start with [CONTRIBUTING.md](CONTRIBUTING.md) and the [good first issues](https://github.com/safiware/archdraw/labels/good%20first%20issue); sign off each commit (`git commit -s`) to certify the [Developer Certificate of Origin](https://developercertificate.org). Questions and ideas go in [Discussions](https://github.com/safiware/archdraw/discussions).
 
-## Built on reladraw
+## Where the language comes from
 
-archdraw's diagram language and engine are [reladraw](https://github.com/reladraw/reladraw), included in [`engine/`](engine) under Apache-2.0. Thank you to the reladraw project for making it and sharing it.
+archdraw's diagram language started from [reladraw](https://github.com/reladraw/reladraw), which inspired it and is its starting engine, included in [`engine/`](engine) under Apache-2.0. Thank you to the reladraw project. From here archdraw grows it into a language made for software architecture: services, data flows, boundaries, deploy paths and how they change.
 
 ## License
 
 archdraw is [fair source](https://fair.io). You can use it, read it, change it and run it yourself, for any purpose and at work too; the one thing you can't do is offer a competing commercial product or service built from it. Each release becomes Apache-2.0 two years after it ships. The license is the [Functional Source License, FSL-1.1-ALv2](LICENSE).
 
-The diagram engine in [`engine/`](engine) is reladraw, and it stays under the [Apache License 2.0](engine/LICENSE); see [NOTICE](NOTICE). "archdraw" and its logo are trademarks of Tawab Safi; see [TRADEMARKS.md](TRADEMARKS.md).
+The starting engine in [`engine/`](engine) comes from reladraw and stays under the [Apache License 2.0](engine/LICENSE); see [NOTICE](NOTICE). "archdraw" and its logo are trademarks of Tawab Safi; see [TRADEMARKS.md](TRADEMARKS.md).
