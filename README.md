@@ -51,7 +51,7 @@
 
 | | |
 |---|---|
-| **macOS 13 or later** (Apple Silicon or Intel) | The `.dmg` from [Releases](https://github.com/safiware/archdraw/releases/latest) |
+| **macOS 13 or later** (Apple Silicon or Intel) | The `.dmg` from [Releases](https://github.com/safiware/archdraw/releases/latest). The first time, macOS asks you to confirm it: [how](docs/install-mac.md) |
 | **Linux** (x64) | The `.deb` (Debian, Ubuntu) or the `.AppImage` from [Releases](https://github.com/safiware/archdraw/releases/latest) |
 
 archdraw uses your machine's own `git`, and the [GitHub CLI](https://cli.github.com) (`gh auth login`) to open and merge pull requests. It tells you on first run if either is missing. Windows is not supported yet; [say so in an issue](https://github.com/safiware/archdraw/issues) if you want it.
@@ -111,9 +111,9 @@ The same app runs as a server you open in a browser, for example on a home serve
 
 Bug reports, diagram-language improvements, new providers and Windows support are all welcome. Start with [CONTRIBUTING.md](CONTRIBUTING.md) and the [good first issues](https://github.com/safiware/archdraw/labels/good%20first%20issue); sign off each commit (`git commit -s`) to certify the [Developer Certificate of Origin](https://developercertificate.org). Questions and ideas go in [Discussions](https://github.com/safiware/archdraw/discussions).
 
-## Thanks to reladraw
+## Built on reladraw
 
-archdraw is built on [reladraw](https://github.com/reladraw/reladraw), the diagram language and engine by Joe Walsh. Its central idea is the one archdraw depends on most: you say where things go (`right of app`, `below api`) and the layout follows. That is why an archdraw diagram reads as plainly as text, in a code review, in a diff, or in the context you hand a coding agent, and still draws as a clean picture. The engine in [`engine/`](engine) is his work, included unmodified apart from its package metadata. Thank you, Joe, for making it and for sharing it under Apache-2.0.
+archdraw's diagram language and engine are [reladraw](https://github.com/reladraw/reladraw), included in [`engine/`](engine) under Apache-2.0. Thank you to the reladraw project for making it and sharing it.
 
 ## License
 

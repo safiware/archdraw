@@ -49,7 +49,7 @@ jobs:
           CSC_IDENTITY_AUTO_DISCOVERY: "false"
         # ad hoc, as ci.yml does: a fully unsigned arm64 app is refused as "damaged" with no way to open it
         run: npx electron-builder --mac --arm64 --x64 --publish never -c.mac.identity=-
-      - name: package (macOS, signed and notarized)
+      - name: package (macOS, release)
         if: runner.os == 'macOS' && github.event_name == 'push'
         working-directory: app
         env:
@@ -58,13 +58,21 @@ jobs:
           APPLE_API_KEY_P8: ${{ secrets.APPLE_API_KEY_P8 }}
           APPLE_API_KEY_ID: ${{ secrets.APPLE_API_KEY_ID }}
           APPLE_API_ISSUER: ${{ secrets.APPLE_API_ISSUER }}
+        # With the Apple secrets in the release environment: Developer ID signed and notarized. Without them (before
+        # the Apple account is in place): an ad hoc signature, and the release notes tell Mac users how to open it.
+        # mac-signing.txt carries which one to the release job, which removes it before the checksums.
         run: |
-          test -n "$CSC_LINK" || { echo "::error::MAC_CERT_P12_BASE64 is not set in the release environment"; exit 1; }
-          test -n "$APPLE_API_KEY_P8" || { echo "::error::APPLE_API_KEY_P8 is not set in the release environment"; exit 1; }
-          printf '%s' "$APPLE_API_KEY_P8" | base64 --decode > "$RUNNER_TEMP/AuthKey.p8"
-          export APPLE_API_KEY="$RUNNER_TEMP/AuthKey.p8"
-          npx electron-builder --mac --arm64 --x64 --publish never -c.mac.notarize=true
-          rm -f "$RUNNER_TEMP/AuthKey.p8"
+          if [ -n "$CSC_LINK" ] && [ -n "$APPLE_API_KEY_P8" ]; then
+            printf '%s' "$APPLE_API_KEY_P8" | base64 --decode > "$RUNNER_TEMP/AuthKey.p8"
+            export APPLE_API_KEY="$RUNNER_TEMP/AuthKey.p8"
+            npx electron-builder --mac --arm64 --x64 --publish never -c.mac.notarize=true
+            rm -f "$RUNNER_TEMP/AuthKey.p8"
+            echo developer-id > release/mac-signing.txt
+          else
+            echo "::warning::No Apple signing secrets in the release environment: the macOS app is signed ad hoc and not notarized"
+            CSC_IDENTITY_AUTO_DISCOVERY=false npx electron-builder --mac --arm64 --x64 --publish never -c.mac.identity=-
+            echo ad-hoc > release/mac-signing.txt
+          fi
       - name: launch check (macOS)
         if: runner.os == 'macOS'
         working-directory: app
@@ -88,6 +96,7 @@ jobs:
             app/release/*.deb
             app/release/*.blockmap
             app/release/latest*.yml
+            app/release/mac-signing.txt
           if-no-files-found: error
   release:
     needs: build
@@ -102,6 +111,21 @@ jobs:
         with:
           path: dist
           merge-multiple: true
+      - name: release notes
+        # an ad hoc signed Mac build gets its opening steps at the top of the notes; the marker never ships
+        run: |
+          : > notes.md
+          if [ "$(cat dist/mac-signing.txt 2>/dev/null)" = "ad-hoc" ]; then
+            cat > notes.md <<'NOTES'
+          > **On a Mac, the first time:** this build is not yet notarized by Apple, so macOS asks you to confirm it once.
+          > Open archdraw from Applications, then go to **System Settings → Privacy & Security** and press **Open Anyway**
+          > (on macOS 13 and 14, right-click the app and choose **Open**). Step by step:
+          > [Opening archdraw on a Mac](https://github.com/safiware/archdraw/blob/main/docs/install-mac.md).
+          > This build tells you when a new version is out; install it by downloading it again.
+
+          NOTES
+          fi
+          rm -f dist/mac-signing.txt
       - name: checksums
         working-directory: dist
         run: sha256sum * > SHA256SUMS && cat SHA256SUMS
@@ -115,4 +139,4 @@ jobs:
       - name: draft release
         env:
           GH_TOKEN: ${{ github.token }}
-        run: gh release create "$GITHUB_REF_NAME" dist/* -R "$GITHUB_REPOSITORY" --draft --verify-tag --title "archdraw ${GITHUB_REF_NAME#v}" --generate-notes
+        run: gh release create "$GITHUB_REF_NAME" dist/* -R "$GITHUB_REPOSITORY" --draft --verify-tag --title "archdraw ${GITHUB_REF_NAME#v}" --generate-notes --notes-file notes.md
