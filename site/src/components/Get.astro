@@ -1,0 +1,53 @@
+---
+const RELEASES = 'https://github.com/safiware/archdraw/releases/latest';
+const dl = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><path d="M12 3v12m0 0l-5-5m5 5l5-5M4 20h16"/></svg>';
+---
+<section class="band alt" id="get" aria-labelledby="g-h">
+  <div class="wrap">
+    <p class="eyebrow"><b>07</b> Download</p>
+    <h2 class="sec-h" id="g-h">Get archdraw.</h2>
+    <div class="get-grid">
+      <div class="card">
+        <h3>Mac</h3><p>Apple Silicon and Intel. macOS 13 or later. On the release page, pick the .dmg: arm64 for Apple Silicon, x64 for Intel.</p>
+        <a class="btn btn-lamp" href={RELEASES}><Fragment set:html={dl} />Download for Mac</a>
+      </div>
+      <div class="card">
+        <h3>Linux</h3><p>AppImage and .deb, for x64.</p>
+        <a class="btn btn-lamp" href={RELEASES}><Fragment set:html={dl} />Download for Linux</a>
+      </div>
+      <div class="card">
+        <h3>Open source</h3><p>Apache-2.0, on GitHub.</p>
+        <a class="btn btn-ghost" href="https://github.com/safiware/archdraw">See it on GitHub</a>
+      </div>
+      <p class="get-note">Works with GitHub repos, checked on your schedule, and local folders, drawn when you ask. Needs git, and the GitHub CLI for pull requests.</p>
+      <div class="card cloud">
+        <div>
+          <p class="eyebrow">What’s next</p>
+          <p class="next"><span class="live-dot" aria-hidden="true"></span><span><strong>Next in the app:</strong> a change log for every diagram, showing which commits changed it.</span></p>
+          <h3>archdraw Cloud, later</h3>
+          <p>Watches while your laptop is closed. Share links. AI included. Follow the releases to hear first.</p>
+        </div>
+        <div class="cloud-act">
+          <a class="btn btn-lamp" href="https://github.com/safiware/archdraw/releases"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12Z"/><circle cx="12" cy="12" r="3"/></svg>Watch releases on GitHub</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style is:global>
+  .get-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; margin-top: clamp(28px, 5vh, 48px); }
+  .card { background: var(--panel); border: 1px solid var(--rule); border-radius: 16px; padding: 22px; display: flex; flex-direction: column; gap: 12px; }
+  .card h3 { font-size: 1.3rem; font-weight: 720; }
+  .card p:not(.eyebrow) { color: var(--text-2); font-size: .96rem; }
+  .card > .btn { align-self: flex-start; margin-top: auto; }
+  .get-note { grid-column: 1 / -1; margin: 0; color: var(--text-2); font-size: .95rem; }
+  .card.cloud { grid-column: 1 / -1; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 16px 32px; align-items: center; background: linear-gradient(120deg, var(--panel), color-mix(in srgb, var(--panel) 80%, var(--signal) 20%)); }
+  .cloud h3 { margin-top: 18px; }
+  .cloud p:not(.eyebrow) { margin-top: 8px; }
+  .card.cloud .next { display: flex; align-items: flex-start; gap: 10px; color: var(--text); }
+  .cloud .next .live-dot { flex: none; margin-top: .55em; }
+  .cloud-act { display: grid; gap: 14px; justify-items: start; }
+  @media (min-width: 961px) { .cloud-act { justify-items: end; } }
+  @media (max-width: 960px) { .get-grid { grid-template-columns: minmax(0, 1fr); } .card.cloud { grid-template-columns: minmax(0, 1fr); } }
+</style>

@@ -1,0 +1,7 @@
+---
+// The Bean There drawing, rendered at build time from the product's own layout.
+import { diagram, type DiagramOpts } from '../lib/diagram';
+type Props = DiagramOpts;
+const svg = diagram(Astro.props);
+---
+<Fragment set:html={svg} />
