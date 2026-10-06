@@ -27,10 +27,11 @@ trap 'exit 130' INT TERM
 
 say "Finding the latest archdraw release..."
 curl -fsSL "$API" -o "$tmp/release.json" || fail "could not reach GitHub ($API)"
-version=$(sed -n 's/.*"tag_name"[[:space:]]*:[[:space:]]*"v\{0,1\}\([^"]*\)".*/\1/p' "$tmp/release.json" | head -n 1)
+# one JSON field per line, however the response is formatted (no value read here contains a comma)
+tr ',' '\n' < "$tmp/release.json" > "$tmp/fields"
+version=$(sed -n 's/.*"tag_name"[[:space:]]*:[[:space:]]*"v\{0,1\}\([^"]*\)".*/\1/p' "$tmp/fields" | head -n 1)
 [ -n "$version" ] || fail "no published release found"
-# one asset URL per line
-sed -n 's/.*"browser_download_url"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/p' "$tmp/release.json" > "$tmp/urls"
+sed -n 's/.*"browser_download_url"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/p' "$tmp/fields" > "$tmp/urls"
 
 pick() { grep -E "$1" "$tmp/urls" | head -n 1 || true; }
 
