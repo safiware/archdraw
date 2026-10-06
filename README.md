@@ -35,7 +35,7 @@
 
 <div align="center">
 
-[![License: FSL-1.1-ALv2](https://img.shields.io/badge/license-FSL--1.1--ALv2-FFD66E?labelColor=0B1A36)](LICENSE) [![macOS · Linux](https://img.shields.io/badge/macOS%20·%20Linux-desktop-7CC8FF?labelColor=0B1A36)](https://github.com/safiware/archdraw/releases/latest)
+[![License: FSL-1.1-ALv2](https://img.shields.io/badge/license-FSL--1.1--ALv2-FFD66E?labelColor=0B1A36)](LICENSE) [![macOS · Linux](https://img.shields.io/badge/macOS%20·%20Linux-desktop-7CC8FF?labelColor=0B1A36)](https://github.com/safiware/archdraw/releases/latest) [![Sponsor archdraw](https://img.shields.io/badge/sponsor-archdraw-EA4AAA?labelColor=0B1A36&logo=githubsponsors&logoColor=EA4AAA)](https://github.com/sponsors/asaficontact)
 
 </div>
 
@@ -118,6 +118,10 @@ The same app runs as a server you open in a browser, for example on a home serve
 ## Contributing
 
 Bug reports, diagram-language improvements, new providers and Windows support are all welcome. Start with [CONTRIBUTING.md](CONTRIBUTING.md) and the [good first issues](https://github.com/safiware/archdraw/labels/good%20first%20issue); sign off each commit (`git commit -s`) to certify the [Developer Certificate of Origin](https://developercertificate.org). Questions and ideas go in [Discussions](https://github.com/safiware/archdraw/discussions).
+
+## Support archdraw
+
+archdraw is built with AI agents, and every feature costs tokens. If it saves you time, [sponsor it on GitHub](https://github.com/sponsors/asaficontact), from $5 a month; sponsorship covers the tokens that build it. Companies can become one of six Cornerstone sponsors, with their logo here and on archdraw.dev.
 
 ## Where the language comes from
 
