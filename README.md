@@ -49,6 +49,14 @@
 
 ## Install
 
+```sh
+curl -fsSL https://archdraw.dev/install.sh | sh
+```
+
+One command for macOS 13+ (Apple Silicon or Intel) and Linux (x64). It picks the build for your machine from the [latest release](https://github.com/safiware/archdraw/releases/latest), checks it against the release's checksums, and installs it: in Applications on a Mac, where it opens with no extra steps; with apt on Debian and Ubuntu; as an AppImage with an app-menu entry elsewhere. [Read the script](site/public/install.sh) first if you like.
+
+Or download the files yourself:
+
 | | |
 |---|---|
 | **macOS 13 or later** (Apple Silicon or Intel) | The `.dmg` from [Releases](https://github.com/safiware/archdraw/releases/latest). The first time, macOS asks you to confirm it: [how](docs/install-mac.md) |

@@ -3,7 +3,15 @@
 archdraw 0.1 for macOS is not yet notarized by Apple, so the first time you open it, macOS asks you to
 confirm that you trust it. You do this once; after that it opens like any other app.
 
-## Install
+## The quick way
+
+```sh
+curl -fsSL https://archdraw.dev/install.sh | sh
+```
+
+It installs the right build for your Mac into Applications, after checking it against the release's checksums, and archdraw then opens with no extra steps. The rest of this page is for downloading the `.dmg` yourself.
+
+## Install from the .dmg
 
 1. Download the `.dmg` from [Releases](https://github.com/safiware/archdraw/releases/latest): `arm64` for Apple Silicon (M1 and later), `x64` for Intel.
 2. Open it and drag **archdraw** into **Applications**.
