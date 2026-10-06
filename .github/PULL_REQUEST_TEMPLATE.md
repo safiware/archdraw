@@ -4,5 +4,5 @@
 **How I checked it** (tests added or run; a screenshot for UI changes)
 
 
-- [ ] Every commit is signed off (`git commit -s`)
+- [ ] I have signed the [CLA](https://github.com/safiware/archdraw/blob/main/CLA.md) (the `cla` check asks on your first pull request)
 - [ ] `npx vitest run` and the type-check pass

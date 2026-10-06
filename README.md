@@ -117,7 +117,7 @@ The same app runs as a server you open in a browser, for example on a home serve
 
 ## Contributing
 
-Bug reports, diagram-language improvements, new providers and Windows support are all welcome. Start with [CONTRIBUTING.md](CONTRIBUTING.md) and the [good first issues](https://github.com/safiware/archdraw/labels/good%20first%20issue); sign off each commit (`git commit -s`) to certify the [Developer Certificate of Origin](https://developercertificate.org). Questions and ideas go in [Discussions](https://github.com/safiware/archdraw/discussions).
+Bug reports, diagram-language improvements, new providers and Windows support are all welcome. Start with [CONTRIBUTING.md](CONTRIBUTING.md) and the [good first issues](https://github.com/safiware/archdraw/labels/good%20first%20issue). Your first pull request asks you to sign a one-time [Contributor License Agreement](CLA.md) by comment. Questions and ideas go in [Discussions](https://github.com/safiware/archdraw/discussions).
 
 ## Where the language comes from
 

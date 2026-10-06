@@ -1,0 +1,47 @@
+# Everyone whose commits are in a pull request signs the CLA (CLA.md) once, by commenting the sentence below on a pull
+# request. Signatures are kept in signatures/version1/cla.json on the unprotected cla-signatures branch. See CONTRIBUTING.md.
+# pull_request_target is safe here: nothing checks out or runs the pull request's code; the action only reads the
+# commit list and comments through the API. Never add a run: step that interpolates a comment body or a PR title.
+name: cla
+on:
+  issue_comment:
+    types: [created]
+  pull_request_target:
+    types: [opened, synchronize, reopened]
+permissions:
+  actions: write # re-run the failed check once someone signs
+  contents: write # commit the signature to the cla-signatures branch
+  pull-requests: write # post and update the CLA comment
+concurrency:
+  # two runs on one pull request would write cla.json at the same time
+  group: cla-${{ github.event.pull_request.number || github.event.issue.number }}
+  cancel-in-progress: false
+jobs:
+  cla:
+    # a comment only counts on a pull request, and only when it is exactly the sentence or "recheck"
+    if: >-
+      github.event_name == 'pull_request_target' ||
+      (github.event.issue.pull_request &&
+       (github.event.comment.body == 'recheck' ||
+        github.event.comment.body == 'I have read the archdraw CLA and I agree to its terms'))
+    runs-on: ubuntu-22.04
+    timeout-minutes: 5
+    steps:
+      # the action's repository was archived on 2026-03-23; v2.6.1 is its last release, pinned by commit
+      - uses: contributor-assistant/github-action@ca4a40a7d1004f18d9960b404b97e5f30a505a08 # v2.6.1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          path-to-document: https://github.com/safiware/archdraw/blob/main/CLA.md
+          path-to-signatures: signatures/version1/cla.json
+          branch: cla-signatures
+          # the licensor does not sign his own agreement; Banna is Tawab's agent, whose commits link to no account
+          allowlist: asaficontact,Banna,dependabot[bot]
+          custom-pr-sign-comment: I have read the archdraw CLA and I agree to its terms
+          custom-notsigned-prcomment: >-
+            Thank you for your pull request. Before it can be merged, everyone who wrote a commit in it signs the
+            [archdraw Contributor License Agreement](https://github.com/safiware/archdraw/blob/main/CLA.md) once. You
+            keep your copyright; the agreement is a license, and each contribution stays available under the license
+            archdraw used when you sent it. To sign, comment exactly the sentence below on this pull request.
+          custom-allsigned-prcomment: Everyone in this pull request has signed the archdraw CLA. Thank you.
+          lock-pullrequest-aftermerge: false
