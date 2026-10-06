@@ -129,6 +129,7 @@ try {
   // -- a new user on a phone ---------------------------------------------------------------------------------------
   const s2 = await server()
   const phone = await browser.newPage({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true })
+  failShot = file => phone.screenshot({ path: file })
   await step("phone · the tour runs as a bottom sheet; text-only steps say Got it", async () => {
     await phone.goto(s2.url)
     await phone.tap("[data-testid=start-sample]")
@@ -144,6 +145,7 @@ try {
   // -- an existing user is offered the tour once ---------------------------------------------------------------------
   const s3 = await server({ version: 1, projects: [], settings: {}, onboarding: { status: "new", step: 0 } })
   const p3 = await browser.newPage({ viewport: { width: 1280, height: 800 } })
+  failShot = file => p3.screenshot({ path: file })
   await step("existing user · a chip offers the tour once; ✕ removes it for good", async () => {
     await p3.goto(s3.url)
     await p3.click("[data-testid=start-sample]") // makes the app non-empty
@@ -153,9 +155,20 @@ try {
       const [s, ps] = await Promise.all([fetch("api/settings").then(r => r.json()), fetch("api/projects").then(r => r.json())])
       return s.onboarding?.status === "active" && Array.isArray(ps) && ps.length > 0
     }, undefined, { polling: 200, timeout: 30_000 })
-    await p3.evaluate(async () => fetch("api/onboarding", { method: "PUT", headers: { "content-type": "application/json" }, body: JSON.stringify({ status: "new", step: 0, chipDismissed: false }) }))
+    // reset to "never toured" from a blank page, so nothing the running app does can write over the reset, and read it back
+    await p3.goto("about:blank")
+    const reset = { status: "new", step: 0, chipDismissed: false }
+    const state = async () => {
+      const [settings, projects] = await Promise.all([p3.request.get(`${s3.url}/api/settings`).then(r => r.json()), p3.request.get(`${s3.url}/api/projects`).then(r => r.json())])
+      return { onboarding: settings.onboarding, projects: Array.isArray(projects) ? projects.length : projects }
+    }
+    await p3.request.put(`${s3.url}/api/onboarding`, { data: reset })
+    const before = await state()
+    if (before.onboarding?.status !== "new" || before.onboarding?.chipDismissed !== false || !before.projects) throw new Error(`the reset did not hold: ${JSON.stringify(before)}`)
     await p3.goto(s3.url + "/?again=1")
-    await p3.waitForSelector("[data-testid=tour-chip]")
+    await p3.waitForSelector("[data-testid=tour-chip]", { timeout: 15_000 }).catch(async e => {
+      throw new Error(`no tour chip; the server says ${JSON.stringify(await state())}; ${String((e as Error).message).split("\n")[0]}`)
+    })
     if (await p3.$("[data-testid=tour-card]")) throw new Error("the tour started by itself")
     await p3.click("[data-testid=tour-chip] button[aria-label=Dismiss]")
     await p3.goto(s3.url + "/?again=2")
