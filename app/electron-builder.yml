@@ -3,7 +3,7 @@
 # the Developer ID certificate and turns notarization on; CI builds for pull requests are signed ad hoc (-c.mac.identity=-).
 appId: com.safiware.archdraw
 productName: archdraw
-copyright: Copyright © 2026 Safiware
+copyright: Copyright © 2026 Tawab Safi
 directories:
   app: desktop/app
   output: release

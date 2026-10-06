@@ -40,7 +40,7 @@
     "vitest": "^3.2.7"
   },
   "license": "FSL-1.1-ALv2",
-  "author": "Safiware <hello@archdraw.dev>",
+  "author": "Tawab Safi <hello@archdraw.dev>",
   "homepage": "https://archdraw.dev",
   "repository": {
     "type": "git",

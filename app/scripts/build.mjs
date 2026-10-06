@@ -76,6 +76,6 @@ if (what === "all" || what === "desktop") {
   const r = await build({ entryPoints: { main: join(root, "desktop/src/main.ts") }, outdir: out, bundle: true, platform: "node", format: "esm", target: "node22", splitting: true, outExtension: { ".js": ".mjs" }, external: ["electron"], banner, logLevel: "warning", metafile: true })
   writeFileSync(join(out, "THIRD_PARTY_NOTICES.txt"), notices(new Map([...packagesOf(r.metafile), ...uiPackages()])))
   await build({ entryPoints: [join(root, "desktop/src/preload.ts")], outfile: join(out, "preload.cjs"), bundle: true, platform: "node", format: "cjs", external: ["electron"], logLevel: "warning" })
-  writeFileSync(join(out, "package.json"), JSON.stringify({ name: "archdraw", productName: "archdraw", version: pkg.version, description: pkg.description, main: "main.mjs", type: "module", author: { name: "Safiware", email: "hello@archdraw.dev" }, homepage: "https://archdraw.dev", desktopName: "archdraw.desktop", license: "FSL-1.1-ALv2" }, null, 1))
+  writeFileSync(join(out, "package.json"), JSON.stringify({ name: "archdraw", productName: "archdraw", version: pkg.version, description: pkg.description, main: "main.mjs", type: "module", author: { name: "Tawab Safi", email: "hello@archdraw.dev" }, homepage: "https://archdraw.dev", desktopName: "archdraw.desktop", license: "FSL-1.1-ALv2" }, null, 1))
   console.log("built desktop/app")
 }
