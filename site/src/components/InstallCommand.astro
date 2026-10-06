@@ -1,0 +1,35 @@
+---
+// The one install command, with a Copy button. Used in the hero and in Get archdraw.
+const CMD = 'curl -fsSL https://archdraw.dev/install.sh | sh';
+---
+<div class="install-cmd">
+  <code class="mono"><span class="cmd-a"><span class="prompt" aria-hidden="true">$ </span>curl -fsSL</span> <span class="cmd-b">https://archdraw.dev/install.sh | sh</span></code>
+  <button class="copy-b" type="button" data-copy={CMD} aria-label="Copy the install command" title="Copy">
+    <svg class="i-copy" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="8" y="8" width="12" height="12" rx="2.5"/><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"/></svg>
+    <svg class="i-done" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg>
+  </button>
+  <span class="copy-live" aria-live="polite"></span>
+</div>
+
+<script>
+  import { initCopy } from '../scripts/copy';
+  initCopy();
+</script>
+
+<style is:global>
+  .install-cmd { position: relative; display: flex; align-items: center; gap: 10px; max-width: 100%; padding: 10px 10px 10px 16px; border: 1px solid var(--rule); border-radius: 12px; background: var(--well, var(--panel)); }
+  .install-cmd code { flex: 1; min-width: 0; font-size: .84rem; line-height: 1.55; color: var(--text); }
+  /* where it does not fit on one line it breaks after -fsSL only (a visual break: copying still gives one line);
+     on a narrow phone the URL may wrap too */
+  .install-cmd .cmd-a, .install-cmd .cmd-b { white-space: nowrap; }
+  @media (max-width: 480px), (min-width: 961px) and (max-width: 1180px) { .install-cmd .cmd-b { white-space: normal; overflow-wrap: anywhere; } }
+  .install-cmd .prompt { color: var(--text-2); user-select: none; }
+  .copy-b { flex: none; width: 38px; height: 38px; display: grid; place-items: center; border-radius: 9px; border: 2px solid var(--lamp-shadow); background: var(--lamp); color: var(--on-lamp); cursor: pointer; padding: 0; }
+  .copy-b:hover { filter: brightness(1.05); }
+  .copy-b:focus-visible { outline: 2px solid var(--signal); outline-offset: 2px; }
+  .copy-b svg { width: 18px; height: 18px; grid-area: 1 / 1; }
+  .copy-b .i-done { display: none; }
+  .copy-b.copied .i-copy { display: none; }
+  .copy-b.copied .i-done { display: block; }
+  .copy-live { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+</style>

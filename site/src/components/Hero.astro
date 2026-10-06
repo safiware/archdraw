@@ -1,6 +1,7 @@
 ---
 import Diagram from './Diagram.astro';
 import Logo from './Logo.astro';
+import InstallCommand from './InstallCommand.astro';
 import { AFTER_LABEL, contours } from '../lib/diagram';
 import { VB_AFTER } from '../lib/bean';
 const RELEASES = 'https://github.com/safiware/archdraw/releases/latest';
@@ -8,15 +9,15 @@ const RELEASES = 'https://github.com/safiware/archdraw/releases/latest';
 <section class="hero" aria-labelledby="hero-h">
   <div class="contours" aria-hidden="true" set:html={contours()} />
   <div class="wrap">
-    <p class="eyebrow"><span class="live-dot" aria-hidden="true"></span><span>A desktop app for the diagrams in your repo</span></p>
+    <p class="eyebrow"><span class="live-dot" aria-hidden="true"></span><span>Architecture diagrams that never go stale</span></p>
     <h1 class="hero-h" id="hero-h"><span class="l">Keep the drawing</span> <span class="l">true to the <span class="em">code.</span></span></h1>
     <div class="hero-grid">
       <div class="hero-copy">
         <p class="lede">archdraw keeps your architecture diagram up to date as the code changes, whether the change came from you, a teammate, or an AI agent. It notices when the drawing no longer matches, draws the update, and waits for your OK.</p>
         <div class="ctas">
-          <a class="btn btn-lamp" href={RELEASES}><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><path d="M12 3v12m0 0l-5-5m5 5l5-5M4 20h16"/></svg><span data-dl-label>Download</span></a>
+          <InstallCommand />
         </div>
-        <p class="fine">Free for macOS 13+ and Linux, with the source on GitHub. Runs on your AI key; you set the spending cap.</p>
+        <p class="fine">For macOS 13+ and Linux. <a href="https://github.com/safiware/archdraw/blob/main/site/public/install.sh">Read the script</a> · <a href={RELEASES}>Or download the files</a><br />Free, with the source on GitHub. Runs on your AI key; you set the spending cap.</p>
       </div>
       <div class="hero-live">
         <div class="win">
@@ -54,9 +55,11 @@ const RELEASES = 'https://github.com/safiware/archdraw/releases/latest';
   .hero-h .l { display: block; }
   .hero-h .em { color: var(--signal); }
   @media (max-width: 700px) { .hero-h .l { display: inline; } }
-  .hero-grid { display: grid; grid-template-columns: minmax(0, 4.6fr) minmax(0, 7.4fr); gap: clamp(24px, 4vw, 56px); margin-top: clamp(24px, 4vh, 40px); align-items: start; }
+  .hero-grid { display: grid; grid-template-columns: minmax(0, 5.2fr) minmax(0, 6.8fr); gap: clamp(24px, 4vw, 56px); margin-top: clamp(24px, 4vh, 40px); align-items: start; }
   .lede { font-size: clamp(1.06rem, 1.35vw, 1.2rem); line-height: 1.62; max-width: 34em; }
-  .ctas { display: flex; flex-wrap: wrap; gap: 14px 12px; margin-top: 26px; }
+  .ctas { display: flex; flex-wrap: wrap; gap: 14px 12px; margin-top: 26px; max-width: 560px; }
+  .ctas .install-cmd { flex: 1 1 100%; }
+  .fine a { color: var(--signal); text-underline-offset: 3px; }
   .fine { margin-top: 18px; font-size: .9rem; color: var(--text-2); }
   @media (max-width: 960px) { .hero-grid { grid-template-columns: minmax(0, 1fr); } }
 

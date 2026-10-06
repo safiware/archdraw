@@ -1,0 +1,74 @@
+# The install script (site/public/install.sh, served as https://archdraw.dev/install.sh) run the way visitors run it,
+# `curl ... | sh`, against a stand-in release served on localhost: the download, the SHA256SUMS check, and the install
+# on macOS (no quarantine flag, so no Open Anyway step) and Linux (the AppImage launcher and app-menu entry).
+name: install-script
+on:
+  pull_request:
+    paths: ["site/public/install.sh", ".github/workflows/install-script.yml"]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  install:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [macos-15, ubuntu-22.04]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: a stand-in release, served on localhost
+        run: |
+          set -eu
+          rel="$RUNNER_TEMP/rel" && mkdir -p "$rel" && cp site/public/install.sh "$rel/"
+          if [ "$RUNNER_OS" = macOS ]; then
+            app="$RUNNER_TEMP/build/archdraw.app" && mkdir -p "$app/Contents/MacOS"
+            printf '#!/bin/sh\necho stand-in archdraw ok\n' > "$app/Contents/MacOS/archdraw" && chmod 755 "$app/Contents/MacOS/archdraw"
+            printf '<?xml version="1.0" encoding="UTF-8"?>\n<plist version="1.0"><dict><key>CFBundleExecutable</key><string>archdraw</string><key>CFBundleIdentifier</key><string>dev.archdraw.standin</string></dict></plist>\n' > "$app/Contents/Info.plist"
+            codesign -s - "$app"
+            for a in arm64 x64; do ditto -c -k --keepParent "$app" "$rel/archdraw-0.1.0-$a.zip"; done
+            (cd "$rel" && shasum -a 256 ./*.zip | sed 's|  \./|  |' > SHA256SUMS)
+          else
+            printf '#!/bin/sh\necho stand-in archdraw ok\n' > "$rel/archdraw-0.1.0-x86_64.AppImage"
+            (cd "$rel" && sha256sum archdraw-0.1.0-x86_64.AppImage > SHA256SUMS)
+          fi
+          python3 - "$rel" <<'PY'
+          import json, os, sys
+          rel = sys.argv[1]
+          assets = [{"name": f, "browser_download_url": f"http://127.0.0.1:8765/{f}"} for f in sorted(os.listdir(rel)) if f != "install.sh"]
+          json.dump({"tag_name": "v0.1.0", "assets": assets}, open(os.path.join(rel, "release.json"), "w"))
+          PY
+          (cd "$rel" && nohup python3 -m http.server 8765 --bind 127.0.0.1 >/dev/null 2>&1 &)
+          for _ in $(seq 1 20); do curl -fsS -o /dev/null http://127.0.0.1:8765/release.json && break; sleep 0.5; done
+      - name: curl | sh installs it (macOS)
+        if: runner.os == 'macOS'
+        run: |
+          set -eu
+          export ARCHDRAW_RELEASE_API=http://127.0.0.1:8765/release.json ARCHDRAW_APPS_DIR="$RUNNER_TEMP/Applications"
+          curl -fsSL http://127.0.0.1:8765/install.sh | sh
+          app="$ARCHDRAW_APPS_DIR/archdraw.app"
+          test -x "$app/Contents/MacOS/archdraw"
+          if xattr -p com.apple.quarantine "$app" 2>/dev/null; then echo "::error::the app carries a quarantine flag"; exit 1; fi
+          codesign --verify --deep "$app"
+          "$app/Contents/MacOS/archdraw" | grep -q "stand-in archdraw ok"
+      - name: curl | sh installs it (Linux, AppImage)
+        if: runner.os == 'Linux'
+        run: |
+          set -eu
+          export ARCHDRAW_RELEASE_API=http://127.0.0.1:8765/release.json ARCHDRAW_LINUX_FORMAT=appimage HOME="$RUNNER_TEMP/home"
+          mkdir -p "$HOME"
+          curl -fsSL http://127.0.0.1:8765/install.sh | sh
+          test -x "$HOME/.local/share/archdraw/archdraw.AppImage"
+          "$HOME/.local/bin/archdraw" | grep -q "stand-in archdraw ok"
+          grep -q "^Exec=$HOME/.local/bin/archdraw" "$HOME/.local/share/applications/archdraw.desktop"
+      - name: a tampered download is refused
+        run: |
+          set -eu
+          rel="$RUNNER_TEMP/rel"
+          # change each checksum's first digit, whatever it is
+          sed -i.bak -e 's/^0/X/' -e 's/^[1-9a-f]/0/' -e 's/^X/1/' "$rel/SHA256SUMS"
+          export ARCHDRAW_RELEASE_API=http://127.0.0.1:8765/release.json ARCHDRAW_APPS_DIR="$RUNNER_TEMP/Applications2" ARCHDRAW_LINUX_FORMAT=appimage HOME="$RUNNER_TEMP/home2"
+          mkdir -p "$HOME"
+          if curl -fsSL http://127.0.0.1:8765/install.sh | sh; then echo "::error::a checksum mismatch was installed"; exit 1; fi
+          test ! -e "$RUNNER_TEMP/Applications2/archdraw.app" && test ! -e "$HOME/.local/bin/archdraw"

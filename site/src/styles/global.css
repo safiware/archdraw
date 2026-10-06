@@ -134,6 +134,8 @@ html:not(.js) .theme-t { visibility: hidden; }
   :root:not([data-theme="dark"]) .theme-t .i-moon { display: block; }
 }
 @media (max-width: 900px) { .top nav { display: none; } .top-act { margin-left: auto; } }
+@media (max-width: 400px) { .top { gap: 12px; } .top-act { gap: 8px; } .icon-btn { width: 36px; height: 36px; } .brand span { font-size: 1.1rem; } }
+@media (max-width: 340px) { .top-act .btn-sm { display: none; } }
 
 /* bands */
 section { scroll-margin-top: 16px; }
