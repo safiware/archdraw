@@ -4,6 +4,7 @@
 // app uses the OS keychain).
 
 import { readFileSync, statSync } from "node:fs"
+import type { StreamFn } from "@earendil-works/pi-agent-core"
 import { createModels, type Model, type Models } from "@earendil-works/pi-ai"
 import { anthropicProvider } from "@earendil-works/pi-ai/providers/anthropic"
 import { googleProvider } from "@earendil-works/pi-ai/providers/google"
@@ -100,4 +101,46 @@ export function pickModel(m: Models, provider: string, id: string, role: "chat" 
   const model = m.getModel(provider as any, want) ?? (p ? m.getModel(provider as any, p[role]) : undefined)
   if (!model) throw new Error(`no model ${want || "(none)"} for ${provider}; pick one in Settings`)
   return model
+}
+
+/**
+ * How many times a model request is sent again after a dropped connection, a 408/409/429 or a 5xx: the OpenAI and
+ * Anthropic SDKs' own default. pi-ai turns the SDKs' retries off and its own default is none, so without this a single
+ * dropped connection ended the agent's turn with "Connection error.".
+ */
+export const MODEL_RETRIES = 2
+
+// the APIs whose SDK takes a custom fetch (Google's adapter refuses one)
+const FETCH_APIS = new Set(["openai-responses", "openai-completions", "anthropic-messages"])
+
+/** Why a request's fetch failed, from its deepest cause: "other side closed, UND_ERR_SOCKET", "getaddrinfo ENOTFOUND …". */
+export function transportCause(err: unknown): string {
+  let e = err as { cause?: unknown; message?: string; code?: unknown; name?: string; errors?: { message?: string }[] } | undefined
+  for (let i = 0; i < 6 && e?.cause; i++) e = e.cause as typeof e
+  const parts = e instanceof AggregateError && e.errors?.length ? e.errors.map(x => x?.message) : [e?.message]
+  const text = parts.filter(Boolean).join("; ") || String(e?.name ?? e)
+  const code = typeof e?.code === "string" && !text.includes(e.code) ? `, ${e.code}` : ""
+  return (text + code).slice(0, 200)
+}
+
+/**
+ * The stream function for a pi Agent: transient failures are retried, and `onFailure` hears why a request's connection
+ * failed (the SDKs keep that in the error's `cause`; pi-ai passes on only the message).
+ */
+export function streamWithRetries(m: Models, onFailure?: (why: string) => void): StreamFn {
+  const fetchWithCause: typeof fetch = async (input, init) => {
+    try {
+      return await fetch(input, init)
+    } catch (err) {
+      if (!init?.signal?.aborted) onFailure?.(transportCause(err))
+      throw err
+    }
+  }
+  return (model, context, options) =>
+    m.streamSimple(model, context, { ...options, maxRetries: MODEL_RETRIES, ...(onFailure && FETCH_APIS.has(model.api) ? { fetch: fetchWithCause } : {}) })
+}
+
+/** The SDKs' bare "Connection error." with the reason it happened, when one was heard. */
+export function withCause(message: string, cause: string | null): string {
+  return cause && /^Connection error\.?$/.test(message.trim()) ? `Connection error (${cause}).` : message
 }

@@ -3,7 +3,7 @@
 // a file. Diagrams are capped at 200 KB and the engine refuses ambiguity instead of searching, so a check is fast
 // (0.1–0.4 s for large diagrams).
 
-import { compile, parse, resolve, THEMES } from "../../../engine/src/index.js"
+import { compile, parse, resolve, SourceError, THEMES } from "../../../engine/src/index.js"
 
 export { parse, resolve }
 
@@ -13,8 +13,8 @@ export function check(source: string): string | null {
     compile(source)
     return null
   } catch (e) {
-    const line = e && typeof (e as { line?: number }).line === "number" && (e as { line: number }).line > 0 ? `line ${(e as { line: number }).line}: ` : ""
-    return (line + String(e instanceof Error ? e.message : e)).slice(0, 2000)
+    // the engine's own "line N: …" (SourceError.format), as the app's editor shows it (ui/src/render.ts `refusal`)
+    return (e instanceof SourceError && e.line > 0 ? e.format() : String(e instanceof Error ? e.message : e)).slice(0, 2000)
   }
 }
 
