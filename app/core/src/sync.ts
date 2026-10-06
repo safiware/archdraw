@@ -16,7 +16,7 @@ import { systemPrompt, skills } from "./agent.js"
 import { git } from "./git.js"
 import { graph, outline } from "./graph.js"
 import type { Library } from "./library.js"
-import { type KeyStore, type ModelSet, pickModel } from "./models.js"
+import { type KeyStore, MODEL_RETRIES, type ModelSet, pickModel, streamWithRetries } from "./models.js"
 import type { Spend } from "./spend.js"
 import { makeTools, type Proposal } from "./tools.js"
 
@@ -215,7 +215,7 @@ export class Syncer {
     const msg = await models.completeSimple(model, {
       systemPrompt: TRIAGE,
       messages: [{ role: "user", content: `# The diagrams now\n\n${joined.slice(0, 12_000)}\n\n# New commits (${commits.length}${shown < commits.length ? `, the first ${shown} shown` : ""})\n\n${listing}`, timestamp: Date.now() }],
-    } as any, { apiKey: key } as any)
+    } as any, { apiKey: key, maxRetries: MODEL_RETRIES } as any)
     spend.add(slug, Number((msg as any).usage?.cost?.total) || 0)
     const text = ((msg as any).content ?? []).filter((c: any) => c.type === "text").map((c: any) => c.text).join("")
     let j: { changed?: unknown; why?: unknown; touches?: unknown }
@@ -253,7 +253,7 @@ export class Syncer {
     })
     const agent = new Agent({
       initialState: { systemPrompt: systemPrompt({ slug: p.slug, title: p.title }), model, tools, thinkingLevel: "medium" },
-      streamFn: models.streamSimple.bind(models),
+      streamFn: streamWithRetries(models),
       getApiKey: async () => keys.get(s.provider),
       toolExecution: "sequential",
     })

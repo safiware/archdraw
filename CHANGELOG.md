@@ -2,6 +2,12 @@
 
 All notable changes to archdraw. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); versions follow [Semantic Versioning](https://semver.org) (in 0.x, a minor version may change behavior).
 
+## Unreleased
+
+### Fixed
+
+- The agent no longer stops at "Connection error." when one connection to the AI provider drops: a request to the model is sent again up to twice, as the OpenAI and Anthropic SDKs do by default (the scheduled change check and its drafts too). An error that remains says why, for example "Connection error (getaddrinfo ENOTFOUND api.openai.com)."
+
 ## 0.1.0 — 2026-10-06
 
 The first public release.
