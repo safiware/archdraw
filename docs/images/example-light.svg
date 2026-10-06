@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="678" height="275" viewBox="0 0 678 275" font-family="'DejaVu Sans Mono', 'Menlo', 'Consolas', 'Liberation Mono', 'Courier New', monospace" font-size="14px">
+  <defs>
+    <marker id="rd94225e3-arrow-7c83a0" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#7c83a0"/>
+    </marker>
+  </defs>
+  <rect x="0" y="0" width="678" height="275" fill="#ffffff"/>
+  <path d="M48 40 H170 a8 8 0 0 1 8 8 V98 a8 8 0 0 1 -8 8 H48 a8 8 0 0 1 -8 -8 V48 a8 8 0 0 1 8 -8 Z" fill="#cedfd0" stroke="#3a7d44"/>
+  <text x="109" y="68.4" fill="#1f2328" text-anchor="middle">Customer app</text>
+  <text x="109" y="87.4" fill="#6e7781" text-anchor="middle">iOS + Android</text>
+  <path d="M300.4 40 H396.4 a8 8 0 0 1 8 8 V98 a8 8 0 0 1 -8 8 H300.4 a8 8 0 0 1 -8 -8 V48 a8 8 0 0 1 8 -8 Z" fill="#cedfd0" stroke="#3a7d44"/>
+  <text x="348.4" y="68.4" fill="#1f2328" text-anchor="middle">Orders API</text>
+  <text x="348.4" y="87.4" fill="#6e7781" text-anchor="middle">Node</text>
+  <path d="M510.8 40 H629.8 a8 8 0 0 1 8 8 V98 a8 8 0 0 1 -8 8 H510.8 a8 8 0 0 1 -8 -8 V48 a8 8 0 0 1 8 -8 Z" fill="#eef0f7" stroke="#8a90a8"/>
+  <text x="546.3" y="77.9" fill="#1f2328" text-anchor="middle">Menu DB</text>
+  <g transform="translate(585.8 54) scale(1.58333)">
+    <path d="M3 6.4 v11.2 a9 3.4 0 0 0 18 0 v-11.2 Z" fill="#d6d9e6" stroke="#57606a" stroke-width="1.1" stroke-linejoin="round"/>
+    <path d="M3 6.4 a9 3.4 0 0 1 18 0 a9 3.4 0 0 1 -18 0 Z" fill="#d6d9e6" stroke="#57606a" stroke-width="1.1" stroke-linejoin="round"/>
+    <path d="M3 11 a9 3.4 0 0 0 18 0" fill="none" stroke="#57606a" stroke-width="1.1" stroke-linejoin="round"/>
+    <path d="M3 15.6 a9 3.4 0 0 0 18 0" fill="none" stroke="#57606a" stroke-width="1.1" stroke-linejoin="round"/>
+  </g>
+  <path d="M308.4 187.4 H388.4 a8 8 0 0 1 8 8 V226.4 a8 8 0 0 1 -8 8 H308.4 a8 8 0 0 1 -8 -8 V195.4 a8 8 0 0 1 8 -8 Z" fill="#cedfd0" stroke="#3a7d44"/>
+  <text x="348.4" y="215.8" fill="#1f2328" text-anchor="middle">Payments</text>
+  <path d="M 178 73 C 223.76 73, 246.64 73, 281.2 73 L 292.4 73" fill="none" stroke="#7c83a0" stroke-width="1.6" marker-end="url(#rd94225e3-arrow-7c83a0)"/>
+  <rect x="207.8" y="63.5" width="52" height="19" fill="#ffffff"/>
+  <text x="233.8" y="77.9" fill="#1f2328" text-anchor="middle">HTTPS</text>
+  <path d="M 404.4 73 C 443.76 73, 463.44 73, 491.6 73 L 502.8 73" fill="none" stroke="#7c83a0" stroke-width="1.6" marker-end="url(#rd94225e3-arrow-7c83a0)"/>
+  <rect x="434.2" y="63.5" width="36" height="19" fill="#ffffff"/>
+  <text x="452.2" y="77.9" fill="#1f2328" text-anchor="middle">SQL</text>
+  <path d="M 348.4 106 C 348.4 138.56, 348.4 154.84, 348.4 176.2 L 348.4 187.4" fill="none" stroke="#7c83a0" stroke-width="1.6" marker-end="url(#rd94225e3-arrow-7c83a0)"/>
+  <rect x="317.9" y="135.8" width="61" height="19" fill="#ffffff"/>
+  <text x="348.4" y="150.2" fill="#1f2328" text-anchor="middle">charge</text>
+</svg>
