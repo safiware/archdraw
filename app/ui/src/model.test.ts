@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest"
 import { THEMES, compile } from "@engine"
-import { CARD_HEAD, CARD_PAD, GAP, bounds, fit, hashFor, layout, meta, parseHash, svgSize, zoomAt } from "./model"
+import { CARD_HEAD, CARD_PAD, GAP, bounds, fit, hashFor, lastCheckText, layout, meta, parseHash, svgSize, syncNotice, zoomAt } from "./model"
 
 describe("meta", () => {
   it("reads the leading title and summary comments only", () => {
@@ -58,5 +58,21 @@ describe("the engine the studio renders with", () => {
     expect(svg.startsWith("<svg")).toBe(true)
     expect(s.w).toBeGreaterThan(50)
     expect(s.h).toBeGreaterThan(20)
+  })
+})
+
+describe("sync messages", () => {
+  const ago = (s: number) => `${s}s ago`
+  it("Sync now names what happened, a failed update included", () => {
+    expect(syncNotice("Shop", { project: "shop", outcome: "drafted", note: "checked the first 60 of 61 commits" })).toBe("Shop: an update is waiting in the Inbox (checked the first 60 of 61 commits)")
+    expect(syncNotice("Shop", { project: "shop", outcome: "failed", reason: "the push was refused" })).toBe("Shop: the update could not be made: the push was refused")
+    expect(syncNotice("Shop", { project: "shop", outcome: "skipped", reason: "already syncing" })).toBe("Shop: already syncing")
+    expect(syncNotice("Shop", { project: "shop", outcome: "no-architecture-change" })).toBe("Shop: up to date")
+  })
+  it("the Inbox says what the last check found, never 'checked' after a failure", () => {
+    expect(lastCheckText(null, null, ago)).toBe("not checked yet")
+    expect(lastCheckText(null, "abcdef0123", ago)).toBe("checked through abcdef0")
+    expect(lastCheckText({ project: "shop", outcome: "failed", reason: "no key", at: 5000 }, null, ago)).toBe("last check 5s ago: the update could not be made: no key")
+    expect(lastCheckText({ project: "shop", outcome: "no-architecture-change", commits: 3, at: 1000, note: "checked part" }, null, ago)).toBe("checked 1s ago: 3 commit(s), no architecture change (checked part)")
   })
 })

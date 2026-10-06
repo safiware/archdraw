@@ -208,3 +208,23 @@ export function parseHash(hash: string): { project?: string; file?: string; inbo
 
 export const hashFor = (project?: string, file?: string) => (project ? `#/${project}${file ? `/${file}` : ""}` : "#/")
 export const inboxHash = (project?: string) => `#/inbox${project ? `/${project}` : ""}`
+
+/** What "Sync now" says once the check ends. */
+export function syncNotice(title: string, r: SyncResult): string {
+  const note = r.note ? ` (${r.note})` : ""
+  if (r.outcome === "drafted") return `${title}: an update is waiting in the Inbox${note}`
+  if (r.outcome === "skipped") return `${title}: ${r.reason}`
+  // "failed" covers the draft itself failing (the model, the network, the budget) as well as saving it
+  if (r.outcome === "failed") return `${title}: the update could not be made: ${r.reason}`
+  return `${title}: up to date${note}`
+}
+
+/** The Inbox's line for a project with nothing waiting: its last check, in words (`ago` turns seconds into "5 minutes ago"). */
+export function lastCheckText(last: SyncResult | null, checkedThrough: string | null, ago: (seconds: number) => string): string {
+  if (!last) return checkedThrough ? `checked through ${checkedThrough.slice(0, 7)}` : "not checked yet"
+  const when = ago((last.at ?? 0) / 1000)
+  if (last.outcome === "no-architecture-change") return `checked ${when}: ${last.commits} commit(s), no architecture change${last.note ? ` (${last.note})` : ""}`
+  if (last.outcome === "skipped") return `last check ${when}: ${last.reason}`
+  if (last.outcome === "failed") return `last check ${when}: the update could not be made: ${last.reason}`
+  return `checked ${when}`
+}
