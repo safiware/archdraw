@@ -11,7 +11,7 @@ import { Agent } from "@earendil-works/pi-agent-core"
 import type { Model, Models } from "@earendil-works/pi-ai"
 import { AppError, type Store } from "./config.js"
 import type { Library } from "./library.js"
-import { type KeyStore, pickModel } from "./models.js"
+import { type KeyStore, pickModel, streamWithRetries, withCause } from "./models.js"
 import type { Spend } from "./spend.js"
 import { makeTools, type Proposal } from "./tools.js"
 import { demoAgent } from "./sample.js"
@@ -75,6 +75,7 @@ export class Conversation {
   private waiters: (() => void)[] = []
   private live = new Map<string, string>() // message id → text so far
   private demo: ReturnType<typeof demoAgent> | null = null // the sample's scripted agent
+  private transport: string | null = null // why the current model request's connection failed, if it did
 
   constructor(
     readonly project: string,
@@ -133,9 +134,13 @@ export class Conversation {
       skills: skills(),
       onProposal: (pr: Proposal) => this.emit({ type: "proposal", kind: "archdraw", name: pr.name, source: pr.source, doc: pr.doc, error: null }),
     })
+    const stream = streamWithRetries(models, why => (this.transport = why))
     const agent = new Agent({
       initialState: { systemPrompt: systemPrompt({ slug: p.slug, title: p.title }), model, tools, thinkingLevel: "medium" },
-      streamFn: models.streamSimple.bind(models),
+      streamFn: (m, context, options) => {
+        this.transport = null
+        return stream(m, context, options)
+      },
       getApiKey: async () => (this.demo ? "demo" : d.keys.get(s.provider)),
       sessionId: `archdraw-${this.id}`,
       toolExecution: "sequential",
@@ -161,7 +166,7 @@ export class Conversation {
       const mid = this.live.get("current") ?? `m${this.events.length}`
       const text = (e.message.content ?? []).filter((c: any) => c.type === "text").map((c: any) => c.text).join("")
       if (text.trim()) this.emit({ type: "assistant", id: mid, text })
-      if (e.message.errorMessage) this.emit({ type: "error", text: String(e.message.errorMessage).slice(0, 400) })
+      if (e.message.errorMessage) this.emit({ type: "error", text: withCause(String(e.message.errorMessage), this.transport).slice(0, 400) })
       const usd = Number(e.message.usage?.cost?.total) || 0
       if (usd > 0) {
         this.cost += usd
