@@ -11,7 +11,8 @@ port="$(node -e "const s=require('net').createServer().listen(0,'127.0.0.1',()=>
 ARCHDRAW_HOME="$tmp/home" ARCHDRAW_SECRETS="$tmp/providers.env" ARCHDRAW_GATE=token ARCHDRAW_TOKEN=smoke ARCHDRAW_SYNC=0 \
   ARCHDRAW_PORT="$port" node dist/server.mjs >"$tmp/log" 2>&1 &
 pid=$!
-for _ in $(seq 1 60); do
+deadline=$((SECONDS + 30))
+while [ "$SECONDS" -lt "$deadline" ]; do
   # each request gives up after 2 s, so a server that accepts and never answers fails here instead of hanging
   if curl -s -m 2 -o /dev/null -D "$tmp/headers" "http://127.0.0.1:$port/?token=smoke" &&
     grep -qi '^set-cookie: archdraw=' "$tmp/headers"; then
