@@ -1,8 +1,8 @@
 import DOMPurify from "dompurify"
-import { THEMES, compile } from "@engine"
+import { SourceError, THEMES, compile } from "@engine"
 import { svgSize, type Size } from "./model"
 
-export type Rendered = { svg: string; size: Size; error?: undefined } | { svg?: undefined; size: Size; error: string }
+export type Rendered = { svg: string; size: Size; error?: undefined; line?: undefined } | { svg?: undefined; size: Size; error: string; line?: number }
 
 /** Render a source with the engine in a theme. A refusal is returned, not thrown: the card shows it in place. */
 export function renderSource(source: string, dark: boolean): Rendered {
@@ -10,9 +10,15 @@ export function renderSource(source: string, dark: boolean): Rendered {
     const svg = sanitize(compile(source, { theme: dark ? THEMES.dark : THEMES.light }))
     return { svg, size: svgSize(svg) }
   } catch (e) {
-    const line = e && typeof (e as { line?: number }).line === "number" && (e as { line: number }).line > 0 ? `line ${(e as { line: number }).line}: ` : ""
-    return { error: line + (e instanceof Error ? e.message : String(e)), size: { w: 560, h: 120 } }
+    return { ...refusal(e), size: { w: 560, h: 120 } }
   }
+}
+
+/** The engine's refusal as the user reads it: "line 2: …" in the engine's own words (`SourceError.format`, as its
+ *  command-line tool prints it), and the line on its own so the editor can mark it. No usable line, no prefix. */
+export function refusal(e: unknown): { error: string; line?: number } {
+  if (e instanceof SourceError && e.line > 0) return { error: e.format(), line: e.line }
+  return { error: e instanceof Error ? e.message : String(e) }
 }
 
 const INTERNAL = /^#\/[a-z0-9][a-z0-9-]{0,62}(\/[a-z0-9][a-z0-9-]{0,62})?$/
