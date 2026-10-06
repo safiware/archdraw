@@ -121,7 +121,9 @@ code, kbd, pre, .mono { font-family: var(--f-mono); }
 .top-act { display: flex; gap: 12px; align-items: center; }
 .theme-t { width: 40px; height: 40px; display: grid; place-items: center; border-radius: 10px; border: 2px solid var(--rule); background: transparent; color: var(--text); cursor: pointer; padding: 0; }
 .theme-t svg { width: 18px; height: 18px; grid-area: 1 / 1; }
-html:not(.js) .theme-t { visibility: hidden; }
+html:not(.js) .theme-t:not(.gh-t) { visibility: hidden; }
+.gh-t { text-decoration: none; }
+.gh-t:hover { border-color: var(--text-2); }
 /* the toggle shows where it will take you: a sun in the dark, a moon in daylight */
 .theme-t .i-moon { display: none; }
 :root[data-theme="light"] .theme-t .i-sun { display: none; }
