@@ -119,9 +119,10 @@ code, kbd, pre, .mono { font-family: var(--f-mono); }
 .top nav a { color: var(--text-2); text-decoration: none; font-weight: 600; font-size: .95rem; }
 .top nav a:hover { color: var(--text); }
 .top-act { display: flex; gap: 12px; align-items: center; }
-.theme-t { width: 40px; height: 40px; display: grid; place-items: center; border-radius: 10px; border: 2px solid var(--rule); background: transparent; color: var(--text); cursor: pointer; padding: 0; }
-.theme-t svg { width: 18px; height: 18px; grid-area: 1 / 1; }
-html:not(.js) .theme-t:not(.gh-t) { visibility: hidden; }
+/* the square icon buttons in the top bar; .theme-t alone is the theme switch (theme.ts binds to it) */
+.icon-btn { width: 40px; height: 40px; display: grid; place-items: center; border-radius: 10px; border: 2px solid var(--rule); background: transparent; color: var(--text); cursor: pointer; padding: 0; }
+.icon-btn svg { width: 18px; height: 18px; grid-area: 1 / 1; }
+html:not(.js) .theme-t { visibility: hidden; }
 .gh-t { text-decoration: none; }
 .gh-t:hover { border-color: var(--text-2); }
 /* the toggle shows where it will take you: a sun in the dark, a moon in daylight */
