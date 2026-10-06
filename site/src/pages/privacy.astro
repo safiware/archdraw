@@ -5,20 +5,21 @@ import Footer from '../components/Footer.astro';
 ---
 <Base
   title="Privacy · archdraw"
-  description="archdraw.dev sets no cookies and runs no analytics. The archdraw app has no telemetry, keeps your AI key on your machine, encrypted by the OS keychain, and sends code only to the AI provider you pick."
+  description="archdraw.dev sets no cookies and counts visits without identifying anyone. The archdraw app has no telemetry, keeps your AI key on your machine, encrypted by the OS keychain, and sends code only to the AI provider you pick."
 >
   <Header home={false} />
   <main id="main" class="page wrap prose">
-    <p class="eyebrow"><b>Privacy</b> Updated 5 October 2026</p>
+    <p class="eyebrow"><b>Privacy</b> Updated 6 October 2026</p>
     <h1 class="sec-h">What goes where.</h1>
-    <p class="big lead">This site sets no cookies and runs no analytics. The app has no telemetry and no account.</p>
+    <p class="big lead">This site sets no cookies and counts visits without identifying anyone. The app has no telemetry and no account.</p>
 
     <h2>This website</h2>
     <ul>
-      <li>archdraw.dev sets no cookies and runs no analytics, ads or tracking scripts.</li>
-      <li>Everything on the page, fonts included, is served from archdraw.dev. Your browser makes no requests to anyone else.</li>
+      <li>archdraw.dev sets no cookies and runs no ads or third-party tracking.</li>
+      <li>It counts visits with <a href="https://vercel.com/docs/analytics/privacy-policy">Vercel Web Analytics</a>, which records, for each page view, the page, the site you came from, your country and region, and your browser, operating system and device type. It uses no cookies; a visitor is recognised only by a hash of the request, which is discarded after 24 hours. We see totals, never individuals.</li>
+      <li>Everything on the page, fonts and the analytics script included, is served from archdraw.dev. Your browser makes no requests to anyone else.</li>
       <li>If you use the theme switch, your choice is kept in your browser's local storage on your device. It is never sent anywhere.</li>
-      <li>The site is hosted on Vercel. Like any web host, Vercel keeps standard request logs (IP address, user agent) for operating the site. Tawab Safi, who makes archdraw, adds no tracking on top of that.</li>
+      <li>The site is hosted on Vercel. Like any web host, Vercel keeps standard request logs (IP address, user agent) for operating the site. Tawab Safi, who makes archdraw, adds nothing beyond the visit counts above.</li>
     </ul>
 
     <h2>The archdraw app</h2>
