@@ -1,21 +1,41 @@
+# One pull request for minor and patch releases and one for major releases, per folder, instead of one per package:
+# majors stay visible but arrive together, to be read against their changelogs. Security updates are not affected.
 version: 2
 updates:
   - package-ecosystem: github-actions
     directory: /
     schedule:
       interval: weekly
+    groups:
+      actions:
+        patterns: ["*"]
   - package-ecosystem: npm
     directory: /app
     schedule:
       interval: monthly
     open-pull-requests-limit: 5
+    groups:
+      app-minor-and-patch:
+        update-types: [minor, patch]
+      app-major:
+        update-types: [major]
   - package-ecosystem: bun
     directory: /app/ui
     schedule:
       interval: monthly
     open-pull-requests-limit: 3
+    groups:
+      ui-minor-and-patch:
+        update-types: [minor, patch]
+      ui-major:
+        update-types: [major]
   - package-ecosystem: npm
     directory: /engine
     schedule:
       interval: monthly
     open-pull-requests-limit: 2
+    groups:
+      engine-minor-and-patch:
+        update-types: [minor, patch]
+      engine-major:
+        update-types: [major]

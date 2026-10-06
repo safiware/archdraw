@@ -1,0 +1,63 @@
+---
+const PROVIDERS = ['OpenAI', 'Anthropic', 'Google', 'OpenRouter'];
+---
+<section class="band alt" id="private" aria-labelledby="pr-h">
+  <div class="wrap two">
+    <div class="copy">
+      <p class="eyebrow"><b>05</b> Privacy</p>
+      <h2 class="sec-h" id="pr-h">Yours, privately.</h2>
+      <p class="big lead">Lives in your repo, not our cloud.</p>
+      <ul class="facts">
+        <li>Runs on your machine with your own AI key: OpenAI, Anthropic, Google or OpenRouter.</li>
+        <li>Code goes only to the AI provider you picked.</li>
+        <li>No account. No telemetry.</li>
+      </ul>
+      <p class="facts-more"><a href="/privacy">What goes where, in full</a></p>
+    </div>
+    <figure class="machine" aria-label="Where your code goes">
+      <div class="machine-box">
+        <div class="mbox">your repo<small>code + .archdraw files</small></div>
+        <div class="mbox">archdraw<small>with your AI key</small></div>
+      </div>
+      <svg class="wire pts" viewBox="0 0 20 64" aria-hidden="true"><path d="M10 0 V64"/></svg>
+      <fieldset class="prov">
+        <legend>The one AI provider you picked</legend>
+        <div class="prov-opts">
+          {PROVIDERS.map(p => {
+            const id = 'pv-' + p.toLowerCase();
+            return <><input type="radio" name="prov" id={id} value={p} checked={p === 'Anthropic'} /><label for={id}>{p}</label></>;
+          })}
+        </div>
+        <p class="prov-note" id="prov-note" aria-live="polite">Your code goes to <strong>Anthropic</strong> and nowhere else.</p>
+      </fieldset>
+    </figure>
+  </div>
+</section>
+
+<style is:global>
+  .facts { list-style: none; padding: 0; margin: 22px 0 0; display: grid; gap: 10px; }
+  .facts li { display: grid; grid-template-columns: 22px minmax(0, 1fr); gap: 10px; }
+  .facts li::before { content: ""; width: 12px; height: 12px; margin-top: .45em; border-radius: 3px; border: 2px solid var(--signal); }
+  .facts-more { margin-top: 18px; font-weight: 600; }
+  .machine { margin: 0; background: var(--panel); border: 1px solid var(--rule); border-radius: 16px; padding: clamp(16px, 3vw, 28px); }
+  .machine-box { border: 2px dashed var(--signal); border-radius: 14px; padding: 16px; position: relative; display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .machine-box::before { content: "Your machine"; position: absolute; top: -.75em; left: 14px; padding: 0 8px; background: var(--panel); font: 600 .72rem var(--f-mono); color: var(--signal); }
+  .mbox { border: 1.5px solid var(--dg-line); background: var(--dg-box); border-radius: 10px; padding: 12px; font: .78rem/1.45 var(--f-mono); min-width: 0; overflow-wrap: anywhere; }
+  .mbox small { display: block; color: var(--text-2); font-size: .68rem; }
+  .wire { display: block; width: 20px; height: 64px; overflow: visible; margin-left: calc(75% - 16px); }
+  .wire path { fill: none; stroke: var(--signal); stroke-width: 2; stroke-dasharray: 4 5; }
+  .prov { border: 1.5px solid var(--rule); border-radius: 12px; padding: 12px; margin: 0; min-width: 0; }
+  .prov legend { font: 600 .72rem var(--f-mono); color: var(--text-2); padding: 0 6px; }
+  .prov-opts { display: flex; flex-wrap: wrap; gap: 8px; }
+  .prov input { position: absolute; opacity: 0; pointer-events: none; }
+  .prov label { font: 700 .86rem var(--f-body); padding: 7px 12px; border-radius: 9px; border: 1.5px solid var(--rule); cursor: pointer; background: var(--well); }
+  .prov input:checked + label { background: var(--lamp); color: var(--on-lamp); border-color: var(--lamp-edge); box-shadow: 0 2px 0 var(--lamp-shadow); }
+  .prov input:focus-visible + label { outline: 2.5px solid var(--signal); outline-offset: 2px; }
+  .prov-note { margin-top: 12px; font-size: .92rem; color: var(--text-2); }
+  .prov-note strong { color: var(--text); }
+</style>
+
+<script>
+  import { initPrivate } from '../scripts/private';
+  initPrivate();
+</script>

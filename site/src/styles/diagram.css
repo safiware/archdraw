@@ -1,0 +1,49 @@
+/* the Bean There drawing, recolored through tokens */
+.dg { display: block; width: 100%; height: auto; overflow: visible; }
+.dg .box { fill: var(--dg-box); stroke: var(--dg-line); stroke-width: 1.5; }
+.dg .store .box { fill: var(--dg-store); stroke: var(--dg-store-line); }
+.dg .ext .box { fill: var(--dg-ext); stroke: var(--dg-ext-line); stroke-dasharray: 6 4; }
+.dg text { font-family: var(--f-mono); font-stretch: 87.5%; font-size: 13px; fill: var(--dg-text); text-anchor: middle; }
+.dg .s { fill: var(--dg-sub); font-size: 12px; }
+.dg .edge { fill: none; stroke: var(--dg-edge); stroke-width: 1.6; }
+.dg .arr { fill: var(--dg-edge); }
+.dg .lbl-bg { fill: var(--dg-bg); }
+.dg .lbl { font-size: 12px; fill: var(--dg-sub); }
+.dg .ico .f { fill: var(--dg-ico); stroke: var(--dg-ico-line); stroke-width: 1.1; stroke-linejoin: round; }
+.dg .ico .b { fill: var(--dg-ico-line); }
+.dg .ico .l { fill: none; stroke: var(--dg-ico-line); stroke-width: 1.1; }
+.dg .ring rect { stroke-width: 2.5; }
+.dg .ring text { fill: var(--on-diff); font: 700 15px var(--f-body); }
+.dg .ring-add rect { fill: var(--add-soft); stroke: var(--add); } .dg .ring-add circle { fill: var(--add); }
+.dg .ring-chg rect { fill: var(--chg-soft); stroke: var(--chg); } .dg .ring-chg circle { fill: var(--chg); }
+.dg .ring-del rect { fill: var(--del-soft); stroke: var(--del); } .dg .ring-del circle { fill: var(--del); }
+.dg .eg-add .edge { stroke: var(--add); stroke-width: 2.4; }
+.dg .eg-add .arr, .dg .arr-add { fill: var(--add); }
+.dg .eg-add .lbl { fill: var(--add-text); font-weight: 600; }
+@media (prefers-color-scheme: light) { :root:not([data-theme="dark"]) .dg .rings { filter: none; } }
+:root[data-theme="light"] .dg .rings { filter: none; }
+.dg .stale-tags { opacity: 0; transition: opacity .4s; }
+.dg .tag rect { fill: var(--del-soft); stroke: var(--del); stroke-width: 1; stroke-dasharray: 3 3; }
+.dg .tag text { font-size: 12px; fill: var(--del-text); }
+.dg-story .only-before { opacity: 0; }
+.dg .fl { fill: none; stroke-width: 2.5; }
+
+/* particle overlay: glowing dots that run along the edges */
+.stage { position: relative; }
+.stage .pts { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; overflow: visible; z-index: 0; will-change: transform; }
+.stage > .dg { position: relative; z-index: 1; }
+.pts .core { fill: var(--pt); }
+.pts .halo { fill: var(--pt); opacity: calc(.12 + .2 * var(--glow-a)); }
+.pts .k-add .core, .pts .k-add .halo { fill: var(--add); }
+.pts .k-you .core, .pts .k-you .halo { fill: var(--you); }
+.pts .k-mate .core, .pts .k-mate .halo { fill: var(--mate); }
+.pts .k-agent .core, .pts .k-agent .halo { fill: var(--agent); }
+@media (prefers-reduced-motion: reduce) { .pts .pt { display: none; } }
+
+/* phones: the drawing keeps a readable size and scrolls sideways inside its frame */
+.swipe { display: none; font: .66rem var(--f-mono); color: var(--text-2); padding: 6px 16px 0; margin: 0; }
+@media (max-width: 640px) {
+  .stage-scroll { overflow-x: auto; overscroll-behavior-x: contain; scrollbar-width: thin; }
+  .stage-scroll > .stage { min-width: 720px; }
+  .swipe { display: block; }
+}

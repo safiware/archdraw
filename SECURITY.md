@@ -15,7 +15,7 @@ Security fixes go into the latest release. archdraw updates itself on macOS and 
 
 ## How archdraw handles what it touches
 
-- **AI keys** are stored in the OS keychain (Keychain on macOS, Secret Service or KWallet on Linux). On a Linux desktop without a keyring, the app says so and keeps the key in an owner-only file with basic protection.
+- **AI keys** are encrypted with the OS keychain (Keychain on macOS, Secret Service or KWallet on Linux) and stored in an owner-only file. On a Linux desktop without a keyring, the app says so: the key then has only basic protection.
 - **Your code** never leaves your machine except to the AI provider you configured, and only what the agent reads for a check or a conversation. The agent's tools are read-only and refuse `.env` files, keys, credential folders, Terraform state and anything `.gitignore` excludes.
 - **The desktop app** runs its own server on `127.0.0.1` with a per-launch secret; nothing listens on other interfaces. Diagram SVG is sanitized before display and the page runs under a strict Content Security Policy.
 - **Git** runs with hooks, fsmonitor and `ext::` transports disabled.

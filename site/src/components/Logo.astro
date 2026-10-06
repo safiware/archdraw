@@ -1,0 +1,7 @@
+---
+// The building-blocks mark: two blocks joined by an elbow arrow. `one` draws it in a single color.
+interface Props { size?: number; one?: boolean; class?: string }
+const { size, one = false, class: extra = '' } = Astro.props;
+const cls = ['mark', one ? 'one' : '', size ? `m${size}` : '', extra].filter(Boolean).join(' ');
+---
+<svg class={cls} viewBox="0 0 40 40" aria-hidden="true" width={size} height={size}><rect class="mk-s" x="5.5" y="5.5" width="15" height="15" rx="2"/><rect class="mk-s" x="23.5" y="23.5" width="15" height="15" rx="2"/><rect class="mk-a mk-o" x="3" y="3" width="15" height="15" rx="2" stroke-width="2.5"/><rect class="mk-b mk-o" x="21" y="21" width="15" height="15" rx="2" stroke-width="2.5"/><path class="mk-l" d="M18 10.5H28.5V16" stroke-width="3"/><path class="mk-h" d="M24.6 15.5L28.5 20.6L32.4 15.5Z"/></svg>

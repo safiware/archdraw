@@ -1,0 +1,53 @@
+---
+// An excerpt in the shape archdraw's export writes (app/core/src/export.ts): front matter with the
+// commit the drawings were verified at, the overview, and an index of the diagrams.
+const lines = [
+  '<i>---</i>',
+  '<i>project:</i> Bean There',
+  '<i>verified_at:</i> 3f9c2e1',
+  '<i>---</i>',
+  ' ',
+  '<b># Bean There: architecture</b>',
+  ' ',
+  'Read this first. Each diagram has its own document',
+  'with every part and connection written out as text.',
+  ' ',
+  'How a coffee order goes from the customer\'s phone',
+  'to the barista, and how it is paid.',
+  ' ',
+  '<b>## Diagrams</b>',
+  ' ',
+  '- <i>The whole system</i>: phone to barista',
+  '- <i>Payments</i>: card and Apple Pay',
+];
+---
+<section class="band" id="agents" aria-labelledby="a-h">
+  <div class="wrap two">
+    <div class="copy">
+      <p class="eyebrow"><b>06</b> For agents</p>
+      <h2 class="sec-h" id="a-h">Give your AI agent the map.</h2>
+      <p class="big lead">Export ARCHITECTURE.md and every diagram for Claude Code, Cursor or Codex.</p>
+      <p>The next change starts from the true picture.</p>
+      <ul class="tools" aria-label="Works with"><li>Claude Code</li><li>Cursor</li><li>Codex</li></ul>
+    </div>
+    <div class="file">
+      <div class="win-bar"><span class="mono">ARCHITECTURE.md</span><span class="pill"><i></i>exported from the approved drawing</span></div>
+      <pre>{lines.map(l => <span class="ln" set:html={l} />)}</pre>
+    </div>
+  </div>
+</section>
+
+<style is:global>
+  .tools { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 20px; list-style: none; padding: 0; }
+  .tools li { font: 600 .8rem var(--f-mono); padding: 6px 11px; border-radius: 8px; border: 1.5px solid var(--rule); background: var(--panel); }
+  .file { background: var(--panel); border: 1px solid var(--rule); border-radius: 16px; overflow: hidden; }
+  .file .pill { white-space: normal; }
+  .file pre { margin: 0; padding: 16px 18px 20px; font: .76rem/1.75 var(--f-mono); color: var(--text-2); white-space: pre-wrap; word-break: break-word; }
+  .file pre b { color: var(--text); font-weight: 600; } .file pre i { color: var(--signal); font-style: normal; }
+  .file pre .ln { display: block; }
+</style>
+
+<script>
+  import { initAgents } from '../scripts/agents';
+  initAgents();
+</script>

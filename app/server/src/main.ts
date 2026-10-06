@@ -69,15 +69,32 @@ export async function start(o: StartOptions): Promise<{ port: number; url: strin
   }
 }
 
+/** The gate mode and port a self-hosted server starts with. A value it cannot use stops it with a message, never a
+ * guess: a mistyped gate used to fall through to the tailnet gate with no principal, which refused every request. */
+export function serverSettings(env: Record<string, string | undefined>): { mode: Gate["mode"]; port: number } | { error: string } {
+  // an empty or unset value means the default, as ARCHDRAW_TOKEN's does
+  const mode = env.ARCHDRAW_GATE?.trim() || "tailnet"
+  if (mode !== "tailnet" && mode !== "token" && mode !== "local") return { error: `ARCHDRAW_GATE is "${mode}": use tailnet, token or local` }
+  const raw = env.ARCHDRAW_PORT?.trim() || "8088"
+  const port = Number(raw)
+  if (!/^\d+$/.test(raw) || port < 1 || port > 65535) return { error: `ARCHDRAW_PORT is "${raw}": use a port number from 1 to 65535` }
+  return { mode, port }
+}
+
 /** Run from the command line: a self-hosted server (tailnet or token gate) or development. */
 async function main() {
-  const mode = (process.env.ARCHDRAW_GATE ?? "tailnet") as Gate["mode"]
+  const settings = serverSettings(process.env)
+  if ("error" in settings) {
+    console.error(`archdraw: ${settings.error}`)
+    process.exit(2)
+  }
+  const { mode, port } = settings
   if (mode === "tailnet" && !principal()) {
     console.error("archdraw: the tailnet gate needs ARCHDRAW_PRINCIPAL, the Tailscale login it serves (or run with ARCHDRAW_GATE=token)")
     process.exit(2)
   }
   const gate: Gate = mode === "token" ? { mode, token: process.env.ARCHDRAW_TOKEN || randomBytes(24).toString("hex") } : mode === "local" ? { mode } : { mode: "tailnet", allowLocal: process.env.ARCHDRAW_ALLOW_LOCAL === "1" }
-  const s = await start({ host: process.env.ARCHDRAW_HOST ?? "127.0.0.1", port: Number(process.env.ARCHDRAW_PORT ?? 8088), gate, sync: process.env.ARCHDRAW_SYNC !== "0", by: process.env.ARCHDRAW_AUTHOR })
+  const s = await start({ host: process.env.ARCHDRAW_HOST ?? "127.0.0.1", port, gate, sync: process.env.ARCHDRAW_SYNC !== "0", by: process.env.ARCHDRAW_AUTHOR })
   // token mode: the one link that signs a browser in (the cookie it sets lasts the session)
   if (gate.mode === "token") console.log(`archdraw: open ${s.url}/?token=${gate.token}`)
   for (const sig of ["SIGINT", "SIGTERM"] as const) process.on(sig, () => void s.close().then(() => process.exit(0)))
