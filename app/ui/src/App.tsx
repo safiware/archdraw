@@ -785,7 +785,7 @@ export default function App() {
                     ✕
                   </button>
                 </div>
-                <Editor value={selSource} onChange={v => (setDrafts(d => ({ ...d, [sel]: v })), current?.sample && tourEvent("source.changed"))} />
+                <Editor value={selSource} errorLine={selCard?.r.line} onChange={v => (setDrafts(d => ({ ...d, [sel]: v })), current?.sample && tourEvent("source.changed"))} />
                 <div className={`border-t border-[var(--line)] px-3 py-2 text-xs ${selCard?.r.error ? "text-[var(--danger)]" : "text-[var(--muted)]"}`} data-testid="status">
                   {selCard?.r.error ?? (current?.source.kind === "github" ? "Renders. ⌘/Ctrl-S saves it as a change waiting for review; the card updates as you type." : "Renders. ⌘/Ctrl-S saves it; the card updates as you type.")}
                 </div>
@@ -1010,7 +1010,8 @@ function ProjectTitleDialog({ project, onClose, onSaved }: { project: Project; o
 }
 
 
-function Editor({ value, onChange }: { value: string; onChange: (v: string) => void }) {
+/** The source editor: a textarea with line numbers; the line the engine refused (`errorLine`) is marked in the gutter. */
+function Editor({ value, errorLine, onChange }: { value: string; errorLine?: number; onChange: (v: string) => void }) {
   const ta = useRef<HTMLTextAreaElement>(null)
   const gutter = useRef<HTMLDivElement>(null)
   const lines = value.split("\n").length
@@ -1018,7 +1019,9 @@ function Editor({ value, onChange }: { value: string; onChange: (v: string) => v
     <div className="relative flex min-h-0 flex-1 font-mono text-[13px] leading-[1.6]">
       <div ref={gutter} className="ad-gutter overflow-hidden py-3 pr-2 pl-3 text-right" aria-hidden>
         {Array.from({ length: lines }, (_, i) => (
-          <div key={i}>{i + 1}</div>
+          <div key={i} className={i + 1 === errorLine ? "ad-gutter-error" : undefined} data-error-line={i + 1 === errorLine || undefined}>
+            {i + 1}
+          </div>
         ))}
       </div>
       <textarea

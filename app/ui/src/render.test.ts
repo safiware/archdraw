@@ -1,6 +1,37 @@
 // @vitest-environment jsdom
 import { describe, expect, it } from "vitest"
-import { renderSource, sanitize } from "./render"
+import { SourceError } from "@engine"
+import { refusal, renderSource, sanitize } from "./render"
+
+describe("renderSource errors", () => {
+  it("includes the source line when a diagram fails to compile", () => {
+    const result = renderSource('node a "A"\nnode b "B" rigth of a', false)
+    expect(result.error).toBe('line 2: node "b": "rigth" is not a direction')
+    expect(result.line).toBe(2)
+    expect(result.size).toEqual({ w: 560, h: 120 })
+  })
+  it("names the line at fault in a statement written over several lines, not the line it starts on", () => {
+    const result = renderSource('node a "A"\nnode b "B"\n  style: rounded\n  rigth of a', false)
+    expect(result.error).toBe('line 4: node "b": "rigth" is not a direction')
+    expect(result.line).toBe(4)
+  })
+  it("has no error and no line when the source renders", () => {
+    const result = renderSource('node a "A"', false)
+    expect(result.error).toBeUndefined()
+    expect(result.line).toBeUndefined()
+  })
+})
+
+describe("refusal", () => {
+  it("prints a source error the way the engine's command-line tool does", () => {
+    expect(refusal(new SourceError('two placements for "server"', 12))).toEqual({ error: 'line 12: two placements for "server"', line: 12 })
+  })
+  it("keeps errors without a usable line unchanged", () => {
+    expect(refusal(new SourceError("cannot compile diagram", 0))).toEqual({ error: "cannot compile diagram" })
+    expect(refusal(new Error("cannot compile diagram"))).toEqual({ error: "cannot compile diagram" })
+    expect(refusal("cannot compile diagram")).toEqual({ error: "cannot compile diagram" })
+  })
+})
 
 describe("sanitize", () => {
   it("drops the three bypasses the review reproduced", () => {
