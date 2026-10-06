@@ -1,0 +1,69 @@
+---
+import { ground, thumb } from '../lib/diagram';
+const days = [
+  { d: 'Mon', n: 'drawn', t: '<strong>True today.</strong> Everyone agrees on the picture.' },
+  { d: 'Tue', n: '+12 commits', t: 'Payments learns Apple Pay.' },
+  { d: 'Wed', n: '+31 commits', t: 'A delivery partner starts sending orders.' },
+  { d: 'Thu', n: '+47 commits', t: 'An agent removes fax orders.' },
+  { d: 'Fri', n: '+64 commits', t: '<strong>Still shows fax orders.</strong> New hires learn the wrong system.' },
+];
+const t = thumb();
+---
+<section class="band alt" id="problem" aria-labelledby="p-h">
+  <div class="wrap two">
+    <div>
+      <p class="eyebrow"><b>01</b> The problem</p>
+      <h2 class="sec-h" id="p-h">Diagrams go stale the week they are drawn.</h2>
+    </div>
+    <div class="copy">
+      <p class="big">Code keeps moving. Nobody redraws.</p>
+      <p>Now more hands touch the code than ever: you, your team, and the AI agents writing alongside you.</p>
+      <ul class="hands" aria-label="Who changes the code"><li class="who-you">You</li><li class="who-mate">Your team</li><li class="who-agent">AI agents</li></ul>
+    </div>
+  </div>
+  <ol class="week wrap" aria-label="One week of a diagram">
+    {days.map((day, i) => (
+      <li class="day">
+        <div class="day-h"><b>{day.d}</b><span>{day.n}</span></div>
+        <Fragment set:html={t} />
+        <Fragment set:html={ground(i)} />
+        <p set:html={day.t} />
+      </li>
+    ))}
+  </ol>
+</section>
+
+<style is:global>
+  .hands { list-style: none; padding: 0; margin: 22px 0 0; display: flex; flex-wrap: wrap; gap: 10px; }
+  .hands li { display: inline-flex; align-items: center; gap: 8px; font: 600 .92rem var(--f-body); padding: 7px 12px 7px 9px; border: 1px solid var(--rule); border-radius: 99px; background: var(--panel); }
+  .hands li::before { content: ""; width: 10px; height: 10px; border-radius: 3px; background: var(--c); box-shadow: 0 0 calc(10px * var(--glow-a)) var(--c); }
+  .week { list-style: none; padding-block: 0; margin: clamp(40px, 6vh, 64px) auto 0; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 14px; }
+  .day { background: var(--panel); border: 1px solid var(--rule); border-radius: 14px; padding: 14px 14px 16px; position: relative; overflow: hidden; }
+  .day-h { display: flex; justify-content: space-between; align-items: baseline; font: 600 .74rem var(--f-mono); color: var(--text-2); text-transform: uppercase; letter-spacing: .05em; }
+  .day-h b { color: var(--text); font-weight: 600; }
+  .thumb { display: block; width: 100%; height: auto; margin: 10px 0 12px; }
+  .thumb .tb { fill: var(--dg-box); stroke: var(--dg-line); stroke-width: 6; }
+  .thumb .tb.st { fill: var(--dg-store); stroke: var(--dg-store-line); }
+  .thumb .tb.fax { fill: var(--dg-ext); stroke: var(--dg-ext-line); stroke-dasharray: 14 10; }
+  .thumb .tb.ic { fill: var(--dg-ico); stroke: var(--dg-ico-line); }
+  .thumb .te path { fill: none; stroke: var(--dg-edge); stroke-width: 5; }
+  .day:nth-child(2) .thumb { opacity: .78; } .day:nth-child(3) .thumb { opacity: .58; filter: blur(.4px); }
+  .day:nth-child(4) .thumb { opacity: .42; filter: blur(.8px); } .day:nth-child(5) .thumb { opacity: .3; filter: blur(1.2px); }
+  .ground { display: block; width: 100%; height: 22px; overflow: visible; }
+  .ground rect { fill: var(--signal); opacity: .55; }
+  .day p { font-size: .9rem; margin-top: 8px; color: var(--text-2); line-height: 1.4; }
+  .day p strong { color: var(--text); }
+  .day:last-child { border-color: color-mix(in srgb, var(--del) 55%, var(--rule)); }
+  @media (max-width: 860px) {
+    .week { grid-template-columns: minmax(0, 1fr); gap: 10px; }
+    .day { display: grid; grid-template-columns: 110px minmax(0, 1fr); gap: 4px 14px; align-items: center; }
+    .day .thumb { grid-row: 1 / span 3; grid-column: 1; margin: 0; }
+    .day-h, .day .ground, .day p { grid-column: 2; }
+    .day p { margin-top: 0; }
+  }
+</style>
+
+<script>
+  import { initProblem } from '../scripts/problem';
+  initProblem();
+</script>

@@ -28,7 +28,7 @@ export type Change =
   | { on: "edge"; id: string; kind: "added" | "removed" | "changed"; from: string; to: string; label: string; what?: string }
 export type DiagramDiff = { name: string; before: string | null; after: string | null; beforeDoc: string | null; afterDoc: string | null; diff: { changes: Change[]; added: number; removed: number; changed: number } }
 export type Pending = { head: string; base: string; behind: number; files: { name: string; status: "added" | "changed" | "removed" }[]; pr?: { number: number; url: string; state: string } | null }
-export type SyncResult = { project: string; outcome: string; checkedThrough?: string; commits?: number; why?: string; files?: string[]; headline?: string; reason?: string; at?: number }
+export type SyncResult = { project: string; outcome: string; checkedThrough?: string; commits?: number; why?: string; files?: string[]; headline?: string; reason?: string; note?: string; at?: number }
 export type InboxItem = { project: string; title: string; pending: Pending | null; commits?: { subject: string; at: number }[]; headline?: string; checkedThrough: string | null; last: SyncResult | null }
 export type TrashItem = { name: string; deletedAt: number; commit: string }
 

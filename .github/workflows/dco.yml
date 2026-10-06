@@ -17,6 +17,8 @@ jobs:
         run: |
           fail=0
           for c in $(git rev-list --no-merges "$BASE..$HEAD"); do
+            # Dependabot's own commits: a bot cannot certify the DCO (the DCO app exempts bots the same way)
+            if [ "$(git show -s --format=%ae "$c")" = "49699333+dependabot[bot]@users.noreply.github.com" ]; then continue; fi
             if ! git show -s --format=%B "$c" | grep -q '^Signed-off-by: '; then
               echo "::error::commit $(git show -s --format='%h %s' "$c") has no Signed-off-by line (use git commit -s)"
               fail=1
