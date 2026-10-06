@@ -1,4 +1,4 @@
-// The archdraw agent: one conversation = one pi Agent (pi-agent-core) with archdraw's read-only tools, streaming to the
+// Arch Agent, archdraw's agent: one conversation = one pi Agent (pi-agent-core) with archdraw's read-only tools, streaming to the
 // page. Every event is kept in order and saved, so any device that opens the conversation replays all of it.
 //
 // The events the page reads: user, ready, assistant_start, delta, assistant,

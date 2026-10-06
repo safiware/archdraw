@@ -33,11 +33,11 @@ Diagrams are files in the repo's `.archdraw/` folder: `<name>.archdraw` for the 
 
 The "…" beside a diagram renames, duplicates, archives or deletes it. Archived diagrams stay in Archive and trash until you bring them back; deleted ones can be restored from there for 30 days.
 
-## The agent
+## Arch Agent
 
-✦ Ask (or ⌘K) opens the agent. It reads the project's code and diagrams, answers questions about them, and proposes new or changed diagrams. A proposal appears beside the original; nothing changes until you press Accept.
+✦ Ask (or ⌘K) opens Arch Agent, archdraw's agent. It reads the project's code and diagrams, answers questions about them, and proposes new or changed diagrams. A proposal appears beside the original; nothing changes until you press Accept.
 
-The agent uses your own key. Add it in Settings, or paste it when the chat asks. archdraw supports OpenAI, Anthropic, Google and OpenRouter, and you choose the models in Settings. Daily and per-conversation spending caps are in Settings too.
+Arch Agent uses your own key. Add it in Settings, or paste it when the chat asks. archdraw supports OpenAI, Anthropic, Google and OpenRouter, and you choose the models in Settings. Daily and per-conversation spending caps are in Settings too.
 
 ## The Inbox
 

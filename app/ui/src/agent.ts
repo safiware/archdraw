@@ -1,4 +1,4 @@
-// The archdraw agent, the pure half: its API, the event log folded into a transcript, a line diff for proposals,
+// Arch Agent (archdraw's agent), the pure half: its API, the event log folded into a transcript, a line diff for proposals,
 // and the ⌘K palette's matching. No DOM here, so it is tested in node (agent.test.ts).
 
 import { ApiError } from "./model"

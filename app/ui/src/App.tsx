@@ -709,7 +709,7 @@ export default function App() {
                   </button>
                 )}
                 {project && (
-                  <button type="button" className="ad-btn ad-btn-ask" onClick={() => (chat ? setChat(false) : openChat())} data-testid="open-chat" data-tour="ask" title="The archdraw agent (⌘K to jump or ask)">
+                  <button type="button" className="ad-btn ad-btn-ask" onClick={() => (chat ? setChat(false) : openChat())} data-testid="open-chat" data-tour="ask" title="Arch Agent (⌘K to jump or ask)">
                     ✦ Ask<kbd className="max-sm:hidden">⌘K</kbd>
                   </button>
                 )}
