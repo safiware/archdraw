@@ -22,8 +22,8 @@ import { makeTools, type Proposal } from "./tools.js"
 
 export type SyncResult =
   | { project: string; outcome: "unchanged"; checkedThrough: string }
-  | { project: string; outcome: "no-architecture-change"; checkedThrough: string; commits: number; why: string }
-  | { project: string; outcome: "drafted"; checkedThrough: string; commits: number; why: string; files: string[]; headline: string }
+  | { project: string; outcome: "no-architecture-change"; checkedThrough: string; commits: number; why: string; note?: string }
+  | { project: string; outcome: "drafted"; checkedThrough: string; commits: number; why: string; files: string[]; headline: string; note?: string }
   | { project: string; outcome: "skipped"; reason: string }
   | { project: string; outcome: "failed"; reason: string; checkedThrough: string }
 
@@ -98,6 +98,12 @@ export class Syncer {
       this.last[slug] = { ...r, at: Date.now() }
       this.d.log?.(`sync ${slug}: ${r.outcome}`)
       return r
+    } catch (e) {
+      // a check that threw is shown where a scheduled result is read (the Inbox), not only to a "Sync now" click
+      const reason = String((e as Error).message ?? e).slice(0, 300)
+      this.last[slug] = { project: slug, outcome: "skipped", reason, at: Date.now() }
+      this.d.log?.(`sync ${slug}: skipped: ${reason}`)
+      throw e
     } finally {
       // a check that threw (no key yet, the network) still counts as run, so the schedule waits instead of retrying
       // every minute
@@ -147,10 +153,10 @@ export class Syncer {
         outlines.push(`## ${f.name}\n(unreadable)`)
       }
     }
-    const verdict = files.length === 0 ? { changed: false, why: "the project has no diagrams yet; draft the first ones from the project page", touches: [] as string[] } : await this.triage(slug, commits, outlines)
+    const verdict = files.length === 0 ? { changed: false, why: "the project has no diagrams yet; draft the first ones from the project page", touches: [] as string[], note: "" } : await this.triage(slug, commits, outlines)
     if (!verdict.changed) {
       this.mark(slug, base)
-      return { project: slug, outcome: "no-architecture-change", checkedThrough: base, commits: commits.length, why: verdict.why }
+      return { project: slug, outcome: "no-architecture-change", checkedThrough: base, commits: commits.length, why: verdict.why, ...(verdict.note ? { note: verdict.note } : {}) }
     }
     const range = through ? `${through.slice(0, 12)}..${base.slice(0, 12)}` : base.slice(0, 12)
     const written: string[] = []
@@ -179,8 +185,9 @@ export class Syncer {
     }
     this.mark(slug, base)
     const note = kept.length ? ` (kept your edits to ${kept.join(", ")})` : ""
-    if (written.length === 0) return { project: slug, outcome: "no-architecture-change", checkedThrough: base, commits: commits.length, why: `${verdict.why} (the draft changed no diagram)${note}` }
-    return { project: slug, outcome: "drafted", checkedThrough: base, commits: commits.length, why: verdict.why + note, files: written, headline: verdict.why }
+    const cut = verdict.note ? { note: verdict.note } : {}
+    if (written.length === 0) return { project: slug, outcome: "no-architecture-change", checkedThrough: base, commits: commits.length, why: `${verdict.why} (the draft changed no diagram)${note}`, ...cut }
+    return { project: slug, outcome: "drafted", checkedThrough: base, commits: commits.length, why: verdict.why + note, files: written, headline: verdict.why, ...cut }
   }
 
   private mark(slug: string, sha: string) {
@@ -191,28 +198,38 @@ export class Syncer {
     })
   }
 
-  private async triage(slug: string, commits: Commit[], outlines: string[]): Promise<{ changed: boolean; why: string; touches: string[] }> {
+  private async triage(slug: string, commits: Commit[], outlines: string[]): Promise<{ changed: boolean; why: string; touches: string[]; note: string }> {
     const { store, keys, models, spend } = this.d
     const s = store.settingsFor(slug)
     const key = keys.get(s.provider)
     if (!key) throw new AppError(412, `no ${s.provider} key: add it in Settings`)
     const model = pickModel(models, s.provider, s.triageModel, "triage")
+    // what the model cannot see is said, not dropped silently: the verdict names the cut
+    const shown = Math.min(commits.length, 60)
+    const joined = outlines.join("\n\n")
+    const cut = [shown < commits.length ? `the first ${shown} of ${commits.length} commits` : "", joined.length > 12_000 ? "part of the diagram outlines" : ""].filter(Boolean)
     const listing = commits
       .slice(0, 60)
       .map(c => `- ${c.sha.slice(0, 8)} ${c.subject}\n  ${c.files.slice(0, 15).join(", ")}${c.files.length > 15 ? ` (+${c.files.length - 15})` : ""}`)
       .join("\n")
     const msg = await models.completeSimple(model, {
       systemPrompt: TRIAGE,
-      messages: [{ role: "user", content: `# The diagrams now\n\n${outlines.join("\n\n").slice(0, 12_000)}\n\n# New commits (${commits.length})\n\n${listing}`, timestamp: Date.now() }],
+      messages: [{ role: "user", content: `# The diagrams now\n\n${joined.slice(0, 12_000)}\n\n# New commits (${commits.length}${shown < commits.length ? `, the first ${shown} shown` : ""})\n\n${listing}`, timestamp: Date.now() }],
     } as any, { apiKey: key } as any)
     spend.add(slug, Number((msg as any).usage?.cost?.total) || 0)
     const text = ((msg as any).content ?? []).filter((c: any) => c.type === "text").map((c: any) => c.text).join("")
+    let j: { changed?: unknown; why?: unknown; touches?: unknown }
     try {
-      const j = JSON.parse(text.slice(text.indexOf("{"), text.lastIndexOf("}") + 1))
-      return { changed: !!j.changed, why: String(j.why ?? "").slice(0, 300) || "the architecture changed", touches: Array.isArray(j.touches) ? j.touches.map(String) : [] }
+      j = JSON.parse(text.slice(text.indexOf("{"), text.lastIndexOf("}") + 1))
+      if (typeof j !== "object" || j === null || typeof j.changed !== "boolean") throw new Error("no changed field")
     } catch {
-      return { changed: false, why: `the triage answer was not readable: ${text.slice(0, 120)}`, touches: [] }
+      // an answer that cannot be read is no verdict: the commits stay unchecked and the next check looks again
+      // (never recorded as "no architecture change", which would let the drawing drift in silence)
+      throw new AppError(502, `the change check's answer could not be read, so these commits stay unchecked and are checked again next time: ${text.slice(0, 120)}`)
     }
+    // the cut is reported beside the verdict, never inside it: `why` becomes the update's commit message and headline
+    const why = String(j.why ?? "").slice(0, 300) || (j.changed ? "the architecture changed" : "no architecture change")
+    return { changed: j.changed, why, touches: Array.isArray(j.touches) ? j.touches.map(String) : [], note: cut.length ? `checked ${cut.join(" and ")}` : "" }
   }
 
   private async draft(slug: string, commits: Commit[], range: string, verdict: { why: string; touches: string[] }): Promise<Proposal[]> {

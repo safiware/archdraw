@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://archdraw.dev/sitemap-index.xml

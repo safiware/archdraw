@@ -1,0 +1,65 @@
+---
+// Every page: meta, social cards, favicons, self-hosted fonts, theme before first paint.
+import '../styles/fonts.css';
+import '../styles/global.css';
+import archivo from '@fontsource-variable/archivo/files/archivo-latin-wdth-normal.woff2?url';
+import atkinson from '@fontsource/atkinson-hyperlegible-next/files/atkinson-hyperlegible-next-latin-400-normal.woff2?url';
+import atkinsonSemi from '@fontsource/atkinson-hyperlegible-next/files/atkinson-hyperlegible-next-latin-600-normal.woff2?url';
+import atkinsonBold from '@fontsource/atkinson-hyperlegible-next/files/atkinson-hyperlegible-next-latin-700-normal.woff2?url';
+import martian from '@fontsource-variable/martian-mono/files/martian-mono-latin-wdth-normal.woff2?url';
+
+interface Props {
+  title: string;
+  description: string;
+  /** keep out of search results (the 404 page) */
+  noindex?: boolean;
+}
+const { title, description, noindex = false } = Astro.props;
+const site = Astro.site ?? new URL('https://archdraw.dev');
+const canonical = new URL(Astro.url.pathname.replace(/\.html$/, '').replace(/\/index$/, '') || '/', site).href;
+const ogImage = new URL('/og.png', site).href;
+const ogAlt = 'archdraw. Keep the drawing true to the code. The Bean There architecture diagram, in step with the code.';
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    {noindex ? <meta name="robots" content="noindex" /> : <link rel="canonical" href={canonical} />}
+    <meta name="color-scheme" content="dark light" />
+    <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0B1A36" />
+    <meta name="theme-color" media="(prefers-color-scheme: light)" content="#EDF2FA" />
+
+    <link rel="preload" href={archivo} as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href={atkinson} as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href={atkinsonSemi} as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href={atkinsonBold} as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href={martian} as="font" type="font/woff2" crossorigin />
+    <script is:inline src="/theme-init.js"></script>
+
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="icon" href="/favicon-32.png" type="image/png" sizes="32x32" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="archdraw" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content={ogAlt} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
+    <meta name="twitter:image:alt" content={ogAlt} />
+  </head>
+  <body>
+    <slot />
+  </body>
+</html>
