@@ -7,6 +7,7 @@ import atkinson from '@fontsource/atkinson-hyperlegible-next/files/atkinson-hype
 import atkinsonSemi from '@fontsource/atkinson-hyperlegible-next/files/atkinson-hyperlegible-next-latin-600-normal.woff2?url';
 import atkinsonBold from '@fontsource/atkinson-hyperlegible-next/files/atkinson-hyperlegible-next-latin-700-normal.woff2?url';
 import martian from '@fontsource-variable/martian-mono/files/martian-mono-latin-wdth-normal.woff2?url';
+import Analytics from '@vercel/analytics/astro';
 
 interface Props {
   title: string;
@@ -58,6 +59,7 @@ const ogAlt = 'archdraw. Keep the drawing true to the code. The Bean There archi
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={ogImage} />
     <meta name="twitter:image:alt" content={ogAlt} />
+    <Analytics />
   </head>
   <body>
     <slot />
