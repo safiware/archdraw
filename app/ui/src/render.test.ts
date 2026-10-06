@@ -1,6 +1,25 @@
 // @vitest-environment jsdom
-import { describe, expect, it } from "vitest"
+import { describe, expect, it, vi } from "vitest"
+import * as engine from "@engine"
 import { renderSource, sanitize } from "./render"
+
+describe("renderSource errors", () => {
+  it("includes the source line when a diagram fails to compile", () => {
+    const result = renderSource('node a "A"\nnode b "B" rigth of a', false)
+    expect(result.error).toBe('line 2: node "b": "rigth" is not a direction')
+    expect(result.size).toEqual({ w: 560, h: 120 })
+  })
+  it.each([undefined, 0])("keeps errors without a usable line unchanged (%s)", line => {
+    const compile = vi.spyOn(engine, "compile").mockImplementationOnce(() => {
+      throw Object.assign(new Error("cannot compile diagram"), { line })
+    })
+    try {
+      expect(renderSource("", false).error).toBe("cannot compile diagram")
+    } finally {
+      compile.mockRestore()
+    }
+  })
+})
 
 describe("sanitize", () => {
   it("drops the three bypasses the review reproduced", () => {

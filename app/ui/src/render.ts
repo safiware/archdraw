@@ -10,7 +10,8 @@ export function renderSource(source: string, dark: boolean): Rendered {
     const svg = sanitize(compile(source, { theme: dark ? THEMES.dark : THEMES.light }))
     return { svg, size: svgSize(svg) }
   } catch (e) {
-    return { error: e instanceof Error ? e.message : String(e), size: { w: 560, h: 120 } }
+    const line = e && typeof (e as { line?: number }).line === "number" && (e as { line: number }).line > 0 ? `line ${(e as { line: number }).line}: ` : ""
+    return { error: line + (e instanceof Error ? e.message : String(e)), size: { w: 560, h: 120 } }
   }
 }
 
