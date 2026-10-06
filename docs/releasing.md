@@ -15,7 +15,7 @@ In the repo's Settings › Environments, create `release`, add a required review
 | `APPLE_API_KEY_ID` | The key's ID | Shown beside the key (10 characters) |
 | `APPLE_API_ISSUER` | The issuer ID | Shown above the keys list (a UUID) |
 
-The workflow fails if a Mac secret is missing; it never publishes an unsigned Mac build.
+Until these secrets are set, the Mac build is signed ad hoc (not notarized): the release still builds, and its notes tell Mac users how to open and update it. With them, the Mac build is signed and notarized and updates itself.
 
 ## Each release
 
