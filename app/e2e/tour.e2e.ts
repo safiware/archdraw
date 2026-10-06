@@ -146,7 +146,13 @@ try {
   const p3 = await browser.newPage({ viewport: { width: 1280, height: 800 } })
   await step("existing user · a chip offers the tour once; ✕ removes it for good", async () => {
     await p3.goto(s3.url)
-    await p3.click("[data-testid=start-sample]").catch(() => undefined) // makes the app non-empty without starting a tour on the next load
+    await p3.click("[data-testid=start-sample]") // makes the app non-empty
+    // starting the sample saves the tour as started once the project exists; wait for that save, or a late one would
+    // overwrite the reset below and hide the chip (a race that failed this step under load)
+    await p3.waitForFunction(async () => {
+      const [s, ps] = await Promise.all([fetch("api/settings").then(r => r.json()), fetch("api/projects").then(r => r.json())])
+      return s.onboarding?.status === "active" && Array.isArray(ps) && ps.length > 0
+    }, undefined, { polling: 200, timeout: 30_000 })
     await p3.evaluate(async () => fetch("api/onboarding", { method: "PUT", headers: { "content-type": "application/json" }, body: JSON.stringify({ status: "new", step: 0, chipDismissed: false }) }))
     await p3.goto(s3.url + "/?again=1")
     await p3.waitForSelector("[data-testid=tour-chip]")

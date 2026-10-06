@@ -10,7 +10,8 @@
     "resolveJsonModule": true,
     "allowImportingTsExtensions": false,
     "types": ["node"],
-    "outDir": "build"
+    "outDir": "build",
+    "rootDir": ".."
   },
   "include": ["core/src", "server/src", "desktop/src", "core/test", "server/test"]
 }

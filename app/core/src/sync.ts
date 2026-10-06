@@ -167,7 +167,7 @@ export class Syncer {
         try {
           await lib.save(slug, pr.name, pr.source, versions.get(pr.name) ?? null, {
             doc: pr.doc,
-            message: `archdraw: ${verdict.why.slice(0, 60)}\n\n${commits.length} commit(s) ${range}: ${verdict.why}\n\nArchdraw-Base: ${base}`,
+            message: `archdraw: ${verdict.why.slice(0, 60)}\n\n${commits.length} commit(s) ${range}: ${verdict.why}${verdict.note ? `\n\nDrafted after a partial check: ${verdict.note}.` : ""}\n\nArchdraw-Base: ${base}`,
           })
           written.push(pr.name)
         } catch (e) {
