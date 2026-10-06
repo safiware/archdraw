@@ -42,15 +42,8 @@ jobs:
       - name: build
         working-directory: app
         run: npm run build:all
-      - name: package (macOS, ad hoc signature, rehearsal)
-        if: runner.os == 'macOS' && github.event_name != 'push'
-        working-directory: app
-        env:
-          CSC_IDENTITY_AUTO_DISCOVERY: "false"
-        # ad hoc, as ci.yml does: a fully unsigned arm64 app is refused as "damaged" with no way to open it
-        run: npx electron-builder --mac --arm64 --x64 --publish never -c.mac.identity=-
-      - name: package (macOS, release)
-        if: runner.os == 'macOS' && github.event_name == 'push'
+      - name: package (macOS)
+        if: runner.os == 'macOS'
         working-directory: app
         env:
           CSC_LINK: ${{ secrets.MAC_CERT_P12_BASE64 }}
@@ -58,18 +51,21 @@ jobs:
           APPLE_API_KEY_P8: ${{ secrets.APPLE_API_KEY_P8 }}
           APPLE_API_KEY_ID: ${{ secrets.APPLE_API_KEY_ID }}
           APPLE_API_ISSUER: ${{ secrets.APPLE_API_ISSUER }}
-        # With the Apple secrets in the release environment: Developer ID signed and notarized. Without them (before
-        # the Apple account is in place): an ad hoc signature, and the release notes tell Mac users how to open it.
-        # mac-signing.txt carries which one to the release job, which removes it before the checksums.
+        # One step for a release and a rehearsal, so a rehearsal proves the path a release takes. A tag with the Apple
+        # secrets in the release environment: Developer ID signed and notarized. Otherwise (a rehearsal has no
+        # environment, and a release before the Apple account is in place): an ad hoc signature. The secrets then
+        # arrive as empty variables, and electron-builder reads an empty CSC_LINK as a certificate path, so they are
+        # unset first. mac-signing.txt carries which one to the release job, which removes it before the checksums.
         run: |
-          if [ -n "$CSC_LINK" ] && [ -n "$APPLE_API_KEY_P8" ]; then
+          if [ "$GITHUB_EVENT_NAME" = push ] && [ -n "$CSC_LINK" ] && [ -n "$APPLE_API_KEY_P8" ]; then
             printf '%s' "$APPLE_API_KEY_P8" | base64 --decode > "$RUNNER_TEMP/AuthKey.p8"
             export APPLE_API_KEY="$RUNNER_TEMP/AuthKey.p8"
             npx electron-builder --mac --arm64 --x64 --publish never -c.mac.notarize=true
             rm -f "$RUNNER_TEMP/AuthKey.p8"
             echo developer-id > release/mac-signing.txt
           else
-            echo "::warning::No Apple signing secrets in the release environment: the macOS app is signed ad hoc and not notarized"
+            unset CSC_LINK CSC_KEY_PASSWORD APPLE_API_KEY_P8 APPLE_API_KEY_ID APPLE_API_ISSUER
+            if [ "$GITHUB_EVENT_NAME" = push ]; then echo "::warning::No Apple signing secrets in the release environment: the macOS app is signed ad hoc and not notarized"; fi
             CSC_IDENTITY_AUTO_DISCOVERY=false npx electron-builder --mac --arm64 --x64 --publish never -c.mac.identity=-
             echo ad-hoc > release/mac-signing.txt
           fi
