@@ -17,17 +17,17 @@ const CMD = 'curl -fsSL https://archdraw.dev/install.sh | sh';
 </script>
 
 <style is:global>
-  .install-cmd { position: relative; display: flex; align-items: center; gap: 10px; max-width: 100%; padding: 10px 10px 10px 16px; border: 1px solid var(--rule); border-radius: 12px; background: var(--well, var(--panel)); }
-  .install-cmd code { flex: 1; min-width: 0; font-size: .84rem; line-height: 1.55; color: var(--text); }
+  .install-cmd { position: relative; display: flex; align-items: center; gap: 8px; max-width: 100%; padding: 7px 7px 7px 13px; border: 1px solid var(--rule); border-radius: 10px; background: var(--well, var(--panel)); }
+  .install-cmd code { flex: 1; min-width: 0; font-size: .78rem; line-height: 1.5; color: var(--text); }
   /* where it does not fit on one line it breaks after -fsSL only (a visual break: copying still gives one line);
      on a narrow phone the URL may wrap too */
   .install-cmd .cmd-a, .install-cmd .cmd-b { white-space: nowrap; }
   @media (max-width: 480px), (min-width: 961px) and (max-width: 1180px) { .install-cmd .cmd-b { white-space: normal; overflow-wrap: anywhere; } }
   .install-cmd .prompt { color: var(--text-2); user-select: none; }
-  .copy-b { flex: none; width: 38px; height: 38px; display: grid; place-items: center; border-radius: 9px; border: 2px solid var(--lamp-shadow); background: var(--lamp); color: var(--on-lamp); cursor: pointer; padding: 0; }
+  .copy-b { flex: none; width: 32px; height: 32px; display: grid; place-items: center; border-radius: 8px; border: 2px solid var(--lamp-shadow); background: var(--lamp); color: var(--on-lamp); cursor: pointer; padding: 0; }
   .copy-b:hover { filter: brightness(1.05); }
   .copy-b:focus-visible { outline: 2px solid var(--signal); outline-offset: 2px; }
-  .copy-b svg { width: 18px; height: 18px; grid-area: 1 / 1; }
+  .copy-b svg { width: 16px; height: 16px; grid-area: 1 / 1; }
   .copy-b .i-done { display: none; }
   .copy-b.copied .i-copy { display: none; }
   .copy-b.copied .i-done { display: block; }
