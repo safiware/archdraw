@@ -13,7 +13,7 @@ Thanks for helping. archdraw is maintained by Safiware and built in the open: is
 
 | Folder | What it is |
 |---|---|
-| `engine/` | The diagram engine: [reladraw](https://github.com/reladraw/reladraw) 0.16.0, vendored. Parse, layout, SVG. |
+| `engine/` | The diagram engine, started from [reladraw](https://github.com/reladraw/reladraw) 0.16.0 (Apache-2.0). Parse, layout, SVG. |
 | `app/core/` | The library: projects, clones and worktrees, commits and pull requests, the sync, the agent and its read-only tools. No HTTP, no UI. |
 | `app/server/` | The HTTP API (Hono) and the access gates (desktop token, Tailscale, local). |
 | `app/ui/` | The React UI: canvas, Inbox, chat, tour. |

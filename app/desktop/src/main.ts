@@ -10,6 +10,7 @@ import { app, BrowserWindow, dialog, ipcMain, Menu, nativeImage, session, shell,
 import updater from "electron-updater"
 import { start } from "../../server/src/main.js"
 import { SafeKeys } from "./keys.js"
+import { thisMacAppIsDeveloperIdSigned } from "./signing.js"
 
 const dev = !app.isPackaged
 const res = (p: string) => (dev ? join(import.meta.dirname, "..", "..", p) : join(process.resourcesPath, p))
@@ -139,19 +140,20 @@ function issueUrl(): string {
   return `https://github.com/safiware/archdraw/issues/new?body=${encodeURIComponent(body)}`
 }
 
-/** Updates come from GitHub Releases. The AppImage and the Mac app update themselves; a deb is installed by the
- *  system's package tools, so its users are told and sent to the download page instead. */
+/** Updates come from GitHub Releases. The AppImage and a Developer ID signed Mac app update themselves; a deb is
+ *  installed by the system's package tools, and macOS will not let an ad hoc signed app replace itself, so their
+ *  users are told and sent to the download page instead. */
 async function checkForUpdates(byHand = false): Promise<void> {
   if (dev || process.env.ARCHDRAW_NO_UPDATE) return
   const { autoUpdater } = updater
-  const selfUpdating = process.platform === "darwin" || !!process.env.APPIMAGE
+  const selfUpdating = process.platform === "darwin" ? thisMacAppIsDeveloperIdSigned() : !!process.env.APPIMAGE
   autoUpdater.autoDownload = selfUpdating
   try {
     const r = await autoUpdater.checkForUpdates()
     const next = r?.updateInfo?.version
     const newer = !!r?.isUpdateAvailable && !!next // the updater compares versions itself: never a downgrade
     if (newer && !selfUpdating) {
-      const pick = await dialog.showMessageBox({ type: "info", message: `archdraw ${next} is available`, detail: "Download the new .deb from the releases page and install it.", buttons: ["Open the releases page", "Later"] })
+      const pick = await dialog.showMessageBox({ type: "info", message: `archdraw ${next} is available`, detail: process.platform === "darwin" ? "Download the new .dmg from the releases page and replace the app in Applications." : "Download the new .deb from the releases page and install it.", buttons: ["Open the releases page", "Later"] })
       if (pick.response === 0) void shell.openExternal(RELEASES)
     } else if (newer && updateReady !== next) {
       autoUpdater.once("update-downloaded", () => {
