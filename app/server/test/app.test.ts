@@ -103,6 +103,25 @@ describe("the API", () => {
     expect(names.some(n => n.endsWith("/diagrams/overview/overview.md"))).toBe(true)
   })
 
+  it("refuses a project title that is not 1 to 80 characters when a project is added, as renaming does (#35)", async () => {
+    const w = world()
+    const add = (json: Record<string, unknown>) => w.call("/api/projects", { method: "POST", json: { repo: w.origin, ...json } })
+    for (const title of ["x".repeat(81), "   ", "", 5]) {
+      const r = await add({ title, slug: "shop" })
+      expect(r.status).toBe(400)
+      expect(JSON.stringify(await r.json())).toContain("a title is 1 to 80 characters")
+    }
+    expect((await (await w.call("/api/projects")).json()).length).toBe(0) // nothing was added
+    const ok = await add({ title: "  Coffee shop  ", slug: "shop" })
+    expect(ok.status).toBe(200)
+    expect((await ok.json()).title).toBe("Coffee shop") // stored trimmed
+    // no title: the repo's own name, as before (a fresh world, since a repo is added once)
+    const w2 = world()
+    const plain = await w2.call("/api/projects", { method: "POST", json: { repo: w2.origin, slug: "plain" } })
+    expect(plain.status).toBe(200)
+    expect((await plain.json()).title).toMatch(/\S/)
+  })
+
   it("saves settings, hides keys, and talks to the agent over the long poll", async () => {
     const w = world()
     await w.call("/api/projects", { method: "POST", json: { repo: w.origin, slug: "shop" } })
