@@ -169,7 +169,13 @@ async function main() {
       await page.keyboard.press("Control+End")
       await page.keyboard.type('\nnode bank "Bank" below psp\n')
       await page.keyboard.press("Control+s")
-      await page.waitForSelector("[data-testid=toast]:has-text('waiting for review')")
+      // the first save's toast ("Saved · waiting for review") is still up for 4.5 s with the same text, so the toast
+      // cannot tell this save apart: wait for the payments change itself on the update branch
+      for (let t = Date.now(); ; ) {
+        if (sh(origin, "show", "archdraw/update:.archdraw/payments.archdraw").includes('node bank "Bank"')) break
+        if (Date.now() - t > 15_000) throw new Error("the payments change never reached archdraw/update")
+        await page.waitForTimeout(200)
+      }
       await page.click("[data-testid=toggle-source]")
     })
     await step("the inbox lists the changed diagrams compactly, Approve on top; a click opens one's colored diff; Approve publishes", async () => {
