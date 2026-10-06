@@ -168,7 +168,8 @@ export function createApp(d: Deps): Hono<AppEnv> {
 
   app.post("/api/projects", async c => {
     const b = await body<{ repo?: string; folder?: string; title?: string; slug?: string }>(c)
-    const p = b.repo ? await d.lib.addRepo(b.repo, { title: b.title, slug: b.slug }) : b.folder ? d.lib.addFolder(b.folder, { title: b.title, slug: b.slug }) : null
+    if (b.title !== undefined && (typeof b.title !== "string" || !b.title.trim() || b.title.length > 80)) throw new AppError(400, "a title is 1 to 80 characters")
+    const p = b.repo ? await d.lib.addRepo(b.repo, { title: b.title?.trim(), slug: b.slug }) : b.folder ? d.lib.addFolder(b.folder, { title: b.title?.trim(), slug: b.slug }) : null
     if (!p) throw new AppError(400, "give a GitHub repo (owner/name or URL) or a local folder")
     // a repo this login can read but not push to: say so now, not at the first save
     let warning: string | null = null
