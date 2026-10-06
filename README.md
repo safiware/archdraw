@@ -1,57 +1,107 @@
 <p align="center">
-  <img src="docs/images/inbox.png" alt="An archdraw update in the Inbox: the diagram with a new box outlined in green, and Approve at the top" width="860">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="docs/images/logo-dark.svg">
+    <source media="(prefers-color-scheme: light)" srcset="docs/images/logo-light.svg">
+    <img alt="archdraw" src="docs/images/logo-light.svg" width="264">
+  </picture>
 </p>
 
-# archdraw
+<p align="center">
+  <b>Architecture diagrams that keep up with your code.</b><br>
+  A desktop app for macOS and Linux. Your diagrams live as text in your repo;
+  when the code moves, archdraw drafts the update and waits for your OK.
+</p>
 
-**Your architecture diagram, as a reviewed file in your repo, that notices when the code changes.**
+<p align="center">
+  <a href="https://github.com/safiware/archdraw/releases/latest"><b>Download</b></a>
+  <span>&nbsp;&nbsp;·&nbsp;&nbsp;</span>
+  <a href="https://archdraw.dev">archdraw.dev</a>
+  <span>&nbsp;&nbsp;·&nbsp;&nbsp;</span>
+  <a href="docs/user-guide.md">User guide</a>
+  <span>&nbsp;&nbsp;·&nbsp;&nbsp;</span>
+  <a href="engine/SYNTAX.md">Diagram language</a>
+</p>
 
-archdraw is a free desktop app for macOS and Linux, with its source on GitHub. It keeps a project's architecture diagrams as plain text files in the repo's `.archdraw/` folder. On the schedule you choose it checks the code, drafts one update when the architecture changed, and shows you a colored diff to approve. Approved updates land in the repo as a pull request or a commit, versioned with the code they describe.
+<br>
 
-[Download](https://github.com/safiware/archdraw/releases/latest) · [archdraw.dev](https://archdraw.dev) · [User guide](docs/user-guide.md) · [Diagram language](engine/SYNTAX.md)
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="docs/images/hero-dark.svg">
+    <source media="(prefers-color-scheme: light)" srcset="docs/images/hero-light.svg">
+    <img alt="The Bean There sample in archdraw. A check finds the code moved and drafts one update, shown in color: Fax orders removed in red, Payments changed in amber, Delivery partner added in green. Approve merges it, and ARCHITECTURE.md is ready for Claude Code, Cursor and Codex." src="docs/images/hero-light.svg" width="800">
+  </picture>
+</p>
+<p align="center"><i>The sample project: three changes land in the code, and archdraw drafts one update to the diagram. One click approves it.</i></p>
+
+<div align="center">
+
+[![License: FSL-1.1-ALv2](https://img.shields.io/badge/license-FSL--1.1--ALv2-FFD66E?labelColor=0B1A36)](LICENSE) [![macOS · Linux](https://img.shields.io/badge/macOS%20·%20Linux-desktop-7CC8FF?labelColor=0B1A36)](https://github.com/safiware/archdraw/releases/latest)
+
+</div>
+
+## What it does
+
+- **Diagrams as text.** Each diagram is a plain file in the repo's `.archdraw/` folder, versioned and reviewed with the code it describes.
+- **Checks on your schedule.** Every hour, once a day, or only when you ask. Off until you choose.
+- **One update, in color.** When the architecture changed, archdraw drafts a single update and shows it as a diff: green added, amber changed, red removed.
+- **Nothing lands until you approve.** An approved update arrives as a pull request or a commit.
+- **Made for coding agents.** Export writes `ARCHITECTURE.md` plus every diagram as text, for Claude Code, Cursor or Codex.
 
 ## Install
 
 | | |
 |---|---|
-| **macOS 13 or later** (Apple Silicon or Intel) | Download the `.dmg` from [Releases](https://github.com/safiware/archdraw/releases/latest) |
+| **macOS 13 or later** (Apple Silicon or Intel) | The `.dmg` from [Releases](https://github.com/safiware/archdraw/releases/latest) |
 | **Linux** (x64) | The `.deb` (Debian, Ubuntu) or the `.AppImage` from [Releases](https://github.com/safiware/archdraw/releases/latest) |
 
-archdraw uses the machine's own `git`, and the [GitHub CLI](https://cli.github.com) (`gh auth login`) to open and merge pull requests. The app tells you on first run if either is missing. Windows is not supported yet; [say so in an issue](https://github.com/safiware/archdraw/issues) if you want it.
+archdraw uses your machine's own `git`, and the [GitHub CLI](https://cli.github.com) (`gh auth login`) to open and merge pull requests. It tells you on first run if either is missing. Windows is not supported yet; [say so in an issue](https://github.com/safiware/archdraw/issues) if you want it.
 
-## How it works
+## First run
 
-1. **Open a repo.** Paste `owner/name` or a GitHub URL, or pick a local folder. Diagrams are text files in `.archdraw/`, so they live in the repo, show up in code review, and need no account with us.
-2. **Ask for diagrams.** The built-in agent reads the code and proposes diagrams beside the current ones. Nothing changes until you press Accept. It uses your own AI key: OpenAI, Anthropic, Google or OpenRouter.
-3. **Keep them current.** Choose a schedule per project: every hour, once a day, or only when you ask. When `main` moves and the architecture changed, archdraw drafts one update on the `archdraw/update` branch. The Inbox shows it as a colored diff (green added, amber changed, red removed). Approve it, and it merges.
-4. **Hand it to your coding agent.** Export writes `ARCHITECTURE.md` plus every diagram as text, ready for Claude Code, Cursor or Codex.
+Open the app and press **Just try the sample**. The two-minute tour runs on the Bean There project above and needs no AI key.
 
-Take the two-minute tour from the first screen (it uses a sample project and needs no key) to see all four.
+Then, on your own repo:
 
-## What goes where
+1. **Open a repo.** Paste `owner/name` or a GitHub URL, or pick a local folder. archdraw works on its own copy and never touches your working copy.
+2. **Ask for diagrams.** The built-in agent reads the code and proposes diagrams; press Accept to keep them. It uses your own key: OpenAI, Anthropic, Google or OpenRouter.
+3. **Pick a schedule.** When `main` moves and the architecture changed, archdraw drafts one update on the `archdraw/update` branch. The Inbox shows it as a colored diff. Approve, and it merges.
+4. **Export for your coding agent.** `ARCHITECTURE.md` and the diagrams, ready to hand over.
 
-- archdraw runs on your machine and has no server of its own. When a project is checked, archdraw sends the new commit messages, the names of the files they touch and the diagram outlines to **your** AI provider, to ask whether the architecture changed. When it did, the agent reads the code it needs and drafts the update.
-- The agent can only read. It never reads `.env` files, keys, credential folders, Terraform state or anything your `.gitignore` excludes, and it cannot run commands.
-- Nothing reaches your repo's `main` until you approve it. Checks run only on the schedule you picked; the default is off.
-- Your AI key is encrypted with the OS keychain and stored in an owner-only file. On a Linux desktop without a keyring, the app tells you the key has only basic protection. archdraw has no telemetry and no account.
+## What a diagram looks like
 
-## The diagram language
-
-Diagrams are written in the [reladraw](https://github.com/reladraw/reladraw) language: you say where things go, and the layout follows.
+You say where things go, and the layout follows.
 
 ```
 style ours   fill: theme-primary-subtle  border: theme-primary
 style store  fill: theme-fill  border: theme-border  badge: database
 style dim    text: (color: theme-muted)
 
-node app "Customer app / [dim]iOS + Android[/dim]"  style: ours
-node api "Orders API / [dim]Node[/dim]"  right of app (gap: wide)  style: ours
-node db "Menu DB"  right of api  style: store
-edge app -> api "HTTPS" from: right to: left
-edge api -> db "SQL" from: right to: left
+node app  "Customer app / [dim]iOS + Android[/dim]"  style: ours
+node api  "Orders API / [dim]Node[/dim]"  right of app (gap: wide)  style: ours
+node db   "Menu DB"   right of api  style: store
+node pay  "Payments"  below api     style: ours
+
+edge app -> api "HTTPS"   from: right to: left
+edge api -> db  "SQL"     from: right to: left
+edge api -> pay "charge"  from: bottom to: top
 ```
 
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="docs/images/example-dark.svg">
+    <source media="(prefers-color-scheme: light)" srcset="docs/images/example-light.svg">
+    <img alt="The diagram above as the engine draws it: Customer app to Orders API over HTTPS, Orders API to Menu DB over SQL, and Orders API down to Payments." src="docs/images/example-light.svg" width="560">
+  </picture>
+</p>
+
 The full reference is [engine/SYNTAX.md](engine/SYNTAX.md).
+
+## What leaves your machine
+
+- archdraw runs on your machine and has no server of its own. When a project is checked, it sends the new commit messages, the names of the files they touch and the diagram outlines to **your** AI provider, to ask whether the architecture changed. When it did, the agent reads the code it needs and drafts the update.
+- The agent can only read. It never reads `.env` files, keys, credential folders, Terraform state or anything your `.gitignore` excludes, and it cannot run commands.
+- Nothing reaches your repo's `main` until you approve it. Checks run only on the schedule you picked; the default is off.
+- Your AI key is encrypted with the OS keychain and stored in an owner-only file. On a Linux desktop without a keyring, the app tells you the key has only basic protection. archdraw has no telemetry and no account.
 
 ## Self-hosting
 
@@ -59,12 +109,14 @@ The same app runs as a server you open in a browser, for example on a home serve
 
 ## Contributing
 
-archdraw is built in the open and contributions are welcome: bug reports, diagram-language improvements, new providers, Windows support. Start with [CONTRIBUTING.md](CONTRIBUTING.md) and the [good first issues](https://github.com/safiware/archdraw/labels/good%20first%20issue). Questions and ideas go in [Discussions](https://github.com/safiware/archdraw/discussions).
+Bug reports, diagram-language improvements, new providers and Windows support are all welcome. Start with [CONTRIBUTING.md](CONTRIBUTING.md) and the [good first issues](https://github.com/safiware/archdraw/labels/good%20first%20issue); sign off each commit (`git commit -s`) to certify the [Developer Certificate of Origin](https://developercertificate.org). Questions and ideas go in [Discussions](https://github.com/safiware/archdraw/discussions).
 
-## Thanks
+## Thanks to reladraw
 
-archdraw is built on [reladraw](https://github.com/reladraw/reladraw), the diagram language and engine by Joe Walsh. Its central idea is the one archdraw depends on most: you say where things go (`right of app`, `below api`) and the layout follows. That is why an archdraw diagram reads as plainly as text, in a code review, in a diff, or in the context you hand a coding agent, and still draws as a clean picture. The engine in `engine/` is his work. Its source is included unmodified; only its package metadata was renamed. Thank you, Joe, for making it and for sharing it under Apache-2.0.
+archdraw is built on [reladraw](https://github.com/reladraw/reladraw), the diagram language and engine by Joe Walsh. Its central idea is the one archdraw depends on most: you say where things go (`right of app`, `below api`) and the layout follows. That is why an archdraw diagram reads as plainly as text, in a code review, in a diff, or in the context you hand a coding agent, and still draws as a clean picture. The engine in [`engine/`](engine) is his work, included unmodified apart from its package metadata. Thank you, Joe, for making it and for sharing it under Apache-2.0.
 
 ## License
 
-archdraw is [fair source](https://fair.io): it is licensed under the [Functional Source License, FSL-1.1-ALv2](LICENSE). You may use it, change it and run it yourself for any purpose, at work too, except to offer a competing commercial product or service. Each release becomes Apache-2.0 two years after it ships. Its diagram engine in `engine/` is [reladraw](https://github.com/reladraw/reladraw) by Joe Walsh, under the [Apache License 2.0](engine/LICENSE); see [NOTICE](NOTICE). "archdraw" and its logo are trademarks of Tawab Safi; see [TRADEMARKS.md](TRADEMARKS.md).
+archdraw is [fair source](https://fair.io). You can use it, read it, change it and run it yourself, for any purpose and at work too; the one thing you can't do is offer a competing commercial product or service built from it. Each release becomes Apache-2.0 two years after it ships. The license is the [Functional Source License, FSL-1.1-ALv2](LICENSE).
+
+The diagram engine in [`engine/`](engine) is reladraw, and it stays under the [Apache License 2.0](engine/LICENSE); see [NOTICE](NOTICE). "archdraw" and its logo are trademarks of Tawab Safi; see [TRADEMARKS.md](TRADEMARKS.md).
