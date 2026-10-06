@@ -2,7 +2,8 @@
 # AppImage and deb, the updater's latest*.yml files, SHA256SUMS and build-provenance attestations, all attached to a
 # DRAFT GitHub release. A maintainer reads it and presses Publish; nothing is public before that.
 # Run by hand (Actions > release > Run workflow), it is a rehearsal: the same builds and launch checks, the macOS app
-# with an ad hoc signature instead of the Developer ID one (a tester opens it with right-click > Open), every package
+# with an ad hoc signature instead of the Developer ID one (a tester opens it once from System Settings > Privacy &
+# Security > Open Anyway on macOS 15 and later, or right-click > Open on macOS 13 and 14), every package
 # uploaded as a run artifact for testers, and no release and no signing secrets.
 name: release
 on:
