@@ -30,12 +30,12 @@
     "example": "npm run build && node dist/cli.js examples/arch.reladraw -o examples/out/arch.svg"
   },
   "engines": {
-    "node": ">=18"
+    "node": ">=22.19.0"
   },
   "license": "Apache-2.0",
   "devDependencies": {
-    "@types/node": "^22.0.0",
-    "typescript": "^5.6.0"
+    "@types/node": "^24.19.1",
+    "typescript": "^7.0.2"
   },
   "author": "Joe Walsh <jpwalsh234@gmail.com>",
   "private": true,

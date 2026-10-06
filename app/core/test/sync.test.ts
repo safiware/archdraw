@@ -104,6 +104,22 @@ describe("the sync", () => {
     expect(await w.syncer.sync("shop")).toMatchObject({ outcome: "no-architecture-change", commits: 61, why: "small files", note: "checked the first 60 of 61 commits" })
   })
 
+  it("an update drafted after a partial check says so in its commit message body, not its subject", async () => {
+    const w = world()
+    await w.lib.addRepo(w.origin, { slug: "shop" })
+    await w.syncer.sync("shop")
+    for (let n = 0; n < 61; n++) w.push(`src/f${n}.ts`, `export const f = ${n}\n`, `feat: f${n}`)
+    w.faux.setResponses([
+      fauxAssistantMessage([fauxText('{"changed": true, "why": "a jobs queue was added", "touches": ["system"]}')]),
+      fauxAssistantMessage([fauxToolCall("propose_diagram", { name: "system", source: WITH_QUEUE })], { stopReason: "toolUse" }),
+      fauxAssistantMessage([fauxText("Added the jobs queue.")]),
+    ])
+    expect(await w.syncer.sync("shop")).toMatchObject({ outcome: "drafted", headline: "a jobs queue was added", note: "checked the first 60 of 61 commits" })
+    const body = sh(w.origin, "log", "-1", "--format=%B", "archdraw/update")
+    expect(body.split("\n")[0]).toBe("archdraw: a jobs queue was added")
+    expect(body).toContain("Drafted after a partial check: checked the first 60 of 61 commits.")
+  })
+
   it("a second device sees the update already covers main and does not draft again", async () => {
     const w = world()
     await w.lib.addRepo(w.origin, { slug: "shop" })
