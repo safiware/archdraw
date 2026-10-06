@@ -73,6 +73,14 @@ jobs:
         if: runner.os == 'macOS'
         working-directory: app
         run: ARCHDRAW_SMOKE=1 ARCHDRAW_NO_UPDATE=1 perl -e 'alarm 120; exec @ARGV' release/mac-arm64/archdraw.app/Contents/MacOS/archdraw
+      - name: launch leaves the keychain alone (macOS)
+        if: runner.os == 'macOS'
+        # as in ci.yml: a keychain prompt at first launch, before any AI key is stored, is a bug
+        run: |
+          if security find-generic-password -s "archdraw Safe Storage" >/dev/null 2>&1; then
+            echo "::error::launching archdraw created or opened the 'archdraw Safe Storage' keychain item"
+            exit 1
+          fi
       - name: package (Linux)
         if: runner.os == 'Linux'
         working-directory: app

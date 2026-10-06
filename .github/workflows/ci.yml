@@ -83,6 +83,15 @@ jobs:
         if: runner.os == 'macOS'
         working-directory: app
         run: ARCHDRAW_SMOKE=1 ARCHDRAW_NO_UPDATE=1 perl -e 'alarm 120; exec @ARGV' release/mac-arm64/archdraw.app/Contents/MacOS/archdraw
+      - name: launch leaves the keychain alone (macOS)
+        if: runner.os == 'macOS'
+        # the app opens its keychain item only when an AI key is saved or used: touching it at launch makes macOS ask
+        # every new user for their password before they have stored anything
+        run: |
+          if security find-generic-password -s "archdraw Safe Storage" >/dev/null 2>&1; then
+            echo "::error::launching archdraw created or opened the 'archdraw Safe Storage' keychain item"
+            exit 1
+          fi
       - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: archdraw-${{ runner.os }}
