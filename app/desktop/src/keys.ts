@@ -1,10 +1,14 @@
 // The user's AI keys on the desktop: encrypted with the OS keychain through Electron's safeStorage (Keychain on macOS,
 // Secret Service / KWallet on Linux, DPAPI on Windows), in a 0600 file in userData. On a Linux desktop with no keyring,
 // safeStorage falls back to a hard-coded password ("basic_text"); `weak` says so, and the app tells the user.
+// On macOS the keychain is opened only when a key is saved or a stored one is read: any safeStorage call, even
+// isEncryptionAvailable(), makes macOS ask for the login password ("archdraw Safe Storage"), and a user who never
+// stores a key should never see that.
 // Keys set in the environment (OPENAI_API_KEY, ...) are used when none is stored.
 
 import { readFileSync, renameSync, writeFileSync } from "node:fs"
 import { safeStorage } from "electron"
+import { AppError } from "../../core/src/config.js"
 import { EnvKeys, type KeyStore } from "../../core/src/models.js"
 
 export class SafeKeys implements KeyStore {
@@ -12,8 +16,9 @@ export class SafeKeys implements KeyStore {
   readonly weak: boolean
 
   constructor(private file: string) {
+    // macOS and Windows always have a keychain, so only Linux can be weak, and only there is it checked up front
     const backend = process.platform === "linux" ? (safeStorage as unknown as { getSelectedStorageBackend?: () => string }).getSelectedStorageBackend?.() : "os"
-    this.weak = !safeStorage.isEncryptionAvailable() || backend === "basic_text"
+    this.weak = process.platform === "linux" && (!safeStorage.isEncryptionAvailable() || backend === "basic_text")
   }
 
   private all(): Record<string, string> {
@@ -39,8 +44,11 @@ export class SafeKeys implements KeyStore {
 
   set(provider: string, key: string): void {
     const all = this.all()
-    // no keyring: the key is kept in this owner-only file with basic protection, and the app says so (`weak`)
-    all[provider] = safeStorage.isEncryptionAvailable() ? safeStorage.encryptString(key).toString("base64") : "plain:" + Buffer.from(key, "utf8").toString("base64")
+    const sealed = safeStorage.isEncryptionAvailable()
+    // a Mac or Windows keychain that refused (the user pressed Deny): say so rather than keep the key unprotected
+    if (!sealed && process.platform !== "linux") throw new AppError(409, "archdraw could not use your keychain, so the key was not saved. Save it again and choose Allow when your Mac asks.")
+    // no keyring on Linux: the key is kept in this owner-only file with basic protection, and the app says so (`weak`)
+    all[provider] = sealed ? safeStorage.encryptString(key).toString("base64") : "plain:" + Buffer.from(key, "utf8").toString("base64")
     const tmp = this.file + ".tmp"
     writeFileSync(tmp, JSON.stringify(all), { mode: 0o600 })
     renameSync(tmp, this.file)
