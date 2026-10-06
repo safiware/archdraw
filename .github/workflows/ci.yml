@@ -91,3 +91,32 @@ jobs:
             app/release/*.deb
             app/release/*.dmg
           retention-days: 7
+  node-22:
+    # The lowest Node archdraw supports (app/package.json engines). The desktop app ships its own Node inside Electron;
+    # this proves a self-hosted server and a contributor's build still work on the oldest Node we promise. The type-check
+    # uses @types/node 24, so a Node 24-only function is caught here by the unit tests and the server start, at run time.
+    runs-on: ubuntu-22.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 22.19.0
+      - uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
+      - name: engine
+        working-directory: engine
+        run: npm ci && npm run build
+      - name: app dependencies
+        working-directory: app
+        run: npm ci && cd ui && bun install --frozen-lockfile
+      - name: type-check
+        working-directory: app
+        run: npx tsc -p tsconfig.json --noEmit && cd ui && npx tsc -b
+      - name: unit tests
+        working-directory: app
+        run: npx vitest run && cd ui && npx vitest run
+      - name: build
+        working-directory: app
+        run: npm run build:all
+      - name: the self-hosted server starts
+        run: scripts/server-smoke.sh
