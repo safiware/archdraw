@@ -118,14 +118,17 @@ jobs:
       - name: release notes
         # an ad hoc signed Mac build gets its opening steps at the top of the notes; the marker never ships
         run: |
-          : > notes.md
+          cat > notes.md <<'NOTES'
+          **Install or update** on macOS or Linux: `curl -fsSL https://archdraw.dev/install.sh | sh`
+
+          NOTES
           if [ "$(cat dist/mac-signing.txt 2>/dev/null)" = "ad-hoc" ]; then
-            cat > notes.md <<'NOTES'
-          > **On a Mac, the first time:** this build is not yet notarized by Apple, so macOS asks you to confirm it once.
-          > Open archdraw from Applications, then go to **System Settings → Privacy & Security** and press **Open Anyway**
-          > (on macOS 13 and 14, right-click the app and choose **Open**). Step by step:
-          > [Opening archdraw on a Mac](https://github.com/safiware/archdraw/blob/main/docs/install-mac.md).
-          > This build tells you when a new version is out; install it by downloading it again.
+            cat >> notes.md <<'NOTES'
+          > **On a Mac:** this build is not yet notarized by Apple. Installed or updated with the command above, it opens
+          > normally. A `.dmg` downloaded in a browser asks once: open archdraw from Applications, then go to
+          > **System Settings → Privacy & Security** and press **Open Anyway** (on macOS 13 and 14, right-click the app and
+          > choose **Open**). Step by step: [Opening archdraw on a Mac](https://github.com/safiware/archdraw/blob/main/docs/install-mac.md).
+          > This build tells you when a new version is out; run the command above again to update.
 
           NOTES
           fi

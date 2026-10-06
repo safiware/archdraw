@@ -2,11 +2,20 @@
 
 All notable changes to archdraw. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); versions follow [Semantic Versioning](https://semver.org) (in 0.x, a minor version may change behavior).
 
-## Unreleased
+## 0.1.1 — 2026-10-06
+
+**Updating from 0.1.0:** run `curl -fsSL https://archdraw.dev/install.sh | sh` again. 0.1.0 announces the new version but does not install it; on a Mac, the command also spares you the Open Anyway step a browser download asks for.
 
 ### Fixed
 
-- The agent no longer stops at "Connection error." when one connection to the AI provider drops: a request to the model is sent again up to twice, as the OpenAI and Anthropic SDKs do by default (the scheduled change check and its drafts too). An error that remains says why, for example "Connection error (getaddrinfo ENOTFOUND api.openai.com)."
+- Arch Agent no longer stops at "Connection error." when one connection to the AI provider drops: a request to the model is sent again up to twice, as the OpenAI and Anthropic SDKs do by default (the scheduled change check and its drafts too). An error that remains says why, for example "Connection error (getaddrinfo ENOTFOUND api.openai.com)." (#49)
+- On a Mac, archdraw no longer asks for your login password ("archdraw wants to use your confidential information stored in 'archdraw Safe Storage'") when it starts. The keychain is opened only when you save or use an AI key; if you press Deny there, saving the key says so instead of keeping it unprotected. (#47)
+- A diagram that does not render names the line of the mistake, `line 14: node "oops": "rigth" is not a direction`, in the editor, on the card and in Arch Agent's proposals, and the editor marks that line. Thanks to @cracthatrock for the first part. (#44)
+- Adding a project refuses a title that is empty or longer than 80 characters, as renaming one does. (#43)
+
+### Changed
+
+- The agent is called Arch Agent. (#48)
 
 ## 0.1.0 — 2026-10-06
 

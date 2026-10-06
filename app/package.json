@@ -1,7 +1,7 @@
 {
   "name": "archdraw",
   "private": true,
-  "version": "0.1.0",
+  "version": "0.1.1",
   "type": "module",
   "description": "archdraw: architecture diagrams for code projects, kept current from git. Core, server and desktop shell.",
   "scripts": {
