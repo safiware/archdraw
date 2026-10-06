@@ -2,7 +2,7 @@
 # Run CI's Linux job on this machine before pushing: the same steps as .github/workflows/ci.yml, in a fresh clone of
 # the committed HEAD (no node_modules, no build output, nothing uncommitted), with the GitHub CLI signed out and no git
 # identity, as on the runner. It works in ../.ci-local beside the repo (or CI_LOCAL_DIR) and keeps downloaded browsers
-# and Electron in ../.cache. Usage: scripts/ci-local.sh [--keep]   (needs Node 24, bun, git, xvfb-run)
+# and Electron in ../.cache. Usage: scripts/ci-local.sh [--keep]   (needs Node 24, bun, git, xvfb-run; fetches Node 22.19.0 through npx for the lowest-version step)
 set -euo pipefail
 repo="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 work="$(realpath -m "${CI_LOCAL_DIR:-$repo/../.ci-local}")"
@@ -50,5 +50,17 @@ step "launch check";      ARCHDRAW_SMOKE=1 ARCHDRAW_NO_UPDATE=1 timeout 120 xvfb
 step "desktop end-to-end"
 node node_modules/electron/install.js
 xvfb-run -a npx tsx e2e/desktop.e2e.ts
+step "Node 22.19.0, the lowest supported: type-check, unit tests, the server starts (CI's node-22 job)"
+# the Node 22.19.0 binary from npm, first on PATH for each command (an npx inside `npx -c` inherits its -c and fails)
+node22="$(npx -y -p node@22.19.0 -c 'dirname "$(command -v node)"')"
+(
+  export PATH="$node22:$PATH"
+  node -v
+  npx tsc -p tsconfig.json --noEmit
+  (cd ui && npx tsc -b)
+  npx vitest run
+  (cd ui && npx vitest run)
+  ../scripts/server-smoke.sh
+)
 echo; echo "ci-local: all steps passed"
 [ "${1:-}" = "--keep" ] || rm -rf "$work"

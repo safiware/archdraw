@@ -5,7 +5,8 @@ This product includes software developed at Safiware (https://archdraw.dev).
 
 The diagram engine in engine/ is reladraw 0.16.0 (https://github.com/reladraw/reladraw),
 Copyright 2026 Joe Walsh, licensed under the Apache License, Version 2.0. Its source is
-included unmodified; only its package metadata (name, repository, scripts) was changed.
+included unmodified; only its package metadata (name, repository, scripts, Node version,
+development dependencies) and its compiler settings (tsconfig.json) were changed.
 Its notice follows.
 
 The archdraw desktop app also bundles third-party software listed, with each license,
