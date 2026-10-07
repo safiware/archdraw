@@ -63,6 +63,8 @@ A change that a user can see comes with a test that fails without it.
 
 A maintainer reviews every pull request. We aim to answer within a week.
 
+Not writing code? Reporting a bug, answering a question in Discussions, or [sponsoring archdraw](https://github.com/sponsors/asaficontact) helps just as much.
+
 ## Conduct
 
 Everyone taking part follows the [Code of Conduct](CODE_OF_CONDUCT.md).
